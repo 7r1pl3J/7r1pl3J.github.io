@@ -615,6 +615,15 @@ header label {
 .links .iconfont {
   font-size: 2em;
 }
+.friends_link a {
+  padding: 0 5px;
+}
+.friends_link a:hover {
+  background-color: transparent;
+}
+.friends_link .iconfont {
+  font-size: 2em;
+}
 .post-wrap {
   position: relative;
   width: 100%;
