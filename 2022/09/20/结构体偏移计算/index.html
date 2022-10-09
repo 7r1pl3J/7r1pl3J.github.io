@@ -7,13 +7,13 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <meta name="author" content="John Doe">
+    <meta name="author" content="7r1p13J">
 
 
 
 
 
-<title>Hexo</title>
+<title>结构体偏移计算 | Hexo</title>
 
 
 
@@ -196,16 +196,16 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title"></h1>
+            <h1 class="post-title">结构体偏移计算</h1>
             
                 <div class="post-meta">
                     
-                        Author: <a itemprop="author" rel="author" href="/">John Doe</a>
+                        Author: <a itemprop="author" rel="author" href="/">7r1p13J</a>
                     
 
                     
                         <span class="post-time">
-                        Date: <a href="#">October 9, 2022&nbsp;&nbsp;14:08:03</a>
+                        Date: <a href="#">September 20, 2022&nbsp;&nbsp;10:28:05</a>
                         </span>
                     
                     
@@ -214,8 +214,7 @@
         </header>
 
         <div class="post-content">
-            <p> title: C结构体分析与偏移计算方法</p>
-<p>最近遇到了不少结构体，在计算偏移的时候有些麻烦，故摸鱼写下此文。</p>
+            <p>最近遇到了不少结构体，在计算偏移的时候有些麻烦，故摸鱼写下此文。</p>
 <h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>在X86或ARM上，基本数据类型并不是存放在任意内存地址上的。　每种类型除了char都有对齐要求(alignment requirement); <strong>char类型可以开始于任何地址，但２字节的short类型必须存放在偶数地址上，４字节的整型或浮点型必须放在能被４整除的位置上，而８字节的long或double型必须放在能被８整除的地址上。有符号或无符号没有差别</strong>。术语上，这叫自对齐（self-aligned），至于为什么要这么对齐，可以简单的理解为是为了提高cpu的访问速度。</p>
 <p>在没有#pragma pack这个宏的声明下，遵循下面三个原则：</p>
 <p>1、***结构体中元素按照定义顺序依次置于内存中，但并不是紧密排列。从结构体首地址开始依次将元素放入内存时，元素会被放置在其自身对齐大小的整数倍地址上。***（这里说的地址是元素在结构体中的偏移量，结构体首地址偏移量为0。）</p>
@@ -292,13 +291,13 @@
                 
                     <p class="copyright-item">
                         <span>Author:</span>
-                        <span>John Doe</span>
+                        <span>7r1p13J</span>
                     </p>
                 
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="https://7r1pl3j.github.io/2022/10/09/%E7%BB%93%E6%9E%84%E4%BD%93%E5%81%8F%E7%A7%BB%E8%AE%A1%E7%AE%97/">https://7r1pl3j.github.io/2022/10/09/%E7%BB%93%E6%9E%84%E4%BD%93%E5%81%8F%E7%A7%BB%E8%AE%A1%E7%AE%97/</a></span>
+                        <span><a href="https://7r1pl3j.github.io/2022/09/20/%E7%BB%93%E6%9E%84%E4%BD%93%E5%81%8F%E7%A7%BB%E8%AE%A1%E7%AE%97/">https://7r1pl3j.github.io/2022/09/20/%E7%BB%93%E6%9E%84%E4%BD%93%E5%81%8F%E7%A7%BB%E8%AE%A1%E7%AE%97/</a></span>
                     </p>
                 
                 
@@ -343,7 +342,7 @@
             </div>
             <footer id="footer" class="footer">
     <div class="copyright">
-        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+        <span>© 7r1p13J | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
     </div>
 </footer>
 
