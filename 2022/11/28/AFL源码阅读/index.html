@@ -1048,39 +1048,379 @@
 <li><p>total_bitmap_entries++</p>
 </li>
 <li><p>update_bitmap_score(q)，更新该queue</p>
+<blockquote>
+<p>update_bitmap_score：当我们遇到一条新路径时，我们调用它来查看该路径是否比任何现有路径看起来更“有利”。 “favorables”的目的是拥有一组最小的路径来触发到目前为止在位图中看到的所有位，并以牺牲其余部分为代价专注于模糊它们。<br> 该过程的第一步是为位图中的每个字节维护一个 top_rated[] 条目列表。 如果之前没有竞争者，或者如果竞争者具有更有利的速度 x 大小因子，我们将赢得该位置。</p>
+</blockquote>
 </li>
-<li><p>&#96;&#96;&#96;<br>update_bitmap_score：当我们遇到一条新路径时，我们调用它来查看该路径是否比任何现有路径看起来更“有利”。 “favorables”的目的是拥有一组最小的路径来触发到目前为止在位图中看到的所有位，并以牺牲其余部分为代价专注于模糊它们。<br> 该过程的第一步是为位图中的每个字节维护一个 top_rated[] 条目列表。 如果之前没有竞争者，或者如果竞争者具有更有利的速度 x 大小因子，我们将赢得该位置。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    - 如果fault为`FAULT_NONE`，且该queue是第一次执行，且不属于dumb_mode，而且new_bits为0，代表在这个样例所有轮次的执行里，都没有发现任何新路径和出现异常，设置fault为`FAULT_NOBITS`</span><br><span class="line"></span><br><span class="line">    - 如果new_bits为2，且`q-&gt;has_new_cov`为0，设置其值为1，并将queued_with_cov加一，代表有一个queue发现了新路径。（）</span><br><span class="line"></span><br><span class="line">    - 如果该queue为可变路径，var_detected会为1</span><br><span class="line"></span><br><span class="line">      - 调用count_bytes计算被置位的tuple，保存到var_byte_count，代表这些tuple可变</span><br><span class="line">      - 调用 mark_as_variable(q)，标记该queue位variable</span><br><span class="line">      - queued_variable++</span><br><span class="line"></span><br><span class="line">    - 恢复stagename，cur，max</span><br><span class="line"></span><br><span class="line">    - 如果不是第一次运行该queue，调用show_stats()</span><br><span class="line"></span><br><span class="line">    - 返回fault的值</span><br><span class="line"></span><br><span class="line">### init_forkserver</span><br><span class="line"></span><br><span class="line">    代码中有注释描述：启动 fork 服务器（仅限检测模式）。 这个想法在这里解释：</span><br><span class="line">    http://lcamtuf.blogspot.com/2014/10/fuzzing-binaries-without-execve.html</span><br><span class="line">    本质上，检测允许我们跳过 execve()，并继续clone一个停止的child process。 所以，我们只执行一次，然后通过管道发送命令。 该逻辑的另一部分在 afl-as.h 中。</span><br><span class="line"></span><br><span class="line">​	我看了一下这篇文章，主要就是讲了向二进制文件注入代码(也就是我们afl-as干的事)的想法，减少了每次fork 然后exec的开销，而fuzzer不在是process的直接父进程，而是祖父进程，它不能直接使用*waitpid()*；也没有其他简单、可移植的 API 来获取有关进程退出状态的通知。而是通过共享内存的方法解决这些问题。这在当时让fuzz的效率提升了两倍以上。~~我还没完全看懂，等完全看懂了再来改改~~</span><br><span class="line"></span><br><span class="line">- 创建两个管道，st_pipe状态管道和ctl_pipe控制管道</span><br><span class="line">- 调用fork ，返回forksrv_pid</span><br><span class="line">- 子进程</span><br><span class="line">  - 设置了一下r.rlim_cur，r.rlim_max</span><br><span class="line">  - 调用setsid()，把子进程变成新的会话组的领头进程，与父进程脱离乐</span><br><span class="line">  - 重定向文件描述符1，2到dev_null_fd</span><br><span class="line">  - 如果指定了out_file</span><br><span class="line">    - 重定向文件描述符0到dev_null_fd</span><br><span class="line">  - 否则</span><br><span class="line">    - 重定向文件描述符0到out_fd</span><br><span class="line">    - 关闭out_fd</span><br><span class="line">  - 重定向FORKSRV_FD到ctl_pipe控制管道读端</span><br><span class="line">  - 重定向FORKSRV_FD+1到st_pipe状态管道写端</span><br><span class="line">  - 获取一些环境变量</span><br><span class="line">  - 设置ASAN_OPTIONS，MSAN_OPTIONS环境变量</span><br><span class="line">  - 调用execv(target_path, argv)执行目标程序</span><br><span class="line">  - 如果execv失败了，设置*(u32*)trace_bits = EXEC_FAIL_SIG 并退出</span><br><span class="line">- 父进程</span><br><span class="line">  - fsrv_ctl_fd到ctl_pipe控制管道写端</span><br><span class="line">  - fsrv_st_fd到st_pipe状态管道读端</span><br><span class="line">  - 等待fork server启动，但是不能等太久</span><br><span class="line">  - 从管道里读取4个字节到status里(也就是我们桩代码向状态管道写的那四个字节)，如果读取成功，则代表fork server成功启动，就结束这个函数并返回。</span><br><span class="line">    - 如果超时，就抛出异常</span><br><span class="line">  - 剩下的就是一些check乐，毕竟没有读取成功</span><br><span class="line"></span><br><span class="line">总的来说 ，可以用该图简单概括</span><br><span class="line"></span><br><span class="line">![未命名绘图.drawio](https://images.seebug.org/content/images/2021/10/08/1633680605000-28hriil.png-w331s)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">**回到main**</span><br><span class="line"></span><br><span class="line">调用cull_queue()</span><br><span class="line"></span><br><span class="line">### cull_queue</span><br><span class="line"></span><br><span class="line">调整queue，我们会有函数遍历 top_rated[] entries,并将曾经没有见过的 bytes(temp_v)设置为更优先的，在整个fuzz过程中，优先的entries应该被给予更多的时间</span><br><span class="line"></span><br><span class="line">- 如果设置了dumb_mode或score_changed为0，直接return</span><br><span class="line">- score_changed=0</span><br><span class="line">- 初始化temp_v每个字节为0xff</span><br><span class="line">- 遍历queue，让每个queue-&gt;favored=0</span><br><span class="line">- 循环MAP_SIZE次，索引为i</span><br><span class="line">  - 这个循环是为了找出一组queue entry，他们能覆盖到现在已经覆盖到的所有路径(有点类似最小生成树的感觉)，由于是顺序找的，所以是贪心算法，并没有去筛选“最小的queue集合组”</span><br><span class="line">  - `if (top_rated[i] &amp;&amp; (temp_v[i &gt;&gt; 3] &amp; (1 &lt;&lt; (i &amp; 7))))`</span><br><span class="line">  - 其实就是取temp_v的path那一位</span><br><span class="line">  - 如果top_rated[i]，且该path又被置位</span><br><span class="line">    - 就从temp_v中清除掉所有`top_rated[i]`覆盖到的path，将对应的bit置为0</span><br><span class="line">    - 代表当前集合已经覆盖乐这些了</span><br><span class="line">    - top_rated[i]-&gt;favored = 1</span><br><span class="line">    - queued_favored++</span><br><span class="line">  - 如果!top_rated[i]-&gt;was_fuzzed，也就是该路径还没被fuzz过，就pending_favored++</span><br><span class="line">- 遍历queue</span><br><span class="line">  - mark_as_redundant(q, !q-&gt;favored)</span><br><span class="line">  - 如果不是favored的queue，就被标记成redundant_edges</span><br><span class="line"></span><br><span class="line">**回到main**</span><br><span class="line"></span><br><span class="line">- 调用show_init_stats()</span><br><span class="line">- 显示统计信息的，略过</span><br><span class="line">- 调用seek_to = find_start_position()</span><br><span class="line"></span><br><span class="line">### find_start_position</span><br><span class="line"></span><br><span class="line">恢复时，尝试找到开始的队列位置。 这只有在resume时，并且当我们可以找到初始的 fuzzer_stats 时 才有意义</span><br><span class="line"></span><br><span class="line">- 如果不是resuming_fuzz，就直接返回</span><br><span class="line">- 如果是in_place_resume,就打开`out_dir/fuzzer_stats`文件，否则打开`in_dir/../fuzzer_stats`文件</span><br><span class="line">- 读取文件内容到tmp，关闭文件</span><br><span class="line">- 找到“cur_path      : ”，读取其中的cur_path值到ret</span><br><span class="line">- 若值大于queued_paths</span><br><span class="line">  - ret=0</span><br><span class="line">- 返回ret</span><br><span class="line"></span><br><span class="line">**回到main**</span><br><span class="line"></span><br><span class="line">调用write_stats_file(0, 0, 0)</span><br><span class="line"></span><br><span class="line">调用save_auto()</span><br><span class="line"></span><br><span class="line">### write_stats_file</span><br><span class="line"></span><br><span class="line">负责更新统计信息文件，以及监视</span><br><span class="line"></span><br><span class="line">这个直接看源码就好，里面对各种变量进行了一些处理再输出到out_dir/fuzzer_stats中</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### save_auto</span><br><span class="line"></span><br><span class="line">保存自动生成的extras</span><br><span class="line"></span><br><span class="line">- auto_changed=0的话</span><br><span class="line">  - return</span><br><span class="line">- auto_changed=0</span><br><span class="line">- 向（&quot;%s/queue/.state/auto_extras/auto_%06u&quot;, out_dir, i  ）文件中写入a_extras的内容</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">**回到main**</span><br><span class="line"></span><br><span class="line">- 如果stop_soon被设置，直接停止fuzz，跳转到stop_fuzzing</span><br><span class="line">- 如果not_on_tty=0，也就是在tty设备上的话</span><br><span class="line">  - sleep(4)</span><br><span class="line">  - start_time += 4000</span><br><span class="line">  - 如果stop_soon被设置，直接停止fuzz，跳转到stop_fuzzing</span><br><span class="line"></span><br><span class="line">## main（2） fuzzer主循环</span><br><span class="line"></span><br><span class="line">- while（1）</span><br><span class="line"></span><br><span class="line">- 调用cull_queue()，精简queue</span><br><span class="line">- 如果queue_cur=0，代表所有queue已经被执行过一轮乐</span><br><span class="line">  - queue_cycle++，记录执行轮次</span><br><span class="line">  - current_entry   = 0，cur_skipped_paths = 0</span><br><span class="line">  - queue_cur     = queue，准备开始新的一轮</span><br><span class="line">  - 如果seek_to被设置，则循环（seek_to就是我们一开始找的起始位置，find_start_position的返回值）</span><br><span class="line">    - current_entry++</span><br><span class="line">    - seek_to--</span><br><span class="line">    - queue_cur = queue_cur-&gt;next</span><br><span class="line">  - 循环结束，也就是从seek_to所指定的queue开始执行</span><br><span class="line">  - 调用show_stats()，刷新展示页面</span><br><span class="line">  - 如果不在tty上</span><br><span class="line">    - ACTF(&quot;Entering queue cycle %llu.&quot;, queue_cycle)，刷新stdout</span><br><span class="line">  - 判断queued_paths == prev_queued，</span><br><span class="line">    - 若成立，也就是没有新的case被发现</span><br><span class="line">    - （queued_paths为test cases的总数）</span><br><span class="line">      - 判断use_splicing</span><br><span class="line">        - 不为0，则cycles_wo_finds++</span><br><span class="line">        - 否则use_splicing = 1</span><br><span class="line">    - 否则cycles_wo_finds = 0</span><br><span class="line">  - 更新prev_queued 为queued_paths</span><br><span class="line">  - 如果设置了sync_id且queue_cycle == 1，且有AFL_IMPORT_FIRST环境变量</span><br><span class="line">    - 调用sync_fuzzers(use_argv)</span><br><span class="line">    - 该函数对queue_cur进行一次test</span><br><span class="line">  - 调用fuzz_one(use_argv)，返回值存入skipped_fuzz</span><br><span class="line">    - fuzz_one(use_argv)不一定会执行当前queue_cur进行测试，内有一定判断</span><br><span class="line">  - skipped_fuzz为0，sync_id被设置，且stop_soon为0</span><br><span class="line">    - 若sync_interval_cnt为SYNC_INTERVAL倍数 且，sync_interval_cnt++</span><br><span class="line">      - 调用 sync_fuzzers(use_argv)</span><br><span class="line">  - 若stop_soon为0，exit_1被设置</span><br><span class="line">    - 设置stop_soon=2</span><br><span class="line">  - 如果stop_soon被设置</span><br><span class="line">    - break</span><br><span class="line">  - queue_cur = queue_cur-&gt;next，迭代到下一个queue</span><br><span class="line">  - current_entry++（当前queue的entry id）</span><br><span class="line">- while（1）循环结束</span><br><span class="line"></span><br><span class="line">这是循环之外的乐</span><br><span class="line"></span><br><span class="line">- 如果仍有queue_cur，就调用show_stats()再次刷新展示</span><br><span class="line">- 然后如果是正常break的，也就是stopsoon=2</span><br><span class="line">  - 杀掉父进程和子进程（forksrv_pid与child_pid）</span><br><span class="line">- 调用write_bitmap</span><br><span class="line">  - 此函数向out_dir/fuzz_bitmap 写入virgin_bits内容</span><br><span class="line">- 调用write_stats_file</span><br><span class="line">  - 更新统计信息文件</span><br><span class="line">- 调用save_auto</span><br><span class="line">  - save_auto</span><br><span class="line">- stopfuzzing的操作</span><br><span class="line">  - 一些文件的关闭，释放等，还有一点统计输出</span><br><span class="line"></span><br><span class="line">### fuzz_one</span><br><span class="line"></span><br><span class="line">- 若定义了 IGNORE_FINDS</span><br><span class="line"></span><br><span class="line">  - 如果 queue_cur-&gt;depth &gt; 1，直接return1</span><br><span class="line"></span><br><span class="line">- 判断pending_favored是否为0</span><br><span class="line"></span><br><span class="line">  - 如果不为0</span><br><span class="line">    - 如果当前queue被fuzz过，或者当前queue不是favored的queue，有99%的概率直接返回1</span><br><span class="line">  - 否则如果当前不是dumb__mode，且当前queue不是favored，且queued_paths也就是test cases的总数&gt;10</span><br><span class="line">    - 如果queue_cycle&gt;1 也就是轮过一次，且当前queue没被fuzz过，说明这是个新的queue（吧？）</span><br><span class="line">      - 有75%概率返回1</span><br><span class="line">    - 否则有95%的概率返回1</span><br><span class="line"></span><br><span class="line">- 判断是否在tty上，略</span><br><span class="line"></span><br><span class="line">- 打开当前queue-&gt;fname文件</span><br><span class="line"></span><br><span class="line">- 调用mmap私有映射该文件内容，返回到in_buf和orig_in</span><br><span class="line"></span><br><span class="line">- 定义长为len的out_buf</span><br><span class="line"></span><br><span class="line">- **CALIBRATION** (only if failed earlier on) </span><br><span class="line"></span><br><span class="line">  - 如果当前queue有校准错误，且小于3次，就调用calibrate_case再次校准，这是为了避免使用不合法的trace_bits</span><br><span class="line">  - 更多相关的可以查看https://github.com/AFLplusplus/AFLplusplus/pull/425</span><br><span class="line"></span><br><span class="line">- **TRIMMING**  </span><br><span class="line"></span><br><span class="line">  - 如果不是dumb_mode，且该queue没有被trim过（！trim_done）</span><br><span class="line">    - 调用trim_case(argv, queue_cur, in_buf)进行修剪</span><br><span class="line">    - 设置queue的trim_done=1</span><br><span class="line">  - 拷贝in_buf内容到out_buf</span><br><span class="line"></span><br><span class="line">- **PERFORMANCE SCORE**</span><br><span class="line"></span><br><span class="line">  - 调用 calculate_score(queue_cur)获取当前queue score，存入perf_score，这是个计算时会用到的得分</span><br><span class="line">  - 如果有skip_deterministic，或者当前queue被fuzz过，或者当前queue设置了passed_det</span><br><span class="line">    - 跳转至havoc_stage</span><br><span class="line">  - 如果master_max不为0，且(queue_cur-&gt;exec_cksum % master_max) != master_id - 1</span><br><span class="line">    - 跳转至havoc_stage</span><br><span class="line">  - doing_det = 1</span><br><span class="line"></span><br><span class="line">- **SIMPLE BITFLIP (+dictionary construction)**</span><br><span class="line"></span><br><span class="line">- ```c</span><br><span class="line">  #define FLIP_BIT(_ar, _b) do &#123; \</span><br><span class="line">      u8* _arf = (u8*)(_ar); \</span><br><span class="line">      u32 _bf = (_b); \</span><br><span class="line">      _arf[(_bf) &gt;&gt; 3] ^= (128 &gt;&gt; ((_bf) &amp; 7)); \</span><br><span class="line">    &#125; while (0)</span><br><span class="line">  /* 源码里的注释</span><br><span class="line">  在翻转每个字节中的最低有效位时，使用额外的技巧来检测可能的语法标记。本质上，这个想法是，如果你有一个像这样的二进制 blob：</span><br><span class="line">  </span><br><span class="line">    xxxxxxxxIHDRxxxxxxxx</span><br><span class="line">    ...并且改变前导和尾随字节会导致程序流发生变化或没有变化，但是触摸“IHDR”字符串中的任何字符总是会产生相同的，独特的路径，“IHDR”很可能是一个原子检查的魔法对模糊格式具有特殊意义的值。</span><br><span class="line">  </span><br><span class="line">   我们在这里而不是作为一个单独的阶段执行此操作，因为这是使操作大致“免费”（即没有额外的执行程序）的好方法。</span><br><span class="line">         </span><br><span class="line">  根据经验，与在更具破坏性的更改时执行检查相比，在翻转最低有效位时执行检查是有利的，程序流可能会以更剧烈的方式受到影响。</span><br><span class="line">  </span><br><span class="line">  需要注意的是，我们不会在 -d 模式或 -S 模式下生成字典——但这可能是一个公平的权衡。</span><br><span class="line">  </span><br><span class="line">  对于表现出可变行为的路径，这不会特别有效，但会优雅地失败，所以我们无论如何都会进行检查。</span><br><span class="line">  </span><br><span class="line">  */</span><br><span class="line">  </span><br><span class="line">  我的理解就是，为了保证得到正确的路径，有些key word 之类的词是不能变的，当翻转了那些key word的话，路径就会完全不一样，这样的key word 我们当成token</span><br><span class="line">  以下的操作就是AFL通过flip识别了这些token 并进行保存</span><br><span class="line">  token长度默认最小是3，最大是32</span><br><span class="line">  每次发现新token时，通过maybe_add_auto添加到a_extras数组里。</span><br></pre></td></tr></table></figure></li>
+<li><p>如果fault为<code>FAULT_NONE</code>，且该queue是第一次执行，且不属于dumb_mode，而且new_bits为0，代表在这个样例所有轮次的执行里，都没有发现任何新路径和出现异常，设置fault为<code>FAULT_NOBITS</code></p>
+</li>
+<li><p>如果new_bits为2，且<code>q-&gt;has_new_cov</code>为0，设置其值为1，并将queued_with_cov加一，代表有一个queue发现了新路径。（）</p>
+</li>
+<li><p>如果该queue为可变路径，var_detected会为1</p>
+<ul>
+<li>调用count_bytes计算被置位的tuple，保存到var_byte_count，代表这些tuple可变</li>
+<li>调用 mark_as_variable(q)，标记该queue位variable</li>
+<li>queued_variable++</li>
+</ul>
+</li>
+<li><p>恢复stagename，cur，max</p>
+</li>
+<li><p>如果不是第一次运行该queue，调用show_stats()</p>
+</li>
+<li><p>返回fault的值</p>
+</li>
 </ul>
 </li>
 </ul>
-<p>做了一个位翻转的运算，参数为out_buf,stage_cur </p>
-<p>_arf每次取一字节，8位</p>
-<p>先看右边，128为二进制100000000，7为二进制111，_bf&amp;7就是取后三位，128进行右移这个值，也就是右移0-7之间的值</p>
-<p>再看左边，_bf&gt;&gt;3 就是取除了后三位以外的值，也相当于&#x2F;8</p>
-<p>stage_cur最大值为stage_max  &#x3D; len &lt;&lt; 3，_bf&gt;&gt;3最大值就是 (len&lt;&lt;3)&gt;&gt;3&#x3D;len</p>
-<p>_bf是逐一递增的，也就是说每8次，对应的_bf&gt;&gt;3是相同的，也就是每循环8次，_arf[i] 的i((_bf) &gt;&gt; 3)就会增加1</p>
-<p>而以每8次循环为一组，里面的每一次，128都将分别右移0-7之间的值（这样就是每一位都有一次为1，比如10000000，01000000，00100000这样子），但前面的_arf[i] 又是不变的，也就是对_arf[i]的值，每一位都进行了一次对1异或，1^1&#x3D;0, 0^1&#x3D;1，这样就刚好实现了翻转。</p>
-<p>理解起来还是不难的。</p>
 </li>
-<li><p>这里的for循环还是直接贴源码</p>
+</ul>
+<h3 id="init-forkserver"><a href="#init-forkserver" class="headerlink" title="init_forkserver"></a>init_forkserver</h3><pre><code>代码中有注释描述：启动 fork 服务器（仅限检测模式）。 这个想法在这里解释：
+http://lcamtuf.blogspot.com/2014/10/fuzzing-binaries-without-execve.html
+本质上，检测允许我们跳过 execve()，并继续clone一个停止的child process。 所以，我们只执行一次，然后通过管道发送命令。 该逻辑的另一部分在 afl-as.h 中。
+</code></pre>
+<p>​	我看了一下这篇文章，主要就是讲了向二进制文件注入代码(也就是我们afl-as干的事)的想法，减少了每次fork 然后exec的开销，而fuzzer不在是process的直接父进程，而是祖父进程，它不能直接使用*waitpid()*；也没有其他简单、可移植的 API 来获取有关进程退出状态的通知。而是通过共享内存的方法解决这些问题。这在当时让fuzz的效率提升了两倍以上。<del>我还没完全看懂，等完全看懂了再来改改</del></p>
+<ul>
+<li>创建两个管道，st_pipe状态管道和ctl_pipe控制管道</li>
+<li>调用fork ，返回forksrv_pid</li>
+<li>子进程<ul>
+<li>设置了一下r.rlim_cur，r.rlim_max</li>
+<li>调用setsid()，把子进程变成新的会话组的领头进程，与父进程脱离乐</li>
+<li>重定向文件描述符1，2到dev_null_fd</li>
+<li>如果指定了out_file<ul>
+<li>重定向文件描述符0到dev_null_fd</li>
+</ul>
+</li>
+<li>否则<ul>
+<li>重定向文件描述符0到out_fd</li>
+<li>关闭out_fd</li>
+</ul>
+</li>
+<li>重定向FORKSRV_FD到ctl_pipe控制管道读端</li>
+<li>重定向FORKSRV_FD+1到st_pipe状态管道写端</li>
+<li>获取一些环境变量</li>
+<li>设置ASAN_OPTIONS，MSAN_OPTIONS环境变量</li>
+<li>调用execv(target_path, argv)执行目标程序</li>
+<li>如果execv失败了，设置*(u32*)trace_bits &#x3D; EXEC_FAIL_SIG 并退出</li>
+</ul>
+</li>
+<li>父进程<ul>
+<li>fsrv_ctl_fd到ctl_pipe控制管道写端</li>
+<li>fsrv_st_fd到st_pipe状态管道读端</li>
+<li>等待fork server启动，但是不能等太久</li>
+<li>从管道里读取4个字节到status里(也就是我们桩代码向状态管道写的那四个字节)，如果读取成功，则代表fork server成功启动，就结束这个函数并返回。<ul>
+<li>如果超时，就抛出异常</li>
+</ul>
+</li>
+<li>剩下的就是一些check乐，毕竟没有读取成功</li>
+</ul>
+</li>
+</ul>
+<p>总的来说 ，可以用该图简单概括</p>
+<p><img src="https://images.seebug.org/content/images/2021/10/08/1633680605000-28hriil.png-w331s" alt="未命名绘图.drawio"></p>
+<p><strong>回到main</strong></p>
+<p>调用cull_queue()</p>
+<h3 id="cull-queue"><a href="#cull-queue" class="headerlink" title="cull_queue"></a>cull_queue</h3><p>调整queue，我们会有函数遍历 top_rated[] entries,并将曾经没有见过的 bytes(temp_v)设置为更优先的，在整个fuzz过程中，优先的entries应该被给予更多的时间</p>
+<ul>
+<li>如果设置了dumb_mode或score_changed为0，直接return</li>
+<li>score_changed&#x3D;0</li>
+<li>初始化temp_v每个字节为0xff</li>
+<li>遍历queue，让每个queue-&gt;favored&#x3D;0</li>
+<li>循环MAP_SIZE次，索引为i<ul>
+<li>这个循环是为了找出一组queue entry，他们能覆盖到现在已经覆盖到的所有路径(有点类似最小生成树的感觉)，由于是顺序找的，所以是贪心算法，并没有去筛选“最小的queue集合组”</li>
+<li><code>if (top_rated[i] &amp;&amp; (temp_v[i &gt;&gt; 3] &amp; (1 &lt;&lt; (i &amp; 7))))</code></li>
+<li>其实就是取temp_v的path那一位</li>
+<li>如果top_rated[i]，且该path又被置位<ul>
+<li>就从temp_v中清除掉所有<code>top_rated[i]</code>覆盖到的path，将对应的bit置为0</li>
+<li>代表当前集合已经覆盖乐这些了</li>
+<li>top_rated[i]-&gt;favored &#x3D; 1</li>
+<li>queued_favored++</li>
+</ul>
+</li>
+<li>如果!top_rated[i]-&gt;was_fuzzed，也就是该路径还没被fuzz过，就pending_favored++</li>
+</ul>
+</li>
+<li>遍历queue<ul>
+<li>mark_as_redundant(q, !q-&gt;favored)</li>
+<li>如果不是favored的queue，就被标记成redundant_edges</li>
+</ul>
+</li>
+</ul>
+<p><strong>回到main</strong></p>
+<ul>
+<li>调用show_init_stats()</li>
+<li>显示统计信息的，略过</li>
+<li>调用seek_to &#x3D; find_start_position()</li>
+</ul>
+<h3 id="find-start-position"><a href="#find-start-position" class="headerlink" title="find_start_position"></a>find_start_position</h3><p>恢复时，尝试找到开始的队列位置。 这只有在resume时，并且当我们可以找到初始的 fuzzer_stats 时 才有意义</p>
+<ul>
+<li>如果不是resuming_fuzz，就直接返回</li>
+<li>如果是in_place_resume,就打开<code>out_dir/fuzzer_stats</code>文件，否则打开<code>in_dir/../fuzzer_stats</code>文件</li>
+<li>读取文件内容到tmp，关闭文件</li>
+<li>找到“cur_path      : ”，读取其中的cur_path值到ret</li>
+<li>若值大于queued_paths<ul>
+<li>ret&#x3D;0</li>
+</ul>
+</li>
+<li>返回ret</li>
+</ul>
+<p><strong>回到main</strong></p>
+<p>调用write_stats_file(0, 0, 0)</p>
+<p>调用save_auto()</p>
+<h3 id="write-stats-file"><a href="#write-stats-file" class="headerlink" title="write_stats_file"></a>write_stats_file</h3><p>负责更新统计信息文件，以及监视</p>
+<p>这个直接看源码就好，里面对各种变量进行了一些处理再输出到out_dir&#x2F;fuzzer_stats中</p>
+<h3 id="save-auto"><a href="#save-auto" class="headerlink" title="save_auto"></a>save_auto</h3><p>保存自动生成的extras</p>
+<ul>
+<li>auto_changed&#x3D;0的话<ul>
+<li>return</li>
+</ul>
+</li>
+<li>auto_changed&#x3D;0</li>
+<li>向（”%s&#x2F;queue&#x2F;.state&#x2F;auto_extras&#x2F;auto_%06u”, out_dir, i  ）文件中写入a_extras的内容</li>
+</ul>
+<p><strong>回到main</strong></p>
+<ul>
+<li>如果stop_soon被设置，直接停止fuzz，跳转到stop_fuzzing</li>
+<li>如果not_on_tty&#x3D;0，也就是在tty设备上的话<ul>
+<li>sleep(4)</li>
+<li>start_time +&#x3D; 4000</li>
+<li>如果stop_soon被设置，直接停止fuzz，跳转到stop_fuzzing</li>
+</ul>
+</li>
+</ul>
+<h2 id="main（2）-fuzzer主循环"><a href="#main（2）-fuzzer主循环" class="headerlink" title="main（2） fuzzer主循环"></a>main（2） fuzzer主循环</h2><ul>
+<li><p>while（1）</p>
+</li>
+<li><p>调用cull_queue()，精简queue</p>
+</li>
+<li><p>如果queue_cur&#x3D;0，代表所有queue已经被执行过一轮乐</p>
+<ul>
+<li>queue_cycle++，记录执行轮次</li>
+<li>current_entry   &#x3D; 0，cur_skipped_paths &#x3D; 0</li>
+<li>queue_cur     &#x3D; queue，准备开始新的一轮</li>
+<li>如果seek_to被设置，则循环（seek_to就是我们一开始找的起始位置，find_start_position的返回值）<ul>
+<li>current_entry++</li>
+<li>seek_to–</li>
+<li>queue_cur &#x3D; queue_cur-&gt;next</li>
+</ul>
+</li>
+<li>循环结束，也就是从seek_to所指定的queue开始执行</li>
+<li>调用show_stats()，刷新展示页面</li>
+<li>如果不在tty上<ul>
+<li>ACTF(“Entering queue cycle %llu.”, queue_cycle)，刷新stdout</li>
+</ul>
+</li>
+<li>判断queued_paths &#x3D;&#x3D; prev_queued，<ul>
+<li>若成立，也就是没有新的case被发现</li>
+<li>（queued_paths为test cases的总数）<ul>
+<li>判断use_splicing<ul>
+<li>不为0，则cycles_wo_finds++</li>
+<li>否则use_splicing &#x3D; 1</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>否则cycles_wo_finds &#x3D; 0</li>
+</ul>
+</li>
+<li>更新prev_queued 为queued_paths</li>
+<li>如果设置了sync_id且queue_cycle &#x3D;&#x3D; 1，且有AFL_IMPORT_FIRST环境变量<ul>
+<li>调用sync_fuzzers(use_argv)</li>
+<li>该函数对queue_cur进行一次test</li>
+</ul>
+</li>
+<li>调用fuzz_one(use_argv)，返回值存入skipped_fuzz<ul>
+<li>fuzz_one(use_argv)不一定会执行当前queue_cur进行测试，内有一定判断</li>
+</ul>
+</li>
+<li>skipped_fuzz为0，sync_id被设置，且stop_soon为0<ul>
+<li>若sync_interval_cnt为SYNC_INTERVAL倍数 且，sync_interval_cnt++<ul>
+<li>调用 sync_fuzzers(use_argv)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>若stop_soon为0，exit_1被设置<ul>
+<li>设置stop_soon&#x3D;2</li>
+</ul>
+</li>
+<li>如果stop_soon被设置<ul>
+<li>break</li>
+</ul>
+</li>
+<li>queue_cur &#x3D; queue_cur-&gt;next，迭代到下一个queue</li>
+<li>current_entry++（当前queue的entry id）</li>
+</ul>
+</li>
+<li><p>while（1）循环结束</p>
+</li>
+</ul>
+<p>这是循环之外的乐</p>
+<ul>
+<li>如果仍有queue_cur，就调用show_stats()再次刷新展示</li>
+<li>然后如果是正常break的，也就是stopsoon&#x3D;2<ul>
+<li>杀掉父进程和子进程（forksrv_pid与child_pid）</li>
+</ul>
+</li>
+<li>调用write_bitmap<ul>
+<li>此函数向out_dir&#x2F;fuzz_bitmap 写入virgin_bits内容</li>
+</ul>
+</li>
+<li>调用write_stats_file<ul>
+<li>更新统计信息文件</li>
+</ul>
+</li>
+<li>调用save_auto<ul>
+<li>save_auto</li>
+</ul>
+</li>
+<li>stopfuzzing的操作<ul>
+<li>一些文件的关闭，释放等，还有一点统计输出</li>
+</ul>
+</li>
+</ul>
+<h3 id="fuzz-one"><a href="#fuzz-one" class="headerlink" title="fuzz_one"></a>fuzz_one</h3><ul>
+<li><p>若定义了 IGNORE_FINDS</p>
+<ul>
+<li>如果 queue_cur-&gt;depth &gt; 1，直接return1</li>
+</ul>
+</li>
+<li><p>判断pending_favored是否为0</p>
+<ul>
+<li>如果不为0<ul>
+<li>如果当前queue被fuzz过，或者当前queue不是favored的queue，有99%的概率直接返回1</li>
+</ul>
+</li>
+<li>否则如果当前不是dumb__mode，且当前queue不是favored，且queued_paths也就是test cases的总数&gt;10<ul>
+<li>如果queue_cycle&gt;1 也就是轮过一次，且当前queue没被fuzz过，说明这是个新的queue（吧？）<ul>
+<li>有75%概率返回1</li>
+</ul>
+</li>
+<li>否则有95%的概率返回1</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>判断是否在tty上，略</p>
+</li>
+<li><p>打开当前queue-&gt;fname文件</p>
+</li>
+<li><p>调用mmap私有映射该文件内容，返回到in_buf和orig_in</p>
+</li>
+<li><p>定义长为len的out_buf</p>
+</li>
+<li><p><strong>CALIBRATION</strong> (only if failed earlier on) </p>
+<ul>
+<li>如果当前queue有校准错误，且小于3次，就调用calibrate_case再次校准，这是为了避免使用不合法的trace_bits</li>
+<li>更多相关的可以查看<a target="_blank" rel="noopener" href="https://github.com/AFLplusplus/AFLplusplus/pull/425">https://github.com/AFLplusplus/AFLplusplus/pull/425</a></li>
+</ul>
+</li>
+<li><p><strong>TRIMMING</strong>  </p>
+<ul>
+<li>如果不是dumb_mode，且该queue没有被trim过（！trim_done）<ul>
+<li>调用trim_case(argv, queue_cur, in_buf)进行修剪</li>
+<li>设置queue的trim_done&#x3D;1</li>
+</ul>
+</li>
+<li>拷贝in_buf内容到out_buf</li>
+</ul>
+</li>
+<li><p><strong>PERFORMANCE SCORE</strong></p>
+<ul>
+<li>调用 calculate_score(queue_cur)获取当前queue score，存入perf_score，这是个计算时会用到的得分</li>
+<li>如果有skip_deterministic，或者当前queue被fuzz过，或者当前queue设置了passed_det<ul>
+<li>跳转至havoc_stage</li>
+</ul>
+</li>
+<li>如果master_max不为0，且(queue_cur-&gt;exec_cksum % master_max) !&#x3D; master_id - 1<ul>
+<li>跳转至havoc_stage</li>
+</ul>
+</li>
+<li>doing_det &#x3D; 1</li>
+</ul>
+</li>
+<li><p><strong>SIMPLE BITFLIP (+dictionary construction)</strong></p>
+</li>
+<li><pre><code class="c">#define FLIP_BIT(_ar, _b) do &#123; \
+    u8* _arf = (u8*)(_ar); \
+    u32 _bf = (_b); \
+    _arf[(_bf) &gt;&gt; 3] ^= (128 &gt;&gt; ((_bf) &amp; 7)); \
+  &#125; while (0)
+/* 源码里的注释
+在翻转每个字节中的最低有效位时，使用额外的技巧来检测可能的语法标记。本质上，这个想法是，如果你有一个像这样的二进制 blob：
+
+  xxxxxxxxIHDRxxxxxxxx
+  ...并且改变前导和尾随字节会导致程序流发生变化或没有变化，但是触摸“IHDR”字符串中的任何字符总是会产生相同的，独特的路径，“IHDR”很可能是一个原子检查的魔法对模糊格式具有特殊意义的值。
+
+ 我们在这里而不是作为一个单独的阶段执行此操作，因为这是使操作大致“免费”（即没有额外的执行程序）的好方法。
+       
+根据经验，与在更具破坏性的更改时执行检查相比，在翻转最低有效位时执行检查是有利的，程序流可能会以更剧烈的方式受到影响。
+
+需要注意的是，我们不会在 -d 模式或 -S 模式下生成字典——但这可能是一个公平的权衡。
+
+对于表现出可变行为的路径，这不会特别有效，但会优雅地失败，所以我们无论如何都会进行检查。
+
+*/
+
+我的理解就是，为了保证得到正确的路径，有些key word 之类的词是不能变的，当翻转了那些key word的话，路径就会完全不一样，这样的key word 我们当成token
+以下的操作就是AFL通过flip识别了这些token 并进行保存
+token长度默认最小是3，最大是32
+每次发现新token时，通过maybe_add_auto添加到a_extras数组里。
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  做了一个位翻转的运算，参数为out_buf,stage_cur </span><br><span class="line"></span><br><span class="line">  _arf每次取一字节，8位</span><br><span class="line"></span><br><span class="line">  先看右边，128为二进制100000000，7为二进制111，_bf&amp;7就是取后三位，128进行右移这个值，也就是右移0-7之间的值</span><br><span class="line"></span><br><span class="line">  再看左边，_bf&gt;&gt;3 就是取除了后三位以外的值，也相当于/8</span><br><span class="line"></span><br><span class="line">  stage_cur最大值为stage_max  = len &lt;&lt; 3，_bf&gt;&gt;3最大值就是 (len&lt;&lt;3)&gt;&gt;3=len</span><br><span class="line"></span><br><span class="line">  _bf是逐一递增的，也就是说每8次，对应的\_bf&gt;&gt;3是相同的，也就是每循环8次，\_arf[i] 的i((\_bf) &gt;&gt; 3)就会增加1</span><br><span class="line"></span><br><span class="line">  而以每8次循环为一组，里面的每一次，128都将分别右移0-7之间的值（这样就是每一位都有一次为1，比如10000000，01000000，00100000这样子），但前面的\_arf[i] 又是不变的，也就是对\_arf[i]的值，每一位都进行了一次对1异或，1^1=0, 0^1=1，这样就刚好实现了翻转。</span><br><span class="line"></span><br><span class="line">  理解起来还是不难的。</span><br><span class="line"></span><br><span class="line">- 这里的for循环还是直接贴源码</span><br><span class="line"></span><br><span class="line">- ```c</span><br><span class="line">  for (stage_cur = 0; stage_cur &lt; stage_max; stage_cur++) &#123;</span><br><span class="line">  	//这样的循环 每次都是异或一位</span><br><span class="line">      stage_cur_byte = stage_cur &gt;&gt; 3;</span><br><span class="line">  </span><br><span class="line">      FLIP_BIT(out_buf, stage_cur);//先翻转一位</span><br><span class="line">  </span><br><span class="line">      if (common_fuzz_stuff(argv, out_buf, len)) goto abandon_entry;</span><br><span class="line">  </span><br><span class="line">      FLIP_BIT(out_buf, stage_cur); //执行完common_fuzz_stuff再翻转回来</span><br></pre></td></tr></table></figure>
+
+</code></pre>
+</li>
+<li><p>如果不是dumb_mode，且(stage_cur &amp; 7) &#x3D;&#x3D; 7，也就是刚好是一个字节循环（按8位为一组算）的最后一次翻转</p>
+<ul>
+<li>计算当前trace_bits的hash32为cksum</li>
+<li>如果当前到达最后一次循环并且cksum &#x3D;&#x3D; prev_cksum<ul>
+<li>若a_len小于MAX_AUTO_EXTRA<ul>
+<li>a_collect[a_len] &#x3D; out_buf[stage_cur &gt;&gt; 3]</li>
+</ul>
+</li>
+<li>a_len++</li>
+<li>若a_len &gt;&#x3D; MIN_AUTO_EXTRA 且 a_len &lt;&#x3D; MAX_AUTO_EXTRA<ul>
+<li>调用maybe_add_auto(a_collect, a_len)，将新发现的token加入a_extra[]</li>
+</ul>
+</li>
+<li>a_len &#x3D; 0</li>
+<li>prev_cksum &#x3D; cksum</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>若cksum不等于当前queue的exec_cksum</p>
+<ul>
+<li>若a_len &lt; MAX_AUTO_EXTRA<ul>
+<li>a_collect[a_len] &#x3D; out_buf[stage_cur &gt;&gt; 3]</li>
+</ul>
+</li>
+<li>a_len++</li>
+</ul>
+</li>
+<li><p>更新new_hit_cnt &#x3D; queued_paths + unique_crashes</p>
+</li>
+<li><p>stage_finds[STAGE_FLIP1]  +&#x3D; new_hit_cnt - orig_hit_cnt （也就是加上新发现的路径的crahses）</p>
+</li>
+<li><p>stage_cycles[STAGE_FLIP1] +&#x3D; stage_max （循环执行的次数）</p>
+</li>
+<li><p>接下来是类似之前的操作，但现在是连续翻转两位</p>
+</li>
+<li><p>bitflip 2&#x2F;1</p>
 </li>
 <li><pre><code class="c">for (stage_cur = 0; stage_cur &lt; stage_max; stage_cur++) &#123;
-    //这样的循环 每次都是异或一位
-    stage_cur_byte = stage_cur &gt;&gt; 3;
-
-    FLIP_BIT(out_buf, stage_cur);//先翻转一位
-
-    if (common_fuzz_stuff(argv, out_buf, len)) goto abandon_entry;
-
-    FLIP_BIT(out_buf, stage_cur); //执行完common_fuzz_stuff再翻转回来
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">- 如果不是dumb_mode，且(stage_cur &amp; 7) == 7，也就是刚好是一个字节循环（按8位为一组算）的最后一次翻转</span><br><span class="line"></span><br><span class="line">  - 计算当前trace_bits的hash32为cksum</span><br><span class="line">  - 如果当前到达最后一次循环并且cksum == prev_cksum</span><br><span class="line">    - 若a_len小于MAX_AUTO_EXTRA</span><br><span class="line">      - a_collect[a_len] = out_buf[stage_cur &gt;&gt; 3]</span><br><span class="line">    - a_len++</span><br><span class="line">    - 若a_len &gt;= MIN_AUTO_EXTRA 且 a_len &lt;= MAX_AUTO_EXTRA</span><br><span class="line">      - 调用maybe_add_auto(a_collect, a_len)，将新发现的token加入a_extra[]</span><br><span class="line">    - a_len = 0</span><br><span class="line">    - prev_cksum = cksum</span><br><span class="line"></span><br><span class="line">- 若cksum不等于当前queue的exec_cksum</span><br><span class="line"></span><br><span class="line">  - 若a_len &lt; MAX_AUTO_EXTRA</span><br><span class="line">    - a_collect[a_len] = out_buf[stage_cur &gt;&gt; 3]</span><br><span class="line">  - a_len++</span><br><span class="line"></span><br><span class="line">- 更新new_hit_cnt = queued_paths + unique_crashes</span><br><span class="line"></span><br><span class="line">- stage_finds[STAGE_FLIP1]  += new_hit_cnt - orig_hit_cnt （也就是加上新发现的路径的crahses）</span><br><span class="line"></span><br><span class="line">- stage_cycles[STAGE_FLIP1] += stage_max （循环执行的次数）</span><br><span class="line"></span><br><span class="line">- 接下来是类似之前的操作，但现在是连续翻转两位</span><br><span class="line"></span><br><span class="line">- bitflip 2/1</span><br><span class="line"></span><br><span class="line">- ```c</span><br><span class="line">  for (stage_cur = 0; stage_cur &lt; stage_max; stage_cur++) &#123;</span><br><span class="line">   </span><br><span class="line">     stage_cur_byte = stage_cur &gt;&gt; 3;</span><br><span class="line">   </span><br><span class="line">     FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">     FLIP_BIT(out_buf, stage_cur + 1);</span><br><span class="line">   </span><br><span class="line">     if (common_fuzz_stuff(argv, out_buf, len)) goto abandon_entry;</span><br><span class="line">   </span><br><span class="line">     FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">     FLIP_BIT(out_buf, stage_cur + 1);</span><br><span class="line">   </span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-
-然后还有连续翻转四位的
-
-bitflip 4/1
-
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (stage_cur = <span class="number">0</span>; stage_cur &lt; stage_max; stage_cur++) &#123;</span><br><span class="line"></span><br><span class="line">    stage_cur_byte = stage_cur &gt;&gt; <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">1</span>);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">2</span>);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (common_fuzz_stuff(argv, out_buf, len)) <span class="keyword">goto</span> abandon_entry;</span><br><span class="line"></span><br><span class="line">    FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">1</span>);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">2</span>);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+ 
+   stage_cur_byte = stage_cur &gt;&gt; 3;
+ 
+   FLIP_BIT(out_buf, stage_cur);
+   FLIP_BIT(out_buf, stage_cur + 1);
+ 
+   if (common_fuzz_stuff(argv, out_buf, len)) goto abandon_entry;
+ 
+   FLIP_BIT(out_buf, stage_cur);
+   FLIP_BIT(out_buf, stage_cur + 1);
+ 
+ &#125;
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">然后还有连续翻转四位的</span><br><span class="line"></span><br><span class="line">bitflip 4/1</span><br><span class="line"></span><br><span class="line">```c</span><br><span class="line">for (stage_cur = 0; stage_cur &lt; stage_max; stage_cur++) &#123;</span><br><span class="line"></span><br><span class="line">    stage_cur_byte = stage_cur &gt;&gt; 3;</span><br><span class="line"></span><br><span class="line">    FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + 1);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + 2);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + 3);</span><br><span class="line"></span><br><span class="line">    if (common_fuzz_stuff(argv, out_buf, len)) goto abandon_entry;</span><br><span class="line"></span><br><span class="line">    FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + 1);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + 2);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + 3);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 </code></pre>
 </li>
 <li><p>生成Effector map </p>
