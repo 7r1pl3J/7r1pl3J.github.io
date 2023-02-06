@@ -1116,7 +1116,7 @@ http://lcamtuf.blogspot.com/2014/10/fuzzing-binaries-without-execve.html
 </li>
 </ul>
 <p>总的来说 ，可以用该图简单概括</p>
-<p><img src="https://images.seebug.org/content/images/2021/10/08/1633680605000-28hriil.png-w331s" alt="未命名绘图.drawio"></p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20230206155926797.png" alt="image-20230206155926797"></p>
 <p><strong>回到main</strong></p>
 <p>调用cull_queue()</p>
 <h3 id="cull-queue"><a href="#cull-queue" class="headerlink" title="cull_queue"></a>cull_queue</h3><p>调整queue，我们会有函数遍历 top_rated[] entries,并将曾经没有见过的 bytes(temp_v)设置为更优先的，在整个fuzz过程中，优先的entries应该被给予更多的时间</p>
