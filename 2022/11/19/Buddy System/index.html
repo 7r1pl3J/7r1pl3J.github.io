@@ -225,8 +225,7 @@
         </header>
 
         <div class="post-content">
-            <h1 id="Buddy-System"><a href="#Buddy-System" class="headerlink" title="Buddy System"></a>Buddy System</h1><p>11.19</p>
-<h2 id="在一切开始之前"><a href="#在一切开始之前" class="headerlink" title="在一切开始之前"></a>在一切开始之前</h2><p>一个总览图：</p>
+            <h1 id=""><a href="#" class="headerlink" title=""></a></h1><h2 id="在一切开始之前"><a href="#在一切开始之前" class="headerlink" title="在一切开始之前"></a>在一切开始之前</h2><p>一个总览图：</p>
 <p>malloc，brk，mmap返回的都是线性地址（虚拟地址）</p>
 <p>kmalloc从slab中申请到的是物理内存，位于物理内存的映射区，且地址连续，但返回的是线性地址（虚拟地址），该线性地址与真实地址仅相差一个固定的偏移，通过内核提供的virt_to_phys()可以实现该虚拟地址到真实的内核物理地址之间的转换:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">static inline phys_addr_t virt_to_phys(volatile void *address)</span><br><span class="line">&#123;</span><br><span class="line">	return __pa(address);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>

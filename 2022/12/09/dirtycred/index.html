@@ -225,7 +225,7 @@
         </header>
 
         <div class="post-content">
-            <h1 id="DirtyCred"><a href="#DirtyCred" class="headerlink" title="DirtyCred"></a>DirtyCred</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><h3 id="dirtypipe"><a href="#dirtypipe" class="headerlink" title="dirtypipe"></a>dirtypipe</h3><p>dirtypipe（CVE-2022-0847）本质上是未初始化导致的逻辑漏洞，它可以实现任意写<strong>可读</strong>文件功能，提权不需要依赖内核函数地址等，且可以绕过各种内核保护和利用缓解措施。然而，该漏洞利用在很大基础上依赖此漏洞的能力，防御相对容易。该文章提出了一种新的利用手法，将其他linux 内核漏洞提升到dirtypipe级别。它不依赖于 Linux 的管道机制，也不依赖漏洞 CVE-2022-0847 的性质。相反，它利⽤堆内存损坏漏洞将低权限内核凭证对象（cred，file）替换为⾼权限内核凭证对象，使得非特权用户可以对高特权的文件或进程进行操作。</p>
+            <h1 id=""><a href="#" class="headerlink" title=""></a></h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><h3 id="dirtypipe"><a href="#dirtypipe" class="headerlink" title="dirtypipe"></a>dirtypipe</h3><p>dirtypipe（CVE-2022-0847）本质上是未初始化导致的逻辑漏洞，它可以实现任意写<strong>可读</strong>文件功能，提权不需要依赖内核函数地址等，且可以绕过各种内核保护和利用缓解措施。然而，该漏洞利用在很大基础上依赖此漏洞的能力，防御相对容易。该文章提出了一种新的利用手法，将其他linux 内核漏洞提升到dirtypipe级别。它不依赖于 Linux 的管道机制，也不依赖漏洞 CVE-2022-0847 的性质。相反，它利⽤堆内存损坏漏洞将低权限内核凭证对象（cred，file）替换为⾼权限内核凭证对象，使得非特权用户可以对高特权的文件或进程进行操作。</p>
 <h3 id="dirtycred优点："><a href="#dirtycred优点：" class="headerlink" title="dirtycred优点："></a>dirtycred优点：</h3><ol>
 <li>它是一种通用的利用手法，可以对任意基于堆内存的漏洞进行提权。</li>
 <li>可以显著减轻漏洞利用迁移的负担，也就是对任意适用的内核版本和架构，无需修改exp即可进行相同的漏洞利用。</li>

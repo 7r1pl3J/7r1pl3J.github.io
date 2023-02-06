@@ -225,7 +225,7 @@
         </header>
 
         <div class="post-content">
-            <h1 id="nullptr-解引用"><a href="#nullptr-解引用" class="headerlink" title="nullptr 解引用"></a>nullptr 解引用</h1><p>nullptr 解引用一般是很难利用的，一般<strong>可以规避SMAP和mmap缓解的前提下进行的攻击</strong></p>
+            <h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>nullptr 解引用一般是很难利用的，一般<strong>可以规避SMAP和mmap缓解的前提下进行的攻击</strong></p>
 <h2 id="攻击原理与缓解"><a href="#攻击原理与缓解" class="headerlink" title="攻击原理与缓解"></a>攻击原理与缓解</h2><p><a target="_blank" rel="noopener" href="https://www.kernel.org/doc/Documentation/x86/x86_64/mm.txt">作为Linux 规范</a>，虚拟内存根据地址的不同使用不同。例如，您可以自由使用用户空间<code>0000000000000000</code>from to。<code>00007fffffffffff</code>另外，<code>ffffffff80000000</code>from <code>ffffffff9fffffff</code>to是内核数据区，映射到物理地址0。</p>
 <p>Linux 将 48 位地址符号扩展为 64 位。因此，从 0x800000000000 到 0xffff7fffffffffff 的地址是非法地址，称为非规范地址。</p>
 <p><code>0000000000000000 - 00007fffffffffff</code>用户空间可以从. 也就是说，当地址 0 被映射时，一个 NULL 指针引用可以读写数据而不会导致 Segmentation Fault。内核空间中的空指针解引用可以在禁用 SMAP 时读取用户空间中的数据，因此攻击者可以使用在地址 0 处故意准备的数据。</p>
