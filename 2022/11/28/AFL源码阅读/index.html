@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="7r1p13J">
+
+
+
+
+
+<title>AFL-fuzz源码阅读 | Hexo</title>
+
+
+
+    <link rel="icon" href="/github-11-48.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">7r1pl3J&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">7r1pl3J&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">AFL-fuzz源码阅读</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">7r1p13J</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 28, 2022&nbsp;&nbsp;10:28:05</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/fuzz/">fuzz</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>泻药,自动略过一切apple相关的宏 ,很合理⑧ , XD</p>
+</blockquote>
+<h1 id="afl-gcc-c"><a href="#afl-gcc-c" class="headerlink" title="afl-gcc.c"></a>afl-gcc.c</h1><h3 id="find-as"><a href="#find-as" class="headerlink" title="find_as"></a>find_as</h3><p>1.获取AFL_PATH 环境变量,然后访问AFL_PATH&#x2F;as ,将之设置为as_path </p>
+<p>2.若argv[0] 存在’&#x2F;‘ ,即提供了路径,那就通过该路径访问&#x2F;as,成功则设置为as_path </p>
+<h3 id="edit-params"><a href="#edit-params" class="headerlink" title="edit_params"></a>edit_params</h3><p>该函数主要用于处理argv,将处理后的argv放入cc_params 中</p>
+<ul>
+<li><p>为cc_params 分配内存,大小为 (argc + 128) * sizeof(u8*) </p>
+</li>
+<li><p>找到argv[0]路径的程序,放入name中</p>
+</li>
+<li><p>name与afl-clang比较</p>
+<ul>
+<li>相同则设置clang_mode以及CLANG_ENV_VAR,然后与afl-clang+比较<ul>
+<li>相同则设置cc_params[0] &#x3D; getenv(“AFL_CXX”),若不存在则为clang++</li>
+<li>否则设置cc_params[0] &#x3D; getenv(“AFL_CC”) ,若不存在则为clang</li>
+</ul>
+</li>
+<li>不相同则name与afl-g++比较g<ul>
+<li>相同则设置cc_params[0] &#x3D; getenv(“AFL_CXX”),若不存在则为g++</li>
+<li>否则设置cc_params[0] &#x3D; getenv(“AFL_CC”) ,若不存在则为gcc</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>#如果是苹果系统的话则有些别的处理,比如AFL_GCJ ,我没有apple,略过</p>
+</li>
+<li><p>以argc为循环次数,遍历argv</p>
+</li>
+<li><p>判断argv</p>
+<ul>
+<li>若为 -B ,-integrated-as ,或-pipe 则跳过</li>
+<li>若为 -B ,-integrated-as ,或-pipe 则跳过</li>
+<li>若为-fsanitize&#x3D;address或-fsanitize&#x3D;memory,则asan_set &#x3D; 1</li>
+<li>若为FORTIFY_SOURCE,则fortify_set &#x3D; 1</li>
+</ul>
+</li>
+<li><p>循环结束</p>
+</li>
+<li><p>设置  cc_params[cc_par_cnt++] &#x3D; “-B”    cc_params[cc_par_cnt++] &#x3D; as_path;</p>
+</li>
+<li><p>若有clang_mode&#x3D;1 ,设置-no-integrated-as</p>
+</li>
+<li><p>若存在AFL_HARDEN环境变量,设置-fstack-protector-all</p>
+</li>
+<li><p>若fortify_set为0,则设置-D_FORTIFY_SOURCE&#x3D;2</p>
+</li>
+<li><p>若asan_set&#x3D;1,则设置AFL_USE_ASAN为1</p>
+<ul>
+<li>否则若有AFL_USE_ASAN环境变量,则设置-U_FORTIFY_SOURCE 与 -fsanitize&#x3D;address(不能同时指定AFL_USE_MSAN,AFL_HARDEN)</li>
+<li>否则若有AFL_USE_MSAN环境变量,则设置-U_FORTIFY_SOURCE 与 -fsanitize&#x3D;memory(不能同时指定AFL_USE_ASAN,AFL_HARDEN)</li>
+</ul>
+</li>
+<li><p>若不存在AFL_DONT_OPTIMIZE环境变量,设置-g ,-O3 ,-funroll-loops,-D__AFL_COMPILER&#x3D;1,-DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION&#x3D;1</p>
+</li>
+<li><p>若存在AFL_NO_BUILTIN,则设置</p>
+<p>  cc_params[cc_par_cnt++] &#x3D; “-fno-builtin-strcmp”;</p>
+<p>  cc_params[cc_par_cnt++] &#x3D; “-fno-builtin-strncmp”;</p>
+<p>  cc_params[cc_par_cnt++] &#x3D; “-fno-builtin-strcasecmp”;</p>
+<p>  cc_params[cc_par_cnt++] &#x3D; “-fno-builtin-strncasecmp”;</p>
+<p>  cc_params[cc_par_cnt++] &#x3D; “-fno-builtin-memcmp”;</p>
+<p>  cc_params[cc_par_cnt++] &#x3D; “-fno-builtin-strstr”;</p>
+<p>  cc_params[cc_par_cnt++] &#x3D; “-fno-builtin-strcasestr”;</p>
+</li>
+<li><p>最后设置cc_params[cc_par_cnt] &#x3D; NULL</p>
+</li>
+</ul>
+<h3 id="main"><a href="#main" class="headerlink" title="main"></a>main</h3><ol>
+<li>调用<code>find_as(argv[0])</code> 寻找as</li>
+<li>调用<code>edit_params(argc, argv)</code> 处理编译参数</li>
+<li>执行编译: <code>execvp(cc_params[0], (char**)cc_params)</code></li>
+</ol>
+<h1 id="afl-as-c"><a href="#afl-as-c" class="headerlink" title="afl-as.c"></a>afl-as.c</h1><p>主要负责插桩</p>
+<h3 id="edit-params-1"><a href="#edit-params-1" class="headerlink" title="edit_params"></a>edit_params</h3><p> 主要负责对参数的处理,<strong>文件名为gcc传递的最后一个参数</strong></p>
+<ul>
+<li>分配as_params ,ck_alloc((argc + 32) * sizeof(u8*))</li>
+<li>检查是否存在TEMP&#x2F;TMP环境变量,<ul>
+<li>有的话则设置tmp路径</li>
+<li>否则默认为&#x2F;tmp</li>
+</ul>
+</li>
+<li>判断是否存在AFL_AS环境变量<ul>
+<li>存在的话,设置as_params[0]为环境变量的值</li>
+<li>否则设置as_params[0]为 as</li>
+</ul>
+</li>
+<li>设置参数字符串结尾 as_params[argc] &#x3D; 0</li>
+<li>遍历参数<ul>
+<li>存在–64,设置use_64bit &#x3D; 1  (该变量默认值由是否定义WORD_SIZE_64决定)</li>
+<li>否则存在–32的话,设置use_64bit &#x3D; 0</li>
+</ul>
+</li>
+<li>将文件名放入input_file中<ul>
+<li>如果input_file是–version,直接设置just_version然后输出即可</li>
+<li>否则的话将input_file与tmp的路径(tmp_dir,&#x2F;var&#x2F;tmp,&#x2F;tmp&#x2F;)相比,如果相同则设置pass_thru &#x3D; 1</li>
+</ul>
+</li>
+<li>设置modified_file,<ul>
+<li><code>modified_file = alloc_printf(&quot;%s/.afl-%u-%u.s&quot;, tmp_dir, getpid(), (u32)time(NULL));</code>                             </li>
+<li>其实就是设置为 tmp_dir&#x2F;.afl-pid-time.s</li>
+</ul>
+</li>
+<li>as_params[as_par_cnt++] &#x3D; modified_file; </li>
+<li>as_params[as_par_cnt]  &#x3D; NULL;</li>
+</ul>
+<h3 id="add-instrumentation"><a href="#add-instrumentation" class="headerlink" title="add_instrumentation"></a>add_instrumentation</h3><p>插桩的主要函数(雾</p>
+<p>主要就是处理我们输出的文件,然后生成插装后的,放在modified_file </p>
+<ul>
+<li>用line[MAX_LINE] 来实现文件的读取与输出</li>
+<li>打开input_file,作为输入文件</li>
+<li>打开modified_file ,作为输出文件</li>
+<li>使用fgets从输入中循环读取到line,<strong>我们插桩是对代码插装,需要找到.text段</strong></li>
+</ul>
+<p>注意,我们是对汇编代码进行插桩的,</p>
+<p>我们可以先观察一下gcc -S 生成的汇编代码,这里我以quickstart的代码为例</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221128230034539.png" alt="image-20221128230034539"></p>
+<p>在代码段之前,都会有.text 或者.code的相关伪指令描述,我们匹配也是根据伪指令进行判断的,但我们并不知道生成的是什么样的汇编,所以程序对不同架构都做了判断处理</p>
+<p>具体的判断流程</p>
+<ul>
+<li><p>判断 <code>(!pass_thru &amp;&amp; !skip_intel &amp;&amp; !skip_app &amp;&amp; !skip_csect &amp;&amp; instr_ok &amp;&amp;</code></p>
+<p>​    <code>instrument_next &amp;&amp; line[0] == &#39;\t&#39; &amp;&amp; isalpha(line[1]))</code>  ,也就是是否是制表符开头,且后面第一个字节是字母.以及判断instrument_next,instr_ok,skip_app,pass_thru是否都为1</p>
+<ul>
+<li>是的话,向output 输出trampoline_fmt, instrument_next &#x3D; 0,插桩计数器ins_lines++</li>
+<li>否则直接将line原封不动地输出进output中</li>
+</ul>
+</li>
+<li><p>如果pass_thru&#x3D;1, continue</p>
+</li>
+<li><p>如果制表符开头,且其后第一个字符为 ‘ . ‘ 的话,判断其后是否是 <code>text</code>&#x2F; <code>section\t.text</code> &#x2F;<code>section\t__TEXT,__text</code>&#x2F;  <code>section __TEXT,__text</code> 等</p>
+<ul>
+<li>是的话则设置instr_ok &#x3D; 1,代表处理到代码段,continue</li>
+<li>否则判断是否是 section\t ,section,bss,data,是的话设置instr_ok &#x3D; 0 , continue</li>
+</ul>
+</li>
+<li><p>如果存在code</p>
+<ul>
+<li>code32,设置skip_csect &#x3D; use_64bit</li>
+<li>code64,设置skip_csect &#x3D; !use_64bit</li>
+</ul>
+</li>
+<li><p>如果 <code>skip_intel || skip_app || skip_csect || !instr_ok ||  line[0] == &#39;#&#39; || line[0] == &#39; &#39;</code>,continue</p>
+</li>
+<li><p>如果是制表符开头,且R(100) &lt; inst_ratio,且后面是’j’ ,且不是jmp跳转的,如jnz,etc,则插桩,向output 输出trampoline_fmt, instrument_next &#x3D; 0,插桩计数器ins_lines++</p>
+<blockquote>
+<p>这里R(100)用于产生碰撞生成随机值,可以用来区分桩</p>
+</blockquote>
+</li>
+<li><p>如果是存在’:’,判断第一个字符是否为’ . ‘</p>
+<ul>
+<li>如果是,判断skip_next_label<ul>
+<li>如果为0,则设置instrument_next &#x3D; 1</li>
+<li>否则设置instrument_next &#x3D; 0</li>
+</ul>
+</li>
+<li>如果不是,instrument_next &#x3D; 1  (代表这是个函数label)</li>
+</ul>
+</li>
+<li><p>while结束,判断ins_lines,如果不为0则再一次插桩</p>
+</li>
+<li><p>关闭输入输出文件</p>
+</li>
+</ul>
+<h3 id="main-1"><a href="#main-1" class="headerlink" title="main"></a>main</h3><ul>
+<li>读取AFL_INST_RATIO环境变量到inst_ratio_str</li>
+<li>设置随机数种子</li>
+<li>调用edit_params设置参数</li>
+<li>设置AS_LOOP_ENV_VAR环境变量为1</li>
+<li>读取AFL_USE_ASAN和AFL_USE_MSAN环境变量</li>
+<li>设置sanitizer &#x3D; 1</li>
+<li>设置inst_ratio &#x2F;&#x3D; 3</li>
+<li>调用add_instrumentation进行插桩</li>
+<li>调用fork<ul>
+<li>子进程通过 <code>execvp(as_params[0], (char**)as_params)</code>  执行as插桩</li>
+<li>父进程等待子进程退出<ul>
+<li>如果没有设置AFL_KEEP_ASSEMBLY环境变量,就unlink(modified_file)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>总的来说,就是对函数入口处,条件跳转处,以及各种分支处进行插桩</p>
+<h1 id="插桩"><a href="#插桩" class="headerlink" title="插桩"></a>插桩</h1><p>插桩的代码trampoline_fmt 定义于afl-as.h中</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">const</span> u8* trampoline_fmt_32 =</span><br><span class="line"></span><br><span class="line">  <span class="string">&quot;\n&quot;</span></span><br><span class="line">  <span class="string">&quot;/* --- AFL TRAMPOLINE (32-BIT) --- */\n&quot;</span></span><br><span class="line">  <span class="string">&quot;\n&quot;</span></span><br><span class="line">  <span class="string">&quot;.align 4\n&quot;</span></span><br><span class="line">  <span class="string">&quot;\n&quot;</span></span><br><span class="line">  <span class="string">&quot;leal -16(%%esp), %%esp\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movl %%edi,  0(%%esp)\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movl %%edx,  4(%%esp)\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movl %%ecx,  8(%%esp)\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movl %%eax, 12(%%esp)\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movl $0x%08x, %%ecx\n&quot;</span></span><br><span class="line">  <span class="string">&quot;call __afl_maybe_log\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movl 12(%%esp), %%eax\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movl  8(%%esp), %%ecx\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movl  4(%%esp), %%edx\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movl  0(%%esp), %%edi\n&quot;</span></span><br><span class="line">  <span class="string">&quot;leal 16(%%esp), %%esp\n&quot;</span></span><br><span class="line">  <span class="string">&quot;\n&quot;</span></span><br><span class="line">  <span class="string">&quot;/* --- END --- */\n&quot;</span></span><br><span class="line">  <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">const</span> u8* trampoline_fmt_64 =</span><br><span class="line"></span><br><span class="line">  <span class="string">&quot;\n&quot;</span></span><br><span class="line">  <span class="string">&quot;/* --- AFL TRAMPOLINE (64-BIT) --- */\n&quot;</span></span><br><span class="line">  <span class="string">&quot;\n&quot;</span></span><br><span class="line">  <span class="string">&quot;.align 4\n&quot;</span></span><br><span class="line">  <span class="string">&quot;\n&quot;</span></span><br><span class="line">  <span class="string">&quot;leaq -(128+24)(%%rsp), %%rsp\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movq %%rdx,  0(%%rsp)\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movq %%rcx,  8(%%rsp)\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movq %%rax, 16(%%rsp)\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movq $0x%08x, %%rcx\n&quot;</span></span><br><span class="line">  <span class="string">&quot;call __afl_maybe_log\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movq 16(%%rsp), %%rax\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movq  8(%%rsp), %%rcx\n&quot;</span></span><br><span class="line">  <span class="string">&quot;movq  0(%%rsp), %%rdx\n&quot;</span></span><br><span class="line">  <span class="string">&quot;leaq (128+24)(%%rsp), %%rsp\n&quot;</span></span><br><span class="line">  <span class="string">&quot;\n&quot;</span></span><br><span class="line">  <span class="string">&quot;/* --- END --- */\n&quot;</span></span><br><span class="line">  <span class="string">&quot;\n&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>分别使用afl-gcc与原生gcc编译代码，在IDA中查看</p>
+<p>原生gcc</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221129141053608.png" alt="image-20221129141053608"></p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221129141143831.png" alt="image-20221129141143831"></p>
+<p>afl之后的</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221129141158981.png" alt="image-20221129141158981"></p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221129141032589.png" alt="image-20221129141032589"></p>
+<p>我们可以看出，插入的汇编就是调用了_afl_maybe_log() 以及一些寄存器，栈的设置</p>
+<p>具体的就是下面这几句</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">lea     rsp, [rsp-98h]</span><br><span class="line">mov     [rsp+98h+var_98], rdx</span><br><span class="line">mov     [rsp+98h+var_90], rcx</span><br><span class="line">mov     qword ptr [rsp+98h+input], rax</span><br><span class="line">mov     rcx, 0DBA6h #插桩随机数</span><br><span class="line">call    __afl_maybe_log</span><br><span class="line">mov     rax, qword ptr [rsp+98h+var_88] #这里ida识别成input乐，但也就是var_88</span><br><span class="line">mov     rcx, [rsp+98h+var_90]</span><br><span class="line">mov     rdx, [rsp+98h+var_98]</span><br><span class="line">lea     rsp, [rsp+98h]</span><br></pre></td></tr></table></figure>
+
+<p>保存了当前的rax，rdx，rcx，rsp寄存器到栈上，调用函数后再恢复对应寄存器的值</p>
+<h2 id="afl-maybe-log流程"><a href="#afl-maybe-log流程" class="headerlink" title="__afl_maybe_log流程"></a>__afl_maybe_log流程</h2><p>这里流程图等引用乐@<a target="_blank" rel="noopener" href="https://bbs.pediy.com/user-home-876323.htm">Roland_</a> 师傅做的图</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/876323_4YXG58WPAWUZSE6.jpg" alt="img"></p>
+<p>函数的实现也定义于afl-as.h中，被定义为main_payload</p>
+<p>源码中直接写的是汇编代码~~~我这里本来选择用IDA查看其反汇编方便理解，发现反汇编出来的C也不是很好看(~~~</p>
+<blockquote>
+<p>以下源码均来自main_payload_64，函数顺序基本也按汇编代码的顺序来</p>
+</blockquote>
+<p>先看源码内定义的静态变量</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">  <span class="string">&quot;  .lcomm   __afl_area_ptr, 8\n&quot;</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> COVERAGE_ONLY</span></span><br><span class="line">  <span class="string">&quot;  .lcomm   __afl_prev_loc, 8\n&quot;</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">/* !COVERAGE_ONLY */</span></span></span><br><span class="line">  <span class="string">&quot;  .lcomm   __afl_fork_pid, 4\n&quot;</span></span><br><span class="line">  <span class="string">&quot;  .lcomm   __afl_temp, 4\n&quot;</span></span><br><span class="line">  <span class="string">&quot;  .lcomm   __afl_setup_failure, 1\n&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">/* ^__APPLE__ */</span></span></span><br><span class="line"></span><br><span class="line">  <span class="string">&quot;  .comm    __afl_global_area_ptr, 8, 8\n&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>__afl_area_ptr 指向共享内存</li>
+<li>__afl_prev_loc 代表上一次插桩(插桩随机数)</li>
+<li>__afl_fork_pid 为fork的子进程pid</li>
+<li>__afl_temp  为临时的缓冲区</li>
+<li>__afl_setup_failure 代表设置标志位</li>
+<li>__afl_global_area_ptr 指向一个全局域</li>
+</ul>
+<h3 id="afl-maybe-log"><a href="#afl-maybe-log" class="headerlink" title="__afl_maybe_log"></a>__afl_maybe_log</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#if defined(__OpenBSD__)  || (defined(__FreeBSD__) &amp;&amp; (__FreeBSD__ &lt; 9))</span><br><span class="line">    .byte 0x9f /* lahf */</span><br><span class="line">#else</span><br><span class="line">    lahf</span><br><span class="line">#endif /* ^__OpenBSD__, etc */</span><br><span class="line">    seto  %al</span><br><span class="line"></span><br><span class="line">  /* Check if SHM region is already mapped. */</span><br><span class="line"></span><br><span class="line">    movq  __afl_area_ptr(%rip), %rdx\n</span><br><span class="line">    testq %rdx, %rdx\n</span><br><span class="line">    je    __afl_setup\n</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>lah用于将标志寄存器的低八位送入AH，即将标志寄存器FLAGS中的SF、ZF、AF、PF、CF五个标志位分别传送到累加器AH的对应位，八位中有三位是无效的；</li>
+<li>SF(符号标志位)，ZF（零标志位），AF（辅助进位标志位），PF（奇偶标志位），CF（进位标志位）</li>
+<li><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/876323_D89FYYC4YHDYP99.jpg" alt="img"></li>
+<li>seto指令：将溢出置位。</li>
+<li>然后检查是否有共享内存，没有的话就进入__afl_setup 进行设置</li>
+</ul>
+<h3 id="afl-setup"><a href="#afl-setup" class="headerlink" title="__afl_setup"></a>__afl_setup</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">__afl_setup:</span><br><span class="line">    /* Do not retry setup if we had previous failures. */</span><br><span class="line"></span><br><span class="line">    cmpb $0, __afl_setup_failure(%rip)</span><br><span class="line">    jne __afl_return\n&quot;</span><br><span class="line"></span><br><span class="line">  &quot;  /* Check out if we have a global pointer on file. */</span><br><span class="line"> </span><br><span class="line">#ifndef __APPLE__</span><br><span class="line">    movq  __afl_global_area_ptr@GOTPCREL(%rip), %rdx</span><br><span class="line">    movq  (%rdx), %rdx</span><br><span class="line">#else</span><br><span class="line">    movq  __afl_global_area_ptr(%rip), %rdx</span><br><span class="line">#endif /* !^__APPLE__ */</span><br><span class="line">    testq %rdx, %rdx</span><br><span class="line">    je    __afl_setup_first</span><br><span class="line">    movq %rdx, __afl_area_ptr(%rip)</span><br><span class="line">    jmp  __afl_store</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果已经设置过并且失败了，直接return</li>
+<li>否则检查__afl_global_area_ptr<ul>
+<li>若为NULL，则跳转至__afl_setup_first</li>
+<li>否则设置 ___afl_area_ptr&#x3D;__afl_global_area_ptr,跳转至 __afl_store</li>
+</ul>
+</li>
+</ul>
+<h3 id="afl-setup-first"><a href="#afl-setup-first" class="headerlink" title="__afl_setup_first"></a>__afl_setup_first</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">__afl_setup_first:</span><br><span class="line"></span><br><span class="line">  /* Save everything that is not yet saved and that may be touched by</span><br><span class="line">     getenv() and several other libcalls we&#x27;ll be relying on. */</span><br><span class="line"></span><br><span class="line">  leaq -352(%rsp), %rsp</span><br><span class="line"></span><br><span class="line">  movq %rax,   0(%rsp)</span><br><span class="line">  movq %rcx,   8(%rsp)</span><br><span class="line">  movq %rdi,  16(%rsp)</span><br><span class="line">  movq %rsi,  32(%rsp)</span><br><span class="line">  movq %r8,   40(%rsp)</span><br><span class="line">  movq %r9,   48(%rsp)</span><br><span class="line">  movq %r10,  56(%rsp)</span><br><span class="line">  movq %r11,  64(%rsp)</span><br><span class="line"></span><br><span class="line">  movq %xmm0,  96(%rsp)</span><br><span class="line">  movq %xmm1,  112(%rsp)</span><br><span class="line">  movq %xmm2,  128(%rsp)</span><br><span class="line">  movq %xmm3,  144(%rsp)</span><br><span class="line">  movq %xmm4,  160(%rsp)</span><br><span class="line">  movq %xmm5,  176(%rsp)</span><br><span class="line">  movq %xmm6,  192(%rsp)</span><br><span class="line">  movq %xmm7,  208(%rsp)</span><br><span class="line">  movq %xmm8,  224(%rsp)</span><br><span class="line">  movq %xmm9,  240(%rsp)</span><br><span class="line">  movq %xmm10, 256(%rsp)</span><br><span class="line">  movq %xmm11, 272(%rsp)</span><br><span class="line">  movq %xmm12, 288(%rsp)</span><br><span class="line">  movq %xmm13, 304(%rsp)</span><br><span class="line">  movq %xmm14, 320(%rsp)</span><br><span class="line">  movq %xmm15, 336(%rsp)</span><br><span class="line"></span><br><span class="line">  /* Map SHM, jumping to __afl_setup_abort if something goes wrong. */</span><br><span class="line"></span><br><span class="line">  /* The 64-bit ABI requires 16-byte stack alignment. We&#x27;ll keep the</span><br><span class="line">     original stack ptr in the callee-saved r12. */</span><br><span class="line"></span><br><span class="line">  pushq %r12</span><br><span class="line">  movq  %rsp, %r12</span><br><span class="line">  subq  $16, %rsp</span><br><span class="line">  andq  $0xfffffffffffffff0, %rsp</span><br><span class="line"></span><br><span class="line">  leaq .AFL_SHM_ENV(%rip), %rdi</span><br><span class="line">call _getenv</span><br><span class="line"></span><br><span class="line">  testq %rax, %rax</span><br><span class="line">  je    __afl_setup_abort</span><br><span class="line"></span><br><span class="line">  movq  %rax, %rdi</span><br><span class="line">call _atoi</span><br><span class="line"></span><br><span class="line">  xorq %rdx, %rdx   /* shmat flags    */</span><br><span class="line">  xorq %rsi, %rsi   /* requested addr */</span><br><span class="line">  movq %rax, %rdi   /* SHM ID         */</span><br><span class="line">call _shmat</span><br><span class="line"></span><br><span class="line">  cmpq $-1, %rax</span><br><span class="line">  je   __afl_setup_abort</span><br><span class="line"></span><br><span class="line">  /* Store the address of the SHM region. */</span><br><span class="line"></span><br><span class="line">  movq %rax, %rdx</span><br><span class="line">  movq %rax, __afl_area_ptr(%rip)</span><br><span class="line"></span><br><span class="line">  movq %rax, __afl_global_area_ptr(%rip)</span><br><span class="line">  movq %rax, %rdx</span><br><span class="line">  __afl_forkserver:</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>前面一大坨是保存所有的寄存器至栈上，然后对栈进行对齐（16字节）</p>
+</li>
+<li><p>调用getenv( AFL_SHM_ENV)  获取环境变量__AFL_SHM_ID，该值是共享内存的shmid</p>
+<ul>
+<li><p>获取失败 ，跳至__afl_setup_abort</p>
+</li>
+<li><p>获取成功，设置参数，调用shmat，将共享内存映射至当前进程的地址空间，该函数会返回映射后共享内存的地址</p>
+<ul>
+<li>调用失败 ，跳至__afl_setup_abort</li>
+<li>调用成功，设置__afl_area_ptr指向共享内存，__afl_global_area_ptr 也指向共享内存</li>
+</ul>
+<p>​</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>	</p>
+<h3 id="afl-forkserver"><a href="#afl-forkserver" class="headerlink" title="__afl_forkserver:"></a>__afl_forkserver:</h3><p>紧接 __afl_setup_first</p>
+<p>rdx为上面的rax，也就是共享内存的地址</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">__afl_forkserver:</span><br><span class="line"></span><br><span class="line">     /* Enter the fork server mode to avoid the overhead of execve() calls. We</span><br><span class="line">     push rdx (area ptr) twice to keep stack alignment neat. */</span><br><span class="line"></span><br><span class="line">  pushq %rdx</span><br><span class="line">  pushq %rdx</span><br><span class="line"></span><br><span class="line">  /* Phone home and tell the parent that we&#x27;re OK. (Note that signals with</span><br><span class="line">     no SA_RESTART will mess it up). If this fails, assume that the fd is</span><br><span class="line">     closed because we were execve()d from an instrumented binary, or because</span><br><span class="line">     the parent doesn&#x27;t want to use the fork server. */</span><br><span class="line"></span><br><span class="line">  movq $4, %rdx               /* length    */</span><br><span class="line">  leaq __afl_temp(%rip), %rsi /* data      */</span><br><span class="line">  movq $&quot; STRINGIFY((FORKSRV_FD + 1)) &quot;, %rdi       /* file desc */</span><br><span class="line">CALL_L64(&quot;write&quot;)</span><br><span class="line"></span><br><span class="line">  cmpq $4, %rax</span><br><span class="line">  jne  __afl_fork_resume</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>FORKSRV_FD + 1 为状态管道，向该管道写入4个字节，用于通知fork server 已经成功启动</li>
+<li>成功写入四个字节的话则继续，否则跳转至__afl_fork_resume</li>
+</ul>
+<h3 id="afl-fork-wait-loop"><a href="#afl-fork-wait-loop" class="headerlink" title="__afl_fork_wait_loop"></a>__afl_fork_wait_loop</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">__afl_fork_wait_loop:</span><br><span class="line"></span><br><span class="line">  /* Wait for parent by reading from the pipe. Abort if read fails. */</span><br><span class="line"></span><br><span class="line">  movq $4, %rdx               /* length    */</span><br><span class="line">  leaq __afl_temp(%rip), %rsi /* data      */</span><br><span class="line">  movq $&quot; STRINGIFY(FORKSRV_FD) &quot;, %rdi            /* file desc */</span><br><span class="line">CALL_L64(&quot;read&quot;)</span><br><span class="line">  cmpq $4, %rax</span><br><span class="line">  jne  __afl_die</span><br><span class="line"></span><br><span class="line">  /* Once woken up, create a clone of our process. This is an excellent use</span><br><span class="line">     case for syscall(__NR_clone, 0, CLONE_PARENT), but glibc boneheadedly</span><br><span class="line">     caches getpid() results and offers no way to update the value, breaking</span><br><span class="line">     abort(), raise(), and a bunch of other things :-( */</span><br><span class="line"></span><br><span class="line">CALL_L64(&quot;fork&quot;)</span><br><span class="line">  cmpq $0, %rax</span><br><span class="line">  jl   __afl_die</span><br><span class="line">  je   __afl_fork_resume</span><br><span class="line"></span><br><span class="line">  /* In parent process: write PID to pipe, then wait for child. */</span><br><span class="line"></span><br><span class="line">  movl %eax, __afl_fork_pid(%rip)</span><br><span class="line"></span><br><span class="line">  movq $4, %rdx                   /* length    */</span><br><span class="line">  leaq __afl_fork_pid(%rip), %rsi /* data      */</span><br><span class="line">  movq $&quot; STRINGIFY((FORKSRV_FD + 1)) &quot;, %rdi             /* file desc */</span><br><span class="line">CALL_L64(&quot;write&quot;)</span><br><span class="line"></span><br><span class="line">  movq $0, %rdx                   /* no flags  */</span><br><span class="line">  leaq __afl_temp(%rip), %rsi     /* status    */</span><br><span class="line">  movq __afl_fork_pid(%rip), %rdi /* PID       */</span><br><span class="line">CALL_L64(&quot;waitpid&quot;)</span><br><span class="line">  cmpq $0, %rax</span><br><span class="line">  jle  __afl_die</span><br><span class="line"></span><br><span class="line">  /* Relay wait status to pipe, then loop back. */</span><br><span class="line"></span><br><span class="line">  movq $4, %rdx               /* length    */</span><br><span class="line">  leaq __afl_temp(%rip), %rsi /* data      */</span><br><span class="line">  movq $&quot; STRINGIFY((FORKSRV_FD + 1)) &quot;, %rdi         /* file desc */</span><br><span class="line">CALL_L64(&quot;write&quot;)</span><br><span class="line"></span><br><span class="line">  jmp  __afl_fork_wait_loop</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>读取管道<ul>
+<li>读到4字节信息则成功<ul>
+<li>将所读信息放入__afl_temp 中</li>
+<li>继续</li>
+</ul>
+</li>
+<li>读取失败，跳转至__afl_die</li>
+</ul>
+</li>
+<li>调用fork<ul>
+<li>子进程执行__afl_fork_resume</li>
+<li>父进程将子进程pid放入__afl_fork_pid，并向状态管道写入该pid值<ul>
+<li>等子进程执行完，再次向状态管道写入其status 状态</li>
+<li>执行下一次__afl_fork_wait_loop</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="afl-fork-resume"><a href="#afl-fork-resume" class="headerlink" title="__afl_fork_resume"></a>__afl_fork_resume</h3><p>这是上面fork出来的子进程干的事</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">__afl_fork_resume:</span><br><span class="line"></span><br><span class="line">/* In child process: close fds, resume execution. */</span><br><span class="line"></span><br><span class="line">  movq $&quot; STRINGIFY(FORKSRV_FD) &quot;, %rdi</span><br><span class="line">CALL_L64(&quot;close&quot;)</span><br><span class="line"></span><br><span class="line">  movq $(&quot; STRINGIFY(FORKSRV_FD) &quot; + 1), %rdi</span><br><span class="line">CALL_L64(&quot;close&quot;)</span><br><span class="line"></span><br><span class="line">  popq %rdx</span><br><span class="line">  popq %rdx</span><br><span class="line"></span><br><span class="line">  movq %r12, %rsp</span><br><span class="line">  popq %r12</span><br><span class="line"></span><br><span class="line">  movq  0(%rsp), %rax</span><br><span class="line">  movq  8(%rsp), %rcx</span><br><span class="line">  movq 16(%rsp), %rdi</span><br><span class="line">  movq 32(%rsp), %rsi</span><br><span class="line">  movq 40(%rsp), %r8</span><br><span class="line">  movq 48(%rsp), %r9</span><br><span class="line">  movq 56(%rsp), %r10</span><br><span class="line">  movq 64(%rsp), %r11</span><br><span class="line"></span><br><span class="line">  movq  96(%rsp), %xmm0</span><br><span class="line">  movq 112(%rsp), %xmm1</span><br><span class="line">  movq 128(%rsp), %xmm2</span><br><span class="line">  movq 144(%rsp), %xmm3</span><br><span class="line">  movq 160(%rsp), %xmm4</span><br><span class="line">  movq 176(%rsp), %xmm5</span><br><span class="line">  movq 192(%rsp), %xmm6</span><br><span class="line">  movq 208(%rsp), %xmm7</span><br><span class="line">  movq 224(%rsp), %xmm8</span><br><span class="line">  movq 240(%rsp), %xmm9</span><br><span class="line">  movq 256(%rsp), %xmm10</span><br><span class="line">  movq 272(%rsp), %xmm11</span><br><span class="line">  movq 288(%rsp), %xmm12</span><br><span class="line">  movq 304(%rsp), %xmm13</span><br><span class="line">  movq 320(%rsp), %xmm14</span><br><span class="line">  movq 336(%rsp), %xmm15</span><br><span class="line"></span><br><span class="line">  leaq 352(%rsp), %rsp</span><br><span class="line"></span><br><span class="line">  jmp  __afl_store</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>关闭该进程的FORKSRV_FD和FORKSRV_FD+1</li>
+<li>恢复了寄存器状态（__afl_setup_first时的状态）</li>
+<li>跳转至__afl_store</li>
+</ul>
+<h3 id="afl-store"><a href="#afl-store" class="headerlink" title="__afl_store"></a>__afl_store</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">__afl_store:</span><br><span class="line"></span><br><span class="line">  /* Calculate and store hit for the code location specified in rcx. */</span><br><span class="line"></span><br><span class="line">  xorq __afl_prev_loc(%rip), %rcx</span><br><span class="line">  xorq %rcx, __afl_prev_loc(%rip)</span><br><span class="line">  shrq $1, __afl_prev_loc(%rip)</span><br><span class="line"></span><br><span class="line">  incb (%rdx, %rcx, 1)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>rcx为调用_afl_maybe_log前所传的，值为插桩随机数id</li>
+<li>__afl_prev_loc为上一次桩的id</li>
+</ul>
+<p>简单来说，就是__afl_prev_loc去异或本次桩的id， 得到一个新的值x</p>
+<p>再将_ <em>afl_prev_loc与该新的值异或，得到新的</em>_ afl_prev_loc</p>
+<p>再将 _ _afl_prev_loc右移动1位，得到最后全新的 __afl_prev_loc</p>
+<p>最后将共享内存中存储当前插桩位置的值+1</p>
+<blockquote>
+<p>参考@<a target="_blank" rel="noopener" href="https://bbs.pediy.com/user-home-876323.htm">Roland_</a> 的解释，这里右移是为了避免桩id无法区分的情况，尤其是在上次桩与本次是同一个id，即 </p>
+<p>A-&gt;A，这种情况，第一次异或得到0，第二次异或得到自己，id不变，难以区分</p>
+<p>A-&gt;B,B-&gt;A也是一样，第一次 A ^( A ^B) &#x3D;B , 对B来说就是相同id乐</p>
+</blockquote>
+<p>看一眼伪代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v7 = _afl_prev_loc ^ a4;</span><br><span class="line">_afl_prev_loc ^= v7;</span><br><span class="line">_afl_prev_loc = (<span class="type">unsigned</span> __int64)_afl_prev_loc &gt;&gt; <span class="number">1</span>;</span><br><span class="line">v8 = __CFADD__((*(_BYTE *)(v6 + v7))++, <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="afl-die"><a href="#afl-die" class="headerlink" title="__afl_die"></a>__afl_die</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">xorq %rax, %rax</span><br><span class="line">CALL_L64(&quot;_exit&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>调用乐exit退出</p>
+<h3 id="afl-setup-abort"><a href="#afl-setup-abort" class="headerlink" title="__afl_setup_abort:"></a>__afl_setup_abort:</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">__afl_setup_abort:</span><br><span class="line"></span><br><span class="line">  /* Record setup failure so that we don&#x27;t keep calling</span><br><span class="line">     shmget() / shmat() over and over again. */</span><br><span class="line"></span><br><span class="line">  incb __afl_setup_failure(%rip)</span><br><span class="line"></span><br><span class="line">  movq %r12, %rsp</span><br><span class="line">  popq %r12</span><br><span class="line"></span><br><span class="line">  movq  0(%rsp), %rax</span><br><span class="line">  movq  8(%rsp), %rcx</span><br><span class="line">  movq 16(%rsp), %rdi</span><br><span class="line">  movq 32(%rsp), %rsi</span><br><span class="line">  movq 40(%rsp), %r8</span><br><span class="line">  movq 48(%rsp), %r9</span><br><span class="line">  movq 56(%rsp), %r10</span><br><span class="line">  movq 64(%rsp), %r11</span><br><span class="line"></span><br><span class="line">  movq  96(%rsp), %xmm0</span><br><span class="line">  movq 112(%rsp), %xmm1</span><br><span class="line">  movq 128(%rsp), %xmm2</span><br><span class="line">  movq 144(%rsp), %xmm3</span><br><span class="line">  movq 160(%rsp), %xmm4</span><br><span class="line">  movq 176(%rsp), %xmm5</span><br><span class="line">  movq 192(%rsp), %xmm6</span><br><span class="line">  movq 208(%rsp), %xmm7</span><br><span class="line">  movq 224(%rsp), %xmm8</span><br><span class="line">  movq 240(%rsp), %xmm9</span><br><span class="line">  movq 256(%rsp), %xmm10</span><br><span class="line">  movq 272(%rsp), %xmm11</span><br><span class="line">  movq 288(%rsp), %xmm12</span><br><span class="line">  movq 304(%rsp), %xmm13</span><br><span class="line">  movq 320(%rsp), %xmm14</span><br><span class="line">  movq 336(%rsp), %xmm15</span><br><span class="line"></span><br><span class="line">  leaq 352(%rsp), %rsp</span><br><span class="line"></span><br><span class="line">  jmp __afl_return</span><br></pre></td></tr></table></figure>
+
+<p>与__afl_fork_resume差不多，区别就是这里直接return乐</p>
+<h3 id="afl-return"><a href="#afl-return" class="headerlink" title="__afl_return"></a>__afl_return</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">__afl_return:</span><br><span class="line"></span><br><span class="line">addb $127, %al</span><br><span class="line">ret</span><br></pre></td></tr></table></figure>
+
+<p><del>暂时不知道这127加乐是图啥，可能用来区别正常exit退出和return退出的吧</del></p>
+<h1 id="afl-fuzz-c-—-fuzzer"><a href="#afl-fuzz-c-—-fuzzer" class="headerlink" title="afl-fuzz.c —-fuzzer"></a>afl-fuzz.c —-fuzzer</h1><p>该函数主要实现了fuzzer，就是它来不断变异我们的样例来得到改变执行路径的效果，源码8000行（<del>顺带一提，glibc实现的malloc在5000行左右，里面还有很多是宏和注释0.0</del>）</p>
+<p>最近下载了understand玩玩，刚好拿这个来试试，生成的CFG</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221129232414704.png" alt="image-20221129232414704"></p>
+<p><del>虽然很强大，但这么多我能看明白个√⑧</del></p>
+<p>在阅读源码之前，先有个整体的大概了解，方便我们深入阅读，</p>
+<p>这里还是引用了@<a target="_blank" rel="noopener" href="https://bbs.pediy.com/user-home-876323.htm">Roland_</a> 做的图</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/876323_VRXJUTPEBAVUAXU.jpg" alt="img"></p>
+<p>结合该图与上文分析的插桩，就能大概明白插桩那些函数具体怎么用的了</p>
+<p>由fork出的子进程来执行我们的程序实例，通过运行插桩代码中的函数与fuzzer进行交互，从而提取状态信息</p>
+<p>函数很多，这里我就不选择逐一分析乐，而是通过main函数的流程来分析各个函数</p>
+<h2 id="main（1）-配置与输出化"><a href="#main（1）-配置与输出化" class="headerlink" title="main（1） 配置与输出化"></a>main（1） 配置与输出化</h2><ul>
+<li><p>*以下均为main流程以及相关函数调用</p>
+</li>
+<li><p>调用gettimeofday获取当前时间</p>
+</li>
+<li><p>用当前时间与当前进程pid做异或运行作为seed</p>
+</li>
+<li><p>while循环，调用getopt，关于该函数的详解可以看<a target="_blank" rel="noopener" href="https://blog.csdn.net/c1523456/article/details/79173776%EF%BC%8C%E4%B8%BB%E8%A6%81%E7%94%A8%E4%BA%8E%E5%A4%84%E7%90%86%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%8F%82%E6%95%B0">https://blog.csdn.net/c1523456/article/details/79173776，主要用于处理命令行参数</a></p>
+<ul>
+<li>-i代表input目录，将参数赋值给in_dir</li>
+<li>-o代表output目录，将参数赋值给out_dir</li>
+<li>-M,-s指定 master_id,sync_id</li>
+<li>-f代表outputfile，为输出的目标文件</li>
+<li>-t设置timeout</li>
+<li>-m设置memery</li>
+<li>-b 绑定cpu</li>
+<li>-Q代表qemu mode </li>
+<li>-C代表crash mode</li>
+<li>-n代表dumb mode</li>
+</ul>
+</li>
+<li><p>调用setup_signal_handlers与check_asan_opts</p>
+</li>
+</ul>
+<h3 id="setup-signal-handlers"><a href="#setup-signal-handlers" class="headerlink" title="setup_signal_handlers"></a>setup_signal_handlers</h3><p>该函数为注册信号处理函数，设置句柄</p>
+<table>
+<thead>
+<tr>
+<th align="left">信号</th>
+<th align="left">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">SIGHUP&#x2F;SIGINT&#x2F;SIGTERM</td>
+<td align="left">handle_stop_sig，处理各种“stop”情况</td>
+</tr>
+<tr>
+<td align="left">SIGALRM</td>
+<td align="left">handle_timeout，处理超时的情况</td>
+</tr>
+<tr>
+<td align="left">SIGWINCH</td>
+<td align="left">handle_resize，处理窗口大小</td>
+</tr>
+<tr>
+<td align="left">SIGUSER1</td>
+<td align="left">handle_skipreq，用户自定义信号，这里定义为skip request</td>
+</tr>
+<tr>
+<td align="left">SIGSTP&#x2F;SIGPIPE</td>
+<td align="left">SIG_IGN，不是很重要的一些信号，可以不用关心</td>
+</tr>
+</tbody></table>
+<h3 id="check-asan-opts"><a href="#check-asan-opts" class="headerlink" title="check_asan_opts"></a>check_asan_opts</h3><p>获取MSAN_OPTIONS和ASAN_OPTIONS环境变量，做一些检查</p>
+<blockquote>
+<p>ASAN（Address Sanitizer）是针对 C&#x2F;C++ 的快速内存错误检测工具，在运行时检测 C&#x2F;C++ 代码中的多种内存错误。</p>
+</blockquote>
+<ul>
+<li>若sync_id被设置，调用fix_up_sync</li>
+</ul>
+<h3 id="fix-up-sync"><a href="#fix-up-sync" class="headerlink" title="fix_up_sync"></a>fix_up_sync</h3><p>设置sync_dir为out_dir，outdir为out_dir&#x2F;sync_id</p>
+<ul>
+<li>判断in_dir和out_dir是否相等，它们不应该相等</li>
+<li>判断dumb_mode<ul>
+<li>如果有dumb_mode，就不能有crash_mode或qemu_mode</li>
+</ul>
+</li>
+<li>获取环境变量AFL_NO_FORKSRV，AFL_NO_CPU_RED，AFL_NO_ARITH，AFL_SHUFFLE_QUEUE，AFL_FAST_CAL，若存在，则将相关变量置为1</li>
+<li>获取AFL_HANG_TMOUT，存访进hang_tmout</li>
+<li>调用save_cmdline，做了一份命令行参数的拷贝，放在orig_cmdline</li>
+<li>调用fix_up_banner，不是很重要，先跳过</li>
+<li>调用check_if_tty，如果我们是在tty上运行，就会设置tty相关变量，读取窗口大小</li>
+<li>调用get_core_count，计算cpu核数</li>
+<li>调用check_crash_handling，确保核心转储不会进入该程序</li>
+<li>调用check_cpu_governor，检查cpu的管理者</li>
+<li>调用setup_post，加载post process</li>
+<li>调用setup_shm</li>
+</ul>
+<h3 id="setup-shm"><a href="#setup-shm" class="headerlink" title="setup_shm"></a>setup_shm</h3><p>这里涉及到了in_bitmap，这是输入的bitmap，有8位</p>
+<p> u8 virgin_bits[MAP_SIZE]，代表的是尚未被fuzzing的区域</p>
+<p>u8 virgin_tmout[MAP_SIZE]，记录超时信息</p>
+<p>u8 virgin_crash[MAP_SIZE]，记录崩溃信息</p>
+<p>如果没有in_bitmap,就初始化virgin_bits为255（全是1）</p>
+<p>初始化virgin_tmout与virgin_crash为255（全是1）</p>
+<p>调用shmget分配MAP_SIZE的共享内存，记录为shm_id，字符串记录为shm_str</p>
+<p>如果没有设置dumb_mode，就设置SHM_ENV_VAR为shr_str</p>
+<p>调用shmat，将共享内存映射到进程中,返回值即共享内存地址，存入trace_bits</p>
+<ul>
+<li>调用init_count_class16</li>
+</ul>
+<h3 id="init-count-class16"><a href="#init-count-class16" class="headerlink" title="init_count_class16"></a>init_count_class16</h3><p>trace_bits存放于共享内存中，用一个字节来记录该路径是否被到达，以及该路径被命中的次数</p>
+<p>该函数主要用于初始化count_class_lookup16[65536] 数组，该数组会被初始化为类似这样</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">const</span> u8 count_class_lookup8[<span class="number">256</span>] = &#123;</span><br><span class="line">        [<span class="number">0</span>]           = <span class="number">0</span>,</span><br><span class="line">        [<span class="number">1</span>]           = <span class="number">1</span>,</span><br><span class="line">        [<span class="number">2</span>]           = <span class="number">2</span>,</span><br><span class="line">        [<span class="number">3</span>]           = <span class="number">4</span>,</span><br><span class="line">        [<span class="number">4</span> ... <span class="number">7</span>]     = <span class="number">8</span>,</span><br><span class="line">        [<span class="number">8</span> ... <span class="number">15</span>]    = <span class="number">16</span>,</span><br><span class="line">        [<span class="number">16</span> ... <span class="number">31</span>]   = <span class="number">32</span>,</span><br><span class="line">        [<span class="number">32</span> ... <span class="number">127</span>]  = <span class="number">64</span>,</span><br><span class="line">        [<span class="number">128</span> ... <span class="number">255</span>] = <span class="number">128</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>当每次命中新路径时，就是利用该数组去对路径命中数进行规整处理，比如如果是9的话就计算为16这样子。</p>
+<blockquote>
+<p>这里我还不是特别理解，暂时引用@sakura 师傅的解释：</p>
+<p>为什么这么做呢，主要是为了让一些循环不被当成不同的路径，比如说一个很多次的循环，循环第n次和第n+1次是完全一样的，这样子可以尽可能减少命中次数导致的区别</p>
+</blockquote>
+<ul>
+<li>调用setup_dirs_fds</li>
+</ul>
+<h3 id="setup-dirs-fds"><a href="#setup-dirs-fds" class="headerlink" title="setup_dirs_fds"></a>setup_dirs_fds</h3><p>该函数主要用于准备输出目录与文件</p>
+<ul>
+<li><p>存在sync_id的话，建立sync_dir目录</p>
+</li>
+<li><p>建立out_dir目录</p>
+</li>
+<li><p>以只读模式打开out_dir文件</p>
+</li>
+<li><p>建立out_dir&#x2F;queue目录,然后在该目录下</p>
+<ul>
+<li><p>建立.state目录，该目录保存queue metadata used for session</p>
+<p>   resume and related tasks</p>
+<ul>
+<li>建立.state&#x2F;deterministic_done目录，该目录保存过去经历过deterministic fuzzing的queue entries</li>
+<li>建立.state&#x2F;auto_extras目录，该目录保存auto-selected dictionary entries</li>
+<li>建立.state&#x2F;redundant_edges目录，该目录保存当前认为的多余路径</li>
+<li>建立.state&#x2F;variable_behavior目录，该目录保存showing variable behavior路径的集合</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>如果sync_id存在，建立out_dir&#x2F;.synced目录，用于keeping track of cooperating fuzzers，也就是跟踪同步</p>
+</li>
+<li><p>建立out_dir&#x2F;crashes目录，保存crashes</p>
+</li>
+<li><p>建立out_dir&#x2F;hangs目录，保存hangs</p>
+</li>
+<li><p>打开&#x2F;dev&#x2F;null以及&#x2F;dev&#x2F;urandom设备</p>
+</li>
+<li><p>打开out_dir&#x2F;plot_data文件，gnuplot为命令行的交互式绘图工具</p>
+<ul>
+<li>向该文件写入”# unix_time, cycles_done, cur_path, paths_total, pending_total, pending_favs, map_size, unique_crashes, unique_hangs, max_depth, execs_per_sec\n”</li>
+</ul>
+</li>
+</ul>
+<p>到main</p>
+<ul>
+<li>调用read_testcases</li>
+</ul>
+<h3 id="read-testcases"><a href="#read-testcases" class="headerlink" title="read_testcases"></a>read_testcases</h3><p>该函数主要用于处理输入</p>
+<ul>
+<li><p>访问in_dir&#x2F;queue</p>
+<ul>
+<li>如果存在，设置in_dir为in_dir&#x2F;queue</li>
+</ul>
+</li>
+<li><p>调用scandir，扫描in_dir</p>
+</li>
+<li><p>遍历该文件夹下的所有文件名字符串</p>
+<ul>
+<li><p>跳过 . 和 ..</p>
+</li>
+<li><p>判断文件的size是否大于 MAX_FILE</p>
+</li>
+<li><p>判断是否是已经被确定性变异（deterministic fuzzing）的input，如果是的话就条过</p>
+</li>
+<li><blockquote>
+<p>代码里的注释：检查指示该条目的确定性模糊测试已完成的元数据。 我们不想在恢复中止扫描时重复确定性模糊测试，因为这毫无意义，并且可能非常耗时</p>
+</blockquote>
+</li>
+<li><p>对文件调用add_to_queue</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>	</p>
+<h3 id="add-to-queue"><a href="#add-to-queue" class="headerlink" title="add_to_queue"></a>add_to_queue</h3><p>定义乐一个queue_entry结构体，以链表的形式串起来</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">queue_entry</span> &#123;</span></span><br><span class="line"></span><br><span class="line">  u8* fname;                          <span class="comment">/* File name for the test case      */</span></span><br><span class="line">  u32 len;                            <span class="comment">/* Input length                     */</span></span><br><span class="line"></span><br><span class="line">  u8  cal_failed,                     <span class="comment">/* Calibration failed?              */</span></span><br><span class="line">      trim_done,                      <span class="comment">/* Trimmed?                         */</span></span><br><span class="line">      was_fuzzed,                     <span class="comment">/* Had any fuzzing done yet?        */</span></span><br><span class="line">      passed_det,                     <span class="comment">/* Deterministic stages passed?     */</span></span><br><span class="line">      has_new_cov,                    <span class="comment">/* Triggers new coverage?           */</span></span><br><span class="line">      var_behavior,                   <span class="comment">/* Variable behavior?               */</span></span><br><span class="line">      favored,                        <span class="comment">/* Currently favored?               */</span></span><br><span class="line">      fs_redundant;                   <span class="comment">/* Marked as redundant in the fs?   */</span></span><br><span class="line"></span><br><span class="line">  u32 bitmap_size,                    <span class="comment">/* Number of bits set in bitmap     */</span></span><br><span class="line">      exec_cksum;                     <span class="comment">/* Checksum of the execution trace  */</span></span><br><span class="line"></span><br><span class="line">  u64 exec_us,                        <span class="comment">/* Execution time (us)              */</span></span><br><span class="line">      handicap,                       <span class="comment">/* Number of queue cycles behind    */</span></span><br><span class="line">      depth;                          <span class="comment">/* Path depth                       */</span></span><br><span class="line"></span><br><span class="line">  u8* trace_mini;                     <span class="comment">/* Trace bytes, if kept             */</span></span><br><span class="line">  u32 tc_ref;                         <span class="comment">/* Trace bytes ref count            */</span></span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">queue_entry</span> *<span class="title">next</span>,           /* <span class="title">Next</span> <span class="title">element</span>, <span class="title">if</span> <span class="title">any</span>             */</span></span><br><span class="line"><span class="class">                     *<span class="title">next_100</span>;</span>       <span class="comment">/* 100 elements ahead               */</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">queue_entry</span>* <span class="title">q</span> =</span> ck_alloc(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> queue_entry));</span><br><span class="line"></span><br><span class="line">  q-&gt;fname        = fname;</span><br><span class="line">  q-&gt;len          = len;</span><br><span class="line">  q-&gt;depth        = cur_depth + <span class="number">1</span>;</span><br><span class="line">  q-&gt;passed_det   = passed_det;</span><br></pre></td></tr></table></figure>
+
+<p>如果有队列头且(queued_paths - 1) % 100 &#x3D;&#x3D; 0 &amp;&amp; queued_paths &gt; 1，就设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">q_prev100-&gt;next_100 = q;</span><br><span class="line">q_prev100 = q;</span><br></pre></td></tr></table></figure>
+
+<p>一般的话设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">q_prev100 = queue = queue_top = q；</span><br></pre></td></tr></table></figure>
+
+<p>没有的话，就设置这个q为队列头</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">queue_top-&gt;next = q;</span><br><span class="line">queue_top = q;</span><br></pre></td></tr></table></figure>
+
+<p>queued_paths++ （queue路径计数）</p>
+<p>pending_not_fuzzed++ （待fuzz样例计数）</p>
+<p>last_path_time更新为当前时间。</p>
+<ul>
+<li><strong>回到main ，调用load_auto</strong></li>
+</ul>
+<h3 id="load-auto"><a href="#load-auto" class="headerlink" title="load_auto"></a>load_auto</h3><p>load自动生成的提取出来的词典token</p>
+<ul>
+<li>遍历 USE_AUTO_EXTRAS次，尝试打开 <code>%s/.state/auto_extras/auto_%06u&quot;, in_dir, i</code><ul>
+<li>失败直接结束</li>
+<li>成功就读取MAX_AUTO_EXTRA + 1个字节放入tmp中<ul>
+<li>然后调用maybe_add_auto(tmp, len)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="maybe-add-auto"><a href="#maybe-add-auto" class="headerlink" title="maybe_add_auto"></a>maybe_add_auto</h3><ul>
+<li><p>!MAX_AUTO_EXTRAS || !USE_AUTO_EXTRAS  ，直接return</p>
+</li>
+<li><p>循环遍历，将tmp[i]异或tmp[i+1] ，相同则结束，遍历次数为len</p>
+</li>
+<li><p>len&#x3D;&#x3D;2</p>
+<ul>
+<li>和interesting_16数组里的元素比较，如果和其中某一个相同，就直接return</li>
+</ul>
+</li>
+<li><p>len&#x3D;&#x3D;4</p>
+<ul>
+<li>和interesting_32数组里的元素比较，如果和其中某一个相同，就直接return</li>
+</ul>
+</li>
+<li><p>与extras数组元素进行比较，到其元素值&gt;&#x3D;len即return</p>
+</li>
+<li><blockquote>
+<p>源码注释：</p>
+<p>拒绝任何与现有extras内容相匹配的内容。 进行不区分大小写的匹配。 我们利用 extras[] 按大小排序这一事实进行优化。</p>
+</blockquote>
+</li>
+<li><p>auto_changed &#x3D; 1</p>
+</li>
+<li><p>从0开始遍历到a_extras_cnt</p>
+<ul>
+<li>如果a_extras[i].len &#x3D;&#x3D; len &amp;&amp; !memcmp_nocase(a_extras[i].data, mem, len<ul>
+<li>就将a_extras[i].hit_cnt++，这个值代表在语料中被使用的次数</li>
+<li>跳转至sort_a_extras</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>执行到这里，我们看起来就是在处理一个新的entry乐，如果有空间的话，我们会加上这个entry，否则会随机删去一些entry，具体的：</p>
+<ul>
+<li>如果a_extras_cnt &lt; MAX_AUTO_EXTRAS，直接添加即可</li>
+<li>否则执行<ul>
+<li><code>i = MAX_AUTO_EXTRAS / 2 + UR((MAX_AUTO_EXTRAS + 1) / 2);</code><br><code>ck_free(a_extras[i].data);</code></li>
+<li>也就是free掉后半部分中的随机一个</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>回到main，调用pivot_inputs</p>
+<h3 id="pivot-inputs"><a href="#pivot-inputs" class="headerlink" title="pivot_inputs"></a>pivot_inputs</h3><p>在输出目录中为输入测试用例创建硬链接，选择好的名称并相应地进行旋转</p>
+<p>也就是为in_dir中的test cases，在out_dir中创建hard link</p>
+<ul>
+<li><p>遍历queue entry链表</p>
+<ul>
+<li>找到fname中最后一个‘&#x2F;’</li>
+<li>一些字符串比较操作，就是用来找到test case的</li>
+<li>创建相关hard link到out_dir&#x2F;queue&#x2F;rsl </li>
+<li>fname改为指向这个hard link路径</li>
+</ul>
+</li>
+<li><p>如果设置了q-&gt;passed_det，就调用mark_as_det_done(q)，主要就是打开out_dir&#x2F;queue&#x2F;.state&#x2F;deterministic_done&#x2F;use_name，，设置passed_det&#x3D;1，确保passed_det 值有被覆盖</p>
+</li>
+<li><p>如果设置了in_place_resume，就是调用nuke_resume_dir，该函数主要删除out_dir&#x2F;_resume&#x2F;下所有id：为前缀的文件</p>
+</li>
+</ul>
+<p><strong>回到main</strong></p>
+<ul>
+<li>如果存在extras_dir，就调用load_extras(extras_dir)，该函数就是从该路径中读取extras到extras数组里，按size大小排序。</li>
+<li>如果没有设置timeout_given，调用 find_timeout<ul>
+<li>该函数主要就是在out_dir&#x2F;fuzzer_stats或者in_dir&#x2F;..&#x2F;fuzzer_stats中找exec_timeout字符串，找到了就读取数值，小于等于4就直接return，否则设置timeout_given &#x3D; 3</li>
+</ul>
+</li>
+<li>调用detect_file_args(argv + optind + 1)，<ul>
+<li>该函数处理命令行参数，替换‘@@’ in args，替换为out_dir&#x2F;.cur_input</li>
+</ul>
+</li>
+<li>如果没有设置out_file，就调用setup_stdio_file<ul>
+<li>删除原本的out_dir&#x2F;.cur_input</li>
+<li>创建新的out_dir&#x2F;.cur_input，fd保存为out_fd</li>
+</ul>
+</li>
+<li>调用check_binary(argv[optind])，确保我们要执行的程序存在，且不能是shell script</li>
+<li>调用get_cur_time，获取当前时间保存为start_time</li>
+<li>判断是否设置了qemu_mode<ul>
+<li>设置了的话，调用use_argv &#x3D; get_qemu_argv(argv[0], argv + optind, argc - optind)</li>
+<li>否则use_argv &#x3D; argv + optind</li>
+</ul>
+</li>
+<li>调用perform_dry_run(use_argv)</li>
+</ul>
+<p>在此之前，讲一些与各种结构体，变量处理相关的函数，下面会调用到</p>
+<h3 id="has-new-bits"><a href="#has-new-bits" class="headerlink" title="has_new_bits"></a>has_new_bits</h3><p>参数为(u8* virgin_map)</p>
+<p>用于检测有没有新路径，或者是某一路径的执行次数有所不同</p>
+<p>virgin_bits保存还没有被Fuzz覆盖到的byte，其初始值每位全被置位1,然后每次按字节置位</p>
+<ul>
+<li><p>初始化current，virgin为trace_bits,virgin_map的首地址</p>
+</li>
+<li><p>每次从共享内存（trace_bits）中取8字节</p>
+<ul>
+<li><p>如果current不为0，且*current &amp; *virgin 也不为0，则代表发现了新路径，或某次路径执行次数和有变。</p>
+<ul>
+<li><p>如果ret&lt;2</p>
+<ul>
+<li><p>取current首字节地址为cur，virgin的首字节地址为vir</p>
+</li>
+<li><p>比较<code>cur[i] &amp;&amp; vir[i] == 0xff</code>，如果有一个为真，则设置ret为2 （i取值为0-7）</p>
+</li>
+<li><p>在源码中直接是这么写的</p>
+</li>
+<li><p>&#96;&#96;&#96;c<br>    if ((cur[0] &amp;&amp; vir[0] &#x3D;&#x3D; 0xff) || (cur[1] &amp;&amp; vir[1] &#x3D;&#x3D; 0xff) ||<br>        (cur[2] &amp;&amp; vir[2] &#x3D;&#x3D; 0xff) || (cur[3] &amp;&amp; vir[3] &#x3D;&#x3D; 0xff) ||<br>        (cur[4] &amp;&amp; vir[4] &#x3D;&#x3D; 0xff) || (cur[5] &amp;&amp; vir[5] &#x3D;&#x3D; 0xff) ||<br>        (cur[6] &amp;&amp; vir[6] &#x3D;&#x3D; 0xff) || (cur[7] &amp;&amp; vir[7] &#x3D;&#x3D; 0xff))<br>        ret &#x3D; 2</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">        - 这代表了发现了新的tuple，设置ret=2</span><br><span class="line"></span><br><span class="line">      - 否则 ret=1</span><br><span class="line"></span><br><span class="line">        - 代表仅仅只是改变了某个tuple的hit-count</span><br><span class="line"></span><br><span class="line">    - \*virgin &amp;= ~*curren</span><br><span class="line"></span><br><span class="line">  - current++ ， virgin++ ，一直循环直至遍历完MAPSIZE</span><br><span class="line"></span><br><span class="line">- 如果ret &amp;&amp; virgin_map == virgin_bits </span><br><span class="line"></span><br><span class="line">  - bitmap_changed=1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### classify_counts</span><br><span class="line"></span><br><span class="line">参数为u64 *mem</span><br><span class="line"></span><br><span class="line">- 每次从mem中读取8字节，直至读完</span><br><span class="line"></span><br><span class="line">  - 每次取两个字节，u16* mem16 = (u16*)mem</span><br><span class="line"></span><br><span class="line">  - 然后进行这样的操作</span><br><span class="line"></span><br><span class="line">  - ```c</span><br><span class="line">          mem16[0] = count_class_lookup16[mem16[0]];</span><br><span class="line">          mem16[1] = count_class_lookup16[mem16[1]];</span><br><span class="line">          mem16[2] = count_class_lookup16[mem16[2]];</span><br><span class="line">          mem16[3] = count_class_lookup16[mem16[3]];</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>在count_class_lookup16数组中找到对应的值并复制给mem</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="count-bytes"><a href="#count-bytes" class="headerlink" title="count_bytes"></a>count_bytes</h3><p>计算bitmap中 被 set的bytes的数量</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> FF(_b)  (0xff &lt;&lt; ((_b) &lt;&lt; 3))</span></span><br><span class="line"><span class="comment">/* Count the number of bytes set in the bitmap. Called fairly sporadically,</span></span><br><span class="line"><span class="comment">   mostly to update the status screen or calibrate and examine confirmed</span></span><br><span class="line"><span class="comment">   new paths. */</span></span><br><span class="line"><span class="type">static</span> u32 <span class="title function_">count_bytes</span><span class="params">(u8* mem)</span> &#123;</span><br><span class="line">  u32* ptr = (u32*)mem;</span><br><span class="line">  u32  i   = (MAP_SIZE &gt;&gt; <span class="number">2</span>);</span><br><span class="line">  u32  ret = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (i--) &#123;</span><br><span class="line">    u32 v = *(ptr++);</span><br><span class="line">    <span class="keyword">if</span> (!v) <span class="keyword">continue</span>;</span><br><span class="line">    <span class="keyword">if</span> (v &amp; FF(<span class="number">0</span>)) ret++;</span><br><span class="line">    <span class="keyword">if</span> (v &amp; FF(<span class="number">1</span>)) ret++;</span><br><span class="line">    <span class="keyword">if</span> (v &amp; FF(<span class="number">2</span>)) ret++;</span><br><span class="line">    <span class="keyword">if</span> (v &amp; FF(<span class="number">3</span>)) ret++;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>源码很短很清晰，这里直接引用@sakura师傅的</p>
+<ul>
+<li><p>初始化计数器ret的值为0，循环读取mem里的值，每次读取4个字节到u32变量v中</p>
+</li>
+<li><p>如果v为0，则代表这四个字节都是0，直接跳过，进入下一次循环</p>
+</li>
+<li><p>如果v不为0，则依次计算 <code>v &amp; FF(0),v &amp; FF(1),v &amp; FF(2),v&amp;FF(3)</code></p>
+<p>的结果，如果不为0，则计数器ret加一。</p>
+<ul>
+<li>#define FF(_b) (0xff &lt;&lt; ((_b) &lt;&lt; 3))<ul>
+<li><code>(_b) &lt;&lt; 3)</code>即<code>_b * 8</code></li>
+<li>即<code>0x000000ff</code>左移<code>(_b * 8)</code>位</li>
+<li>最终结果可以是<code>0x000000ff</code>,<code>0x0000ff00</code>,<code>0x00ff0000</code>,<code>0xff000000</code>其中之一</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="update-bitmap-score"><a href="#update-bitmap-score" class="headerlink" title="**update_bitmap_score"></a>**update_bitmap_score</h3><h3 id="perform-dry-run"><a href="#perform-dry-run" class="headerlink" title="perform_dry_run"></a>perform_dry_run</h3><p>执行所有测试用例以确认应用程序按预期工作。 这仅针对初始输入完成，并且仅完成一次。</p>
+<ul>
+<li><p>设置cal_failures &#x3D; 0，获取skip_crashes,然后开始一个遍历queue_entry链表的主循环</p>
+<ul>
+<li>打开q-&gt;fname文件，读取到use_mem中，</li>
+<li>调用res &#x3D; calibrate_case(argv, q, use_mem, 0, 1)</li>
+<li>函数描述：校准新的测试用例。 这是在处理输入目录时完成的，以尽早警告不稳定或其他有问题的测试用例； 以及何时发现新路径以检测变量行为等。</li>
+<li>如果stop_soon&#x3D;1，直接return</li>
+<li>否则根据返回值res判断错误类型<ul>
+<li>FAULT_NONE<ul>
+<li>q是queue_top的话，也就是第一个测试样例，调用check_map_coverage，以评估map覆盖率</li>
+<li>如果设置了crash_mode，抛出异常</li>
+</ul>
+</li>
+<li>FAULT_TMOUT<ul>
+<li>如果设置了timeout_given<ul>
+<li>如果timeout_given&gt;1 <ul>
+<li>q-&gt;cal_failed &#x3D; CAL_CHANCES</li>
+<li>cal_failures++</li>
+</ul>
+</li>
+<li>否则输出了个 FATAL(“Test case ‘%s’ results in a timeout”, fn)</li>
+</ul>
+</li>
+<li>输出了个 FATAL(“Test case ‘%s’ results in a timeout”, fn)</li>
+</ul>
+</li>
+<li>FAULT_CRASH<ul>
+<li>如果设置了crash_mode，直接break</li>
+<li>如果设置了skip_crashes<ul>
+<li>跳过，q-&gt;cal_failed &#x3D; CAL_CHANCES，al_failures++</li>
+</ul>
+</li>
+<li>如果指定了mem_limit，可能会建议摩多摩多</li>
+</ul>
+</li>
+<li>FAULT_ERROR<ul>
+<li>没法运行程序，错误了，狗叫一下异常</li>
+</ul>
+</li>
+<li>FAULT_NOINST<ul>
+<li>没有任何路径信息，也是狗叫一下异常</li>
+</ul>
+</li>
+<li>FAULT_NOBITS<ul>
+<li>没有任何新的路径，抛出警告，认为这是无用路径</li>
+<li>useless_at_start++</li>
+</ul>
+</li>
+<li>q-&gt;var_behavior为真，表示多次运行乐<ul>
+<li>抛出警告，Instrumentation output varies across runs.，表示该样例路径输出可变。</li>
+<li>useless_at_start++</li>
+</ul>
+</li>
+<li>q&#x3D;q-&gt;next</li>
+</ul>
+</li>
+<li>循环结束，判断cal_failures<ul>
+<li>如果cal_failures &#x3D;&#x3D; queued_paths，输出异常，crash或time out</li>
+<li>如果cal_failures * 5 &gt; queued_paths，抛出警告，被拒绝的test cases占比过高了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="calibrate-case"><a href="#calibrate-case" class="headerlink" title="calibrate_case"></a>calibrate_case</h3><p>校准新的测试用例。 这是在处理输入目录时完成的，以尽早警告不稳定或其他有问题的测试用例； 以及何时发现新路径以检测变量行为等。</p>
+<ul>
+<li><p>创建first_trace[MAP_SIZE]</p>
+</li>
+<li><p>first_run &#x3D; (q-&gt;exec_cksum &#x3D;&#x3D; 0)，如果为0代表第一次运行，first_run设置为1</p>
+</li>
+<li><p>保存stage_max，exec_tmout，stage_name</p>
+</li>
+<li><p>如果是resuming_fuzz&#x3D;1，或者from_queue为0，代表正在resuming sessions或者不来自queue，将use_tmout扩大。  </p>
+</li>
+<li><p>q-&gt;cal_failed++</p>
+</li>
+<li><p>如果有fast_cal,stage_max为3，否则为CAL_CYCLES（8）</p>
+</li>
+<li><p>stage_name &#x3D; “calibration”</p>
+</li>
+<li><p>如果不是dumb_mode，且no_forkserver&#x3D;1，且forksrv_pid没被设置</p>
+<ul>
+<li>调用init_forkserver(argv)，启动fork server</li>
+</ul>
+</li>
+<li><p>如果q-&gt;exec_cksum被设置</p>
+<ul>
+<li>hnb &#x3D; has_new_bits(virgin_bits)</li>
+<li>如果hnb &gt; new_bits， new_bits &#x3D; hnb</li>
+</ul>
+</li>
+<li><p>获取cur_time到start_us</p>
+</li>
+<li><p>执行stage_max次calibration stage</p>
+<ul>
+<li><p>如果不是第一次跑且!(stage_cur % stats_update_freq)（queue不来自input，而是评估新的case），输出状态信息，用来展示此次执行结果</p>
+</li>
+<li><p>调用write_to_testcase(use_mem, q-&gt;len)</p>
+<ul>
+<li><p>q-&gt;fname的文件内容写入.cur_input中</p>
+</li>
+<li><p>调用fault &#x3D; run_target(argv, use_tmout)，执行程序，然后判断fault返回值</p>
+</li>
+<li><p>stop_soon或者fault !&#x3D; crash_mode，就abort(stop_soon 就是按下了ctrl  c触发中断那种)</p>
+</li>
+<li><p>如果这是<code>calibration stage</code>第一次运行，且不在dumb_mode，且共享内存里没有任何路径（即没有任何byte被置位），设置fault为<code>FAULT_NOINST</code>,然后goto abort_calibration。</p>
+</li>
+<li><p>计算共享内存里有多少字节被置位了,通过count_bytes函数</p>
+<ul>
+<li><code>u32 count_bytes(u8 *mem)</code></li>
+</ul>
+</li>
+<li><p>计算<code>hash32(trace_bits, MAP_SIZE, HASH_CONST)</code>的结果，其值为一个32位uint值，保存到cksum中</p>
+</li>
+<li><p>如果q-&gt;exec_cksum !&#x3D; cksum，即第一次运行，亦或是相同参数下的多次执行，但是cksum却不同，单表路径可变</p>
+<ul>
+<li>hnb &#x3D; has_new_bits(virgin_bits)</li>
+<li>如果hnb&gt;new_bits，设置hnb为new_bits</li>
+<li>如果q-&gt;exec_cksum被设置，则我们来<strong>判断该queue是否可变</strong><ul>
+<li>i从0到MAP_SIZE<ul>
+<li>first_trace[i] !&#x3D; trace_bits[i]，同时var_bytes[i]为0，代表变化了，说明确实是可变的<ul>
+<li>设置var_bytes[i]&#x3D;1</li>
+<li>设置stage_max   &#x3D; CAL_CYCLES_LONG</li>
+</ul>
+</li>
+<li>设置var_detected &#x3D; 1</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>否则即<strong>第一次执行</strong><ul>
+<li>设置q-&gt;exec_cksum &#x3D; cksum，</li>
+<li>复制trace_bits到first_trace</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>获取当前cur_time为stop_us</p>
+</li>
+<li><p>计算total_cal_us   +&#x3D; stop_us - start_us，total_cal_cycles +&#x3D; stage_max</p>
+</li>
+<li><p>接下来是收集关于这个测试样例性能的统计数据，这将会被在calculate_score中被用来计算。</p>
+</li>
+<li><p>q-&gt;exec_us 保存单次queue执行时间(通过平均值计算)</p>
+</li>
+<li><p>q-&gt;bitmap_size存贮count_bytes(trace_bits），也就是最后一次执行所覆盖的路径数</p>
+</li>
+<li><p>q-&gt;handicap   &#x3D; handicap</p>
+</li>
+<li><p>q-&gt;cal_failed  &#x3D; 0</p>
+</li>
+<li><p>total_bitmap_size +&#x3D; q-&gt;bitmap_size，也就是加上了这个queue所覆盖到的路径数</p>
+</li>
+<li><p>total_bitmap_entries++</p>
+</li>
+<li><p>update_bitmap_score(q)，更新该queue</p>
+</li>
+<li><p>&#96;&#96;&#96;<br>update_bitmap_score：当我们遇到一条新路径时，我们调用它来查看该路径是否比任何现有路径看起来更“有利”。 “favorables”的目的是拥有一组最小的路径来触发到目前为止在位图中看到的所有位，并以牺牲其余部分为代价专注于模糊它们。<br> 该过程的第一步是为位图中的每个字节维护一个 top_rated[] 条目列表。 如果之前没有竞争者，或者如果竞争者具有更有利的速度 x 大小因子，我们将赢得该位置。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    - 如果fault为`FAULT_NONE`，且该queue是第一次执行，且不属于dumb_mode，而且new_bits为0，代表在这个样例所有轮次的执行里，都没有发现任何新路径和出现异常，设置fault为`FAULT_NOBITS`</span><br><span class="line"></span><br><span class="line">    - 如果new_bits为2，且`q-&gt;has_new_cov`为0，设置其值为1，并将queued_with_cov加一，代表有一个queue发现了新路径。（）</span><br><span class="line"></span><br><span class="line">    - 如果该queue为可变路径，var_detected会为1</span><br><span class="line"></span><br><span class="line">      - 调用count_bytes计算被置位的tuple，保存到var_byte_count，代表这些tuple可变</span><br><span class="line">      - 调用 mark_as_variable(q)，标记该queue位variable</span><br><span class="line">      - queued_variable++</span><br><span class="line"></span><br><span class="line">    - 恢复stagename，cur，max</span><br><span class="line"></span><br><span class="line">    - 如果不是第一次运行该queue，调用show_stats()</span><br><span class="line"></span><br><span class="line">    - 返回fault的值</span><br><span class="line"></span><br><span class="line">### init_forkserver</span><br><span class="line"></span><br><span class="line">    代码中有注释描述：启动 fork 服务器（仅限检测模式）。 这个想法在这里解释：</span><br><span class="line">    http://lcamtuf.blogspot.com/2014/10/fuzzing-binaries-without-execve.html</span><br><span class="line">    本质上，检测允许我们跳过 execve()，并继续clone一个停止的child process。 所以，我们只执行一次，然后通过管道发送命令。 该逻辑的另一部分在 afl-as.h 中。</span><br><span class="line"></span><br><span class="line">​	我看了一下这篇文章，主要就是讲了向二进制文件注入代码(也就是我们afl-as干的事)的想法，减少了每次fork 然后exec的开销，而fuzzer不在是process的直接父进程，而是祖父进程，它不能直接使用*waitpid()*；也没有其他简单、可移植的 API 来获取有关进程退出状态的通知。而是通过共享内存的方法解决这些问题。这在当时让fuzz的效率提升了两倍以上。~~我还没完全看懂，等完全看懂了再来改改~~</span><br><span class="line"></span><br><span class="line">- 创建两个管道，st_pipe状态管道和ctl_pipe控制管道</span><br><span class="line">-  调用fork ，返回forksrv_pid</span><br><span class="line">- 子进程</span><br><span class="line">  - 设置了一下r.rlim_cur，r.rlim_max</span><br><span class="line">  - 调用setsid()，把子进程变成新的会话组的领头进程，与父进程脱离乐</span><br><span class="line">  - 重定向文件描述符1，2到dev_null_fd</span><br><span class="line">  - 如果指定了out_file</span><br><span class="line">    - 重定向文件描述符0到dev_null_fd</span><br><span class="line">  - 否则</span><br><span class="line">    - 重定向文件描述符0到out_fd</span><br><span class="line">    - 关闭out_fd</span><br><span class="line">  - 重定向FORKSRV_FD到ctl_pipe控制管道读端</span><br><span class="line">  - 重定向FORKSRV_FD+1到st_pipe状态管道写端</span><br><span class="line">  - 获取一些环境变量</span><br><span class="line">  - 设置ASAN_OPTIONS，MSAN_OPTIONS环境变量</span><br><span class="line">  - 调用execv(target_path, argv)执行目标程序</span><br><span class="line">  - 如果execv失败了，设置*(u32*)trace_bits = EXEC_FAIL_SIG 并退出</span><br><span class="line">- 父进程</span><br><span class="line">  - fsrv_ctl_fd到ctl_pipe控制管道写端</span><br><span class="line">  - fsrv_st_fd到st_pipe状态管道读端</span><br><span class="line">  - 等待fork server启动，但是不能等太久</span><br><span class="line">  - 从管道里读取4个字节到status里(也就是我们桩代码向状态管道写的那四个字节)，如果读取成功，则代表fork server成功启动，就结束这个函数并返回。</span><br><span class="line">    - 如果超时，就抛出异常</span><br><span class="line">  - 剩下的就是一些check乐，毕竟没有读取成功</span><br><span class="line"></span><br><span class="line">总的来说 ，可以用该图简单概括</span><br><span class="line"></span><br><span class="line">![未命名绘图.drawio](https://images.seebug.org/content/images/2021/10/08/1633680605000-28hriil.png-w331s)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">**回到main**</span><br><span class="line"></span><br><span class="line">调用cull_queue()</span><br><span class="line"></span><br><span class="line">### cull_queue</span><br><span class="line"></span><br><span class="line">调整queue，我们会有函数遍历 top_rated[] entries,并将曾经没有见过的 bytes(temp_v)设置为更优先的，在整个fuzz过程中，优先的entries应该被给予更多的时间</span><br><span class="line"></span><br><span class="line">- 如果设置了dumb_mode或score_changed为0，直接return</span><br><span class="line">- score_changed=0</span><br><span class="line">- 初始化temp_v每个字节为0xff</span><br><span class="line">- 遍历queue，让每个queue-&gt;favored=0</span><br><span class="line">- 循环MAP_SIZE次，索引为i</span><br><span class="line">  - 这个循环是为了找出一组queue entry，他们能覆盖到现在已经覆盖到的所有路径(有点类似最小生成树的感觉)，由于是顺序找的，所以是贪心算法，并没有去筛选“最小的queue集合组”</span><br><span class="line">  - `if (top_rated[i] &amp;&amp; (temp_v[i &gt;&gt; 3] &amp; (1 &lt;&lt; (i &amp; 7))))`</span><br><span class="line">  - 其实就是取temp_v的path那一位</span><br><span class="line">  - 如果top_rated[i]，且该path又被置位</span><br><span class="line">    - 就从temp_v中清除掉所有`top_rated[i]`覆盖到的path，将对应的bit置为0</span><br><span class="line">    - 代表当前集合已经覆盖乐这些了</span><br><span class="line">    - top_rated[i]-&gt;favored = 1</span><br><span class="line">    - queued_favored++</span><br><span class="line">  - 如果!top_rated[i]-&gt;was_fuzzed，也就是该路径还没被fuzz过，就pending_favored++</span><br><span class="line">- 遍历queue</span><br><span class="line">  - mark_as_redundant(q, !q-&gt;favored)</span><br><span class="line">  - 如果不是favored的queue，就被标记成redundant_edges</span><br><span class="line"></span><br><span class="line">**回到main**</span><br><span class="line"></span><br><span class="line">- 调用show_init_stats()</span><br><span class="line">- 显示统计信息的，略过</span><br><span class="line">- 调用seek_to = find_start_position()</span><br><span class="line"></span><br><span class="line">### find_start_position</span><br><span class="line"></span><br><span class="line">恢复时，尝试找到开始的队列位置。 这只有在resume时，并且当我们可以找到初始的 fuzzer_stats 时 才有意义</span><br><span class="line"></span><br><span class="line">- 如果不是resuming_fuzz，就直接返回</span><br><span class="line">- 如果是in_place_resume,就打开`out_dir/fuzzer_stats`文件，否则打开`in_dir/../fuzzer_stats`文件</span><br><span class="line">- 读取文件内容到tmp，关闭文件</span><br><span class="line">- 找到“cur_path      : ”，读取其中的cur_path值到ret</span><br><span class="line">- 若值大于queued_paths</span><br><span class="line">  - ret=0</span><br><span class="line">- 返回ret</span><br><span class="line"></span><br><span class="line">**回到main**</span><br><span class="line"></span><br><span class="line">调用write_stats_file(0, 0, 0)</span><br><span class="line"></span><br><span class="line">调用save_auto()</span><br><span class="line"></span><br><span class="line">### write_stats_file</span><br><span class="line"></span><br><span class="line">负责更新统计信息文件，以及监视</span><br><span class="line"></span><br><span class="line">这个直接看源码就好，里面对各种变量进行了一些处理再输出到out_dir/fuzzer_stats中</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### save_auto</span><br><span class="line"></span><br><span class="line">保存自动生成的extras</span><br><span class="line"></span><br><span class="line">- auto_changed=0的话</span><br><span class="line">  - return</span><br><span class="line">- auto_changed=0</span><br><span class="line">- 向（&quot;%s/queue/.state/auto_extras/auto_%06u&quot;, out_dir, i  ）文件中写入a_extras的内容</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">**回到main**</span><br><span class="line"></span><br><span class="line">- 如果stop_soon被设置，直接停止fuzz，跳转到stop_fuzzing</span><br><span class="line">- 如果not_on_tty=0，也就是在tty设备上的话</span><br><span class="line">  - sleep(4)</span><br><span class="line">  - start_time += 4000</span><br><span class="line">  - 如果stop_soon被设置，直接停止fuzz，跳转到stop_fuzzing</span><br><span class="line"></span><br><span class="line">## main（2） fuzzer主循环</span><br><span class="line"></span><br><span class="line">- while（1）</span><br><span class="line"></span><br><span class="line">- 调用cull_queue()，精简queue</span><br><span class="line">- 如果queue_cur=0，代表所有queue已经被执行过一轮乐</span><br><span class="line">  - queue_cycle++，记录执行轮次</span><br><span class="line">  - current_entry   = 0，cur_skipped_paths = 0</span><br><span class="line">  - queue_cur     = queue，准备开始新的一轮</span><br><span class="line">  - 如果seek_to被设置，则循环（seek_to就是我们一开始找的起始位置，find_start_position的返回值）</span><br><span class="line">    - current_entry++</span><br><span class="line">    - seek_to--</span><br><span class="line">    - queue_cur = queue_cur-&gt;next</span><br><span class="line">  - 循环结束，也就是从seek_to所指定的queue开始执行</span><br><span class="line">  - 调用show_stats()，刷新展示页面</span><br><span class="line">  - 如果不在tty上</span><br><span class="line">    - ACTF(&quot;Entering queue cycle %llu.&quot;, queue_cycle)，刷新stdout</span><br><span class="line">  - 判断queued_paths == prev_queued，</span><br><span class="line">    - 若成立，也就是没有新的case被发现</span><br><span class="line">    - （queued_paths为test cases的总数）</span><br><span class="line">      - 判断use_splicing</span><br><span class="line">        - 不为0，则cycles_wo_finds++</span><br><span class="line">        - 否则use_splicing = 1</span><br><span class="line">    - 否则cycles_wo_finds = 0</span><br><span class="line">  - 更新prev_queued 为queued_paths</span><br><span class="line">  - 如果设置了sync_id且queue_cycle == 1，且有AFL_IMPORT_FIRST环境变量</span><br><span class="line">    - 调用sync_fuzzers(use_argv)</span><br><span class="line">    - 该函数对queue_cur进行一次test</span><br><span class="line">  - 调用fuzz_one(use_argv)，返回值存入skipped_fuzz</span><br><span class="line">    - fuzz_one(use_argv)不一定会执行当前queue_cur进行测试，内有一定判断</span><br><span class="line">  - skipped_fuzz为0，sync_id被设置，且stop_soon为0</span><br><span class="line">    - 若sync_interval_cnt为SYNC_INTERVAL倍数 且，sync_interval_cnt++</span><br><span class="line">      - 调用 sync_fuzzers(use_argv)</span><br><span class="line">  - 若stop_soon为0，exit_1被设置</span><br><span class="line">    - 设置stop_soon=2</span><br><span class="line">  - 如果stop_soon被设置</span><br><span class="line">    - break</span><br><span class="line">  - queue_cur = queue_cur-&gt;next，迭代到下一个queue</span><br><span class="line">  - current_entry++（当前queue的entry id）</span><br><span class="line">- while（1）循环结束</span><br><span class="line"></span><br><span class="line">这是循环之外的乐</span><br><span class="line"></span><br><span class="line">- 如果仍有queue_cur，就调用show_stats()再次刷新展示</span><br><span class="line">- 然后如果是正常break的，也就是stopsoon=2</span><br><span class="line">  - 杀掉父进程和子进程（forksrv_pid与child_pid）</span><br><span class="line">- 调用write_bitmap</span><br><span class="line">  - 此函数向out_dir/fuzz_bitmap 写入virgin_bits内容</span><br><span class="line">- 调用write_stats_file</span><br><span class="line">  - 更新统计信息文件</span><br><span class="line">- 调用save_auto</span><br><span class="line">  - save_auto</span><br><span class="line">- stopfuzzing的操作</span><br><span class="line">  - 一些文件的关闭，释放等，还有一点统计输出</span><br><span class="line"></span><br><span class="line">### fuzz_one</span><br><span class="line"></span><br><span class="line">- 若定义了 IGNORE_FINDS</span><br><span class="line">  - 如果 queue_cur-&gt;depth &gt; 1，直接return1</span><br><span class="line"></span><br><span class="line">- 判断pending_favored是否为0</span><br><span class="line">  - 如果不为0</span><br><span class="line">    - 如果当前queue被fuzz过，或者当前queue不是favored的queue，有99%的概率直接返回1</span><br><span class="line">  - 否则如果当前不是dumb__mode，且当前queue不是favored，且queued_paths也就是test cases的总数&gt;10</span><br><span class="line">    - 如果queue_cycle&gt;1 也就是轮过一次，且当前queue没被fuzz过，说明这是个新的queue（吧？）</span><br><span class="line">      - 有75%概率返回1</span><br><span class="line">    - 否则有95%的概率返回1</span><br><span class="line"></span><br><span class="line">- 判断是否在tty上，略</span><br><span class="line"></span><br><span class="line">- 打开当前queue-&gt;fname文件</span><br><span class="line"></span><br><span class="line">- 调用mmap私有映射该文件内容，返回到in_buf和orig_in</span><br><span class="line"></span><br><span class="line">- 定义长为len的out_buf</span><br><span class="line"></span><br><span class="line">- **CALIBRATION** (only if failed earlier on) </span><br><span class="line"></span><br><span class="line">  - 如果当前queue有校准错误，且小于3次，就调用calibrate_case再次校准，这是为了避免使用不合法的trace_bits</span><br><span class="line">  - 更多相关的可以查看https://github.com/AFLplusplus/AFLplusplus/pull/425</span><br><span class="line"></span><br><span class="line">- **TRIMMING**  </span><br><span class="line"></span><br><span class="line">  - 如果不是dumb_mode，且该queue没有被trim过（！trim_done）</span><br><span class="line">    - 调用trim_case(argv, queue_cur, in_buf)进行修剪</span><br><span class="line">    - 设置queue的trim_done=1</span><br><span class="line">  - 拷贝in_buf内容到out_buf</span><br><span class="line"></span><br><span class="line">- **PERFORMANCE SCORE**</span><br><span class="line"></span><br><span class="line">  - 调用 calculate_score(queue_cur)获取当前queue score，存入perf_score，这是个计算时会用到的得分</span><br><span class="line">  - 如果有skip_deterministic，或者当前queue被fuzz过，或者当前queue设置了passed_det</span><br><span class="line">    - 跳转至havoc_stage</span><br><span class="line">  - 如果master_max不为0，且(queue_cur-&gt;exec_cksum % master_max) != master_id - 1</span><br><span class="line">    - 跳转至havoc_stage</span><br><span class="line">  - doing_det = 1</span><br><span class="line"></span><br><span class="line">- **SIMPLE BITFLIP (+dictionary construction)**</span><br><span class="line"></span><br><span class="line">- ```c</span><br><span class="line">  #define FLIP_BIT(_ar, _b) do &#123; \</span><br><span class="line">      u8* _arf = (u8*)(_ar); \</span><br><span class="line">      u32 _bf = (_b); \</span><br><span class="line">      _arf[(_bf) &gt;&gt; 3] ^= (128 &gt;&gt; ((_bf) &amp; 7)); \</span><br><span class="line">    &#125; while (0)</span><br><span class="line">  /* 源码里的注释</span><br><span class="line">  在翻转每个字节中的最低有效位时，使用额外的技巧来检测可能的语法标记。本质上，这个想法是，如果你有一个像这样的二进制 blob：</span><br><span class="line">  </span><br><span class="line">    xxxxxxxxIHDRxxxxxxxx</span><br><span class="line">    ...并且改变前导和尾随字节会导致程序流发生变化或没有变化，但是触摸“IHDR”字符串中的任何字符总是会产生相同的，独特的路径，“IHDR”很可能是一个原子检查的魔法对模糊格式具有特殊意义的值。</span><br><span class="line">  </span><br><span class="line">   我们在这里而不是作为一个单独的阶段执行此操作，因为这是使操作大致“免费”（即没有额外的执行程序）的好方法。</span><br><span class="line">         </span><br><span class="line">  根据经验，与在更具破坏性的更改时执行检查相比，在翻转最低有效位时执行检查是有利的，程序流可能会以更剧烈的方式受到影响。</span><br><span class="line">  </span><br><span class="line">  需要注意的是，我们不会在 -d 模式或 -S 模式下生成字典——但这可能是一个公平的权衡。</span><br><span class="line">  </span><br><span class="line">  对于表现出可变行为的路径，这不会特别有效，但会优雅地失败，所以我们无论如何都会进行检查。</span><br><span class="line">  </span><br><span class="line">  */</span><br><span class="line">  </span><br><span class="line">  我的理解就是，为了保证得到正确的路径，有些key word 之类的词是不能变的，当翻转了那些key word的话，路径就会完全不一样，这样的key word 我们当成token</span><br><span class="line">  以下的操作就是AFL通过flip识别了这些token 并进行保存</span><br><span class="line">  token长度默认最小是3，最大是32</span><br><span class="line">  每次发现新token时，通过maybe_add_auto添加到a_extras数组里。</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<p>做了一个位翻转的运算，参数为out_buf,stage_cur </p>
+<p>_arf每次取一字节，8位</p>
+<p>先看右边，128为二进制100000000，7为二进制111，_bf&amp;7就是取后三位，128进行右移这个值，也就是右移0-7之间的值</p>
+<p>再看左边，_bf&gt;&gt;3 就是取除了后三位以外的值，也相当于&#x2F;8</p>
+<p>stage_cur最大值为stage_max  &#x3D; len &lt;&lt; 3，_bf&gt;&gt;3最大值就是 (len&lt;&lt;3)&gt;&gt;3&#x3D;len</p>
+<p>_bf是逐一递增的，也就是说每8次，对应的_bf&gt;&gt;3是相同的，也就是每循环8次，_arf[i] 的i((_bf) &gt;&gt; 3)就会增加1</p>
+<p>而以每8次循环为一组，里面的每一次，128都将分别右移0-7之间的值（这样就是每一位都有一次为1，比如10000000，01000000，00100000这样子），但前面的_arf[i] 又是不变的，也就是对_arf[i]的值，每一位都进行了一次对1异或，1^1&#x3D;0, 0^1&#x3D;1，这样就刚好实现了翻转。</p>
+<p>理解起来还是不难的。</p>
+</li>
+<li><p>这里的for循环还是直接贴源码</p>
+</li>
+<li><pre><code class="c">for (stage_cur = 0; stage_cur &lt; stage_max; stage_cur++) &#123;
+    //这样的循环 每次都是异或一位
+    stage_cur_byte = stage_cur &gt;&gt; 3;
+
+    FLIP_BIT(out_buf, stage_cur);//先翻转一位
+
+    if (common_fuzz_stuff(argv, out_buf, len)) goto abandon_entry;
+
+    FLIP_BIT(out_buf, stage_cur); //执行完common_fuzz_stuff再翻转回来
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">- 如果不是dumb_mode，且(stage_cur &amp; 7) == 7，也就是刚好是一个字节循环（按8位为一组算）的最后一次翻转</span><br><span class="line"></span><br><span class="line">  - 计算当前trace_bits的hash32为cksum</span><br><span class="line">  - 如果当前到达最后一次循环并且cksum == prev_cksum</span><br><span class="line">    - 若a_len小于MAX_AUTO_EXTRA</span><br><span class="line">      - a_collect[a_len] = out_buf[stage_cur &gt;&gt; 3]</span><br><span class="line">    - a_len++</span><br><span class="line">    - 若a_len &gt;= MIN_AUTO_EXTRA 且 a_len &lt;= MAX_AUTO_EXTRA</span><br><span class="line">      - 调用maybe_add_auto(a_collect, a_len)，将新发现的token加入a_extra[]</span><br><span class="line">    - a_len = 0</span><br><span class="line">    - prev_cksum = cksum</span><br><span class="line"></span><br><span class="line">- 若cksum不等于当前queue的exec_cksum</span><br><span class="line"></span><br><span class="line">  - 若a_len &lt; MAX_AUTO_EXTRA</span><br><span class="line">    - a_collect[a_len] = out_buf[stage_cur &gt;&gt; 3]</span><br><span class="line">  - a_len++</span><br><span class="line"></span><br><span class="line">- 更新new_hit_cnt = queued_paths + unique_crashes</span><br><span class="line"></span><br><span class="line">- stage_finds[STAGE_FLIP1]  += new_hit_cnt - orig_hit_cnt （也就是加上新发现的路径的crahses）</span><br><span class="line"></span><br><span class="line">- stage_cycles[STAGE_FLIP1] += stage_max （循环执行的次数）</span><br><span class="line"></span><br><span class="line">- 接下来是类似之前的操作，但现在是连续翻转两位</span><br><span class="line"></span><br><span class="line">- bitflip 2/1</span><br><span class="line"></span><br><span class="line">- ```c</span><br><span class="line">   for (stage_cur = 0; stage_cur &lt; stage_max; stage_cur++) &#123;</span><br><span class="line">    </span><br><span class="line">      stage_cur_byte = stage_cur &gt;&gt; 3;</span><br><span class="line">    </span><br><span class="line">      FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">      FLIP_BIT(out_buf, stage_cur + 1);</span><br><span class="line">    </span><br><span class="line">      if (common_fuzz_stuff(argv, out_buf, len)) goto abandon_entry;</span><br><span class="line">    </span><br><span class="line">      FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">      FLIP_BIT(out_buf, stage_cur + 1);</span><br><span class="line">    </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+然后还有连续翻转四位的
+
+bitflip 4/1
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (stage_cur = <span class="number">0</span>; stage_cur &lt; stage_max; stage_cur++) &#123;</span><br><span class="line"></span><br><span class="line">    stage_cur_byte = stage_cur &gt;&gt; <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">1</span>);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">2</span>);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (common_fuzz_stuff(argv, out_buf, len)) <span class="keyword">goto</span> abandon_entry;</span><br><span class="line"></span><br><span class="line">    FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">1</span>);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">2</span>);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+<li><p>生成Effector map </p>
+</li>
+<li><pre><code class="c">  /* Effector map setup. These macros calculate:
+  
+     EFF_APOS      - position of a particular file offset in the map.
+     EFF_ALEN      - length of a map with a particular number of bytes.
+     EFF_SPAN_ALEN - map span for a sequence of bytes.
+  
+   */
+  
+#define EFF_APOS(_p)          ((_p) &gt;&gt; EFF_MAP_SCALE2)
+#define EFF_REM(_x)           ((_x) &amp; ((1 &lt;&lt; EFF_MAP_SCALE2) - 1))
+#define EFF_ALEN(_l)          (EFF_APOS(_l) + !!EFF_REM(_l))
+#define EFF_SPAN_ALEN(_p, _l) (EFF_APcOS((_p) + (_l) - 1) - EFF_APOS(_p) + 1)
+</code></pre>
+</li>
+<li><p><code>eff_map   = ck_alloc(EFF_ALEN(len));</code></p>
+<p> <code>eff_map[0] = 1;</code></p>
+</li>
+<li><p>进行bitflip 8&#x2F;8翻转，也就是对一个byte进行翻转，简单的异或0xFF 即可</p>
+</li>
+<li><p>大部分操作与上面类似</p>
+</li>
+<li><p>不同点：在对每个byte进行翻转时，如果其造成执行路径与原始路径不一致，就将该byte在effector map中标记为1，即“有效”的，否则标记为0，即“无效”的</p>
+</li>
+<li><p>这样我们后续变异的时候，就会跳过那些不能带来变化的byte</p>
+</li>
+<li><p>进行bitflip 16&#x2F;8翻转，也就是对两个byte进行翻转</p>
+<ul>
+<li>如果这连续两个字节之前effector map已经置0了，就跳过此位</li>
+</ul>
+</li>
+<li><p>进行bitflip 32&#x2F;8翻转，对连续四个byte进行翻转，步骤与上面相同，也有effector map检查</p>
+</li>
+<li><p>如果no_arith</p>
+<ul>
+<li>跳至skip_arith</li>
+</ul>
+</li>
+<li><p>下面就是变异阶段</p>
+</li>
+<li><p><strong>ARITHMETIC INC&#x2F;DEC</strong></p>
+</li>
+</ul>
+<h3 id="sync-fuzzers"><a href="#sync-fuzzers" class="headerlink" title="sync_fuzzers"></a>sync_fuzzers</h3><h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wsg1100/p/14290340.html">https://www.cnblogs.com/wsg1100/p/14290340.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://f0cus7.github.io/2022/05/14/fuzz-%E9%80%9A%E8%BF%87afl-training%E5%AD%A6%E4%B9%A0afl/">https://f0cus7.github.io/2022/05/14/fuzz-%E9%80%9A%E8%BF%87afl-training%E5%AD%A6%E4%B9%A0afl/</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/bcbobo21cn/article/details/121940674">https://blog.csdn.net/bcbobo21cn/article/details/121940674</a></p>
+<p><a target="_blank" rel="noopener" href="https://paper.seebug.org/1732/#afl-afl-asc">https://paper.seebug.org/1732/#afl-afl-asc</a></p>
+<p><a target="_blank" rel="noopener" href="https://eternalsakura13.com/2020/08/23/afl/">https://eternalsakura13.com/2020/08/23/afl/</a></p>
+<p><a target="_blank" rel="noopener" href="https://bbs.pediy.com/thread-265936.htm#msg_header_h1_3">https://bbs.pediy.com/thread-265936.htm#msg_header_h1_3</a></p>
+<p><a target="_blank" rel="noopener" href="https://lcamtuf.blogspot.com/2014/10/fuzzing-binaries-without-execve.html">https://lcamtuf.blogspot.com/2014/10/fuzzing-binaries-without-execve.html</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>7r1p13J</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/fuzz/"># fuzz</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/12/09/dirtycred/">DirtyCred学习</a>
+            
+            
+            <a class="next" rel="next" href="/2022/11/24/slab/">slab源码阅读</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 7r1p13J | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
