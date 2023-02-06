@@ -1339,88 +1339,43 @@ http://lcamtuf.blogspot.com/2014/10/fuzzing-binaries-without-execve.html
 </ul>
 </li>
 <li><p><strong>SIMPLE BITFLIP (+dictionary construction)</strong></p>
+<blockquote>
+<p>#define FLIP_BIT(_ar, _b) do { <br>u8* _arf &#x3D; (u8*)(_ar); <br>u32 _bf &#x3D; (_b); <br>_arf[(_bf) &gt;&gt; 3] ^&#x3D; (128 &gt;&gt; ((_bf) &amp; 7)); <br>  } while (0)<br>&#x2F;* 源码里的注释<br>在翻转每个字节中的最低有效位时，使用额外的技巧来检测可能的语法标记。本质上，这个想法是，如果你有一个像这样的二进制 blob：</p>
+<p>  xxxxxxxxIHDRxxxxxxxx<br>  …并且改变前导和尾随字节会导致程序流发生变化或没有变化，但是触摸“IHDR”字符串中的任何字符总是会产生相同的，独特的路径，“IHDR”很可能是一个原子检查的魔法对模糊格式具有特殊意义的值。</p>
+<p> 我们在这里而不是作为一个单独的阶段执行此操作，因为这是使操作大致“免费”（即没有额外的执行程序）的好方法。</p>
+<p>根据经验，与在更具破坏性的更改时执行检查相比，在翻转最低有效位时执行检查是有利的，程序流可能会以更剧烈的方式受到影响。</p>
+<p>需要注意的是，我们不会在 -d 模式或 -S 模式下生成字典——但这可能是一个公平的权衡。</p>
+<p>对于表现出可变行为的路径，这不会特别有效，但会优雅地失败，所以我们无论如何都会进行检查。</p>
+<p>*&#x2F;</p>
+<p>我的理解就是，为了保证得到正确的路径，有些key word 之类的词是不能变的，当翻转了那些key word的话，路径就会完全不一样，这样的key word 我们当成token<br>以下的操作就是AFL通过flip识别了这些token 并进行保存<br>token长度默认最小是3，最大是32<br>每次发现新token时，通过maybe_add_auto添加到a_extras数组里。</p>
+</blockquote>
+<p>做了一个位翻转的运算，参数为out_buf,stage_cur </p>
+<p>_arf每次取一字节，8位</p>
+<p>先看右边，128为二进制100000000，7为二进制111，_bf&amp;7就是取后三位，128进行右移这个值，也就是右移0-7之间的值</p>
+<p>再看左边，_bf&gt;&gt;3 就是取除了后三位以外的值，也相当于&#x2F;8</p>
+<p>stage_cur最大值为stage_max  &#x3D; len &lt;&lt; 3，_bf&gt;&gt;3最大值就是 (len&lt;&lt;3)&gt;&gt;3&#x3D;len</p>
+<p>_bf是逐一递增的，也就是说每8次，对应的_bf&gt;&gt;3是相同的，也就是每循环8次，_arf[i] 的i((_bf) &gt;&gt; 3)就会增加1</p>
+<p>而以每8次循环为一组，里面的每一次，128都将分别右移0-7之间的值（这样就是每一位都有一次为1，比如10000000，01000000，00100000这样子），但前面的_arf[i] 又是不变的，也就是对_arf[i]的值，每一位都进行了一次对1异或，1^1&#x3D;0, 0^1&#x3D;1，这样就刚好实现了翻转。</p>
+<p>理解起来还是不难的。</p>
 </li>
-<li><pre><code class="c">#define FLIP_BIT(_ar, _b) do &#123; \
-    u8* _arf = (u8*)(_ar); \
-    u32 _bf = (_b); \
-    _arf[(_bf) &gt;&gt; 3] ^= (128 &gt;&gt; ((_bf) &amp; 7)); \
-  &#125; while (0)
-/* 源码里的注释
-在翻转每个字节中的最低有效位时，使用额外的技巧来检测可能的语法标记。本质上，这个想法是，如果你有一个像这样的二进制 blob：
-
-  xxxxxxxxIHDRxxxxxxxx
-  ...并且改变前导和尾随字节会导致程序流发生变化或没有变化，但是触摸“IHDR”字符串中的任何字符总是会产生相同的，独特的路径，“IHDR”很可能是一个原子检查的魔法对模糊格式具有特殊意义的值。
-
- 我们在这里而不是作为一个单独的阶段执行此操作，因为这是使操作大致“免费”（即没有额外的执行程序）的好方法。
-       
-根据经验，与在更具破坏性的更改时执行检查相比，在翻转最低有效位时执行检查是有利的，程序流可能会以更剧烈的方式受到影响。
-
-需要注意的是，我们不会在 -d 模式或 -S 模式下生成字典——但这可能是一个公平的权衡。
-
-对于表现出可变行为的路径，这不会特别有效，但会优雅地失败，所以我们无论如何都会进行检查。
-
-*/
-
-我的理解就是，为了保证得到正确的路径，有些key word 之类的词是不能变的，当翻转了那些key word的话，路径就会完全不一样，这样的key word 我们当成token
-以下的操作就是AFL通过flip识别了这些token 并进行保存
-token长度默认最小是3，最大是32
-每次发现新token时，通过maybe_add_auto添加到a_extras数组里。
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">  做了一个位翻转的运算，参数为out_buf,stage_cur </span><br><span class="line"></span><br><span class="line">  _arf每次取一字节，8位</span><br><span class="line"></span><br><span class="line">  先看右边，128为二进制100000000，7为二进制111，_bf&amp;7就是取后三位，128进行右移这个值，也就是右移0-7之间的值</span><br><span class="line"></span><br><span class="line">  再看左边，_bf&gt;&gt;3 就是取除了后三位以外的值，也相当于/8</span><br><span class="line"></span><br><span class="line">  stage_cur最大值为stage_max  = len &lt;&lt; 3，_bf&gt;&gt;3最大值就是 (len&lt;&lt;3)&gt;&gt;3=len</span><br><span class="line"></span><br><span class="line">  _bf是逐一递增的，也就是说每8次，对应的\_bf&gt;&gt;3是相同的，也就是每循环8次，\_arf[i] 的i((\_bf) &gt;&gt; 3)就会增加1</span><br><span class="line"></span><br><span class="line">  而以每8次循环为一组，里面的每一次，128都将分别右移0-7之间的值（这样就是每一位都有一次为1，比如10000000，01000000，00100000这样子），但前面的\_arf[i] 又是不变的，也就是对\_arf[i]的值，每一位都进行了一次对1异或，1^1=0, 0^1=1，这样就刚好实现了翻转。</span><br><span class="line"></span><br><span class="line">  理解起来还是不难的。</span><br><span class="line"></span><br><span class="line">- 这里的for循环还是直接贴源码</span><br><span class="line"></span><br><span class="line">- ```c</span><br><span class="line">  for (stage_cur = 0; stage_cur &lt; stage_max; stage_cur++) &#123;</span><br><span class="line">  	//这样的循环 每次都是异或一位</span><br><span class="line">      stage_cur_byte = stage_cur &gt;&gt; 3;</span><br><span class="line">  </span><br><span class="line">      FLIP_BIT(out_buf, stage_cur);//先翻转一位</span><br><span class="line">  </span><br><span class="line">      if (common_fuzz_stuff(argv, out_buf, len)) goto abandon_entry;</span><br><span class="line">  </span><br><span class="line">      FLIP_BIT(out_buf, stage_cur); //执行完common_fuzz_stuff再翻转回来</span><br></pre></td></tr></table></figure>
-
-</code></pre>
-</li>
-<li><p>如果不是dumb_mode，且(stage_cur &amp; 7) &#x3D;&#x3D; 7，也就是刚好是一个字节循环（按8位为一组算）的最后一次翻转</p>
-<ul>
-<li>计算当前trace_bits的hash32为cksum</li>
-<li>如果当前到达最后一次循环并且cksum &#x3D;&#x3D; prev_cksum<ul>
-<li>若a_len小于MAX_AUTO_EXTRA<ul>
-<li>a_collect[a_len] &#x3D; out_buf[stage_cur &gt;&gt; 3]</li>
-</ul>
-</li>
-<li>a_len++</li>
-<li>若a_len &gt;&#x3D; MIN_AUTO_EXTRA 且 a_len &lt;&#x3D; MAX_AUTO_EXTRA<ul>
-<li>调用maybe_add_auto(a_collect, a_len)，将新发现的token加入a_extra[]</li>
-</ul>
-</li>
-<li>a_len &#x3D; 0</li>
-<li>prev_cksum &#x3D; cksum</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>若cksum不等于当前queue的exec_cksum</p>
-<ul>
-<li>若a_len &lt; MAX_AUTO_EXTRA<ul>
-<li>a_collect[a_len] &#x3D; out_buf[stage_cur &gt;&gt; 3]</li>
-</ul>
-</li>
-<li>a_len++</li>
-</ul>
-</li>
-<li><p>更新new_hit_cnt &#x3D; queued_paths + unique_crashes</p>
-</li>
-<li><p>stage_finds[STAGE_FLIP1]  +&#x3D; new_hit_cnt - orig_hit_cnt （也就是加上新发现的路径的crahses）</p>
-</li>
-<li><p>stage_cycles[STAGE_FLIP1] +&#x3D; stage_max （循环执行的次数）</p>
-</li>
-<li><p>接下来是类似之前的操作，但现在是连续翻转两位</p>
-</li>
-<li><p>bitflip 2&#x2F;1</p>
+<li><p>这里的for循环还是直接贴源码</p>
 </li>
 <li><pre><code class="c">for (stage_cur = 0; stage_cur &lt; stage_max; stage_cur++) &#123;
- 
-   stage_cur_byte = stage_cur &gt;&gt; 3;
- 
-   FLIP_BIT(out_buf, stage_cur);
-   FLIP_BIT(out_buf, stage_cur + 1);
- 
-   if (common_fuzz_stuff(argv, out_buf, len)) goto abandon_entry;
- 
-   FLIP_BIT(out_buf, stage_cur);
-   FLIP_BIT(out_buf, stage_cur + 1);
- 
- &#125;
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">然后还有连续翻转四位的</span><br><span class="line"></span><br><span class="line">bitflip 4/1</span><br><span class="line"></span><br><span class="line">```c</span><br><span class="line">for (stage_cur = 0; stage_cur &lt; stage_max; stage_cur++) &#123;</span><br><span class="line"></span><br><span class="line">    stage_cur_byte = stage_cur &gt;&gt; 3;</span><br><span class="line"></span><br><span class="line">    FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + 1);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + 2);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + 3);</span><br><span class="line"></span><br><span class="line">    if (common_fuzz_stuff(argv, out_buf, len)) goto abandon_entry;</span><br><span class="line"></span><br><span class="line">    FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + 1);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + 2);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + 3);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+    //这样的循环 每次都是异或一位
+    stage_cur_byte = stage_cur &gt;&gt; 3;
+
+    FLIP_BIT(out_buf, stage_cur);//先翻转一位
+
+    if (common_fuzz_stuff(argv, out_buf, len)) goto abandon_entry;
+
+    FLIP_BIT(out_buf, stage_cur); //执行完common_fuzz_stuff再翻转回来
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">- 如果不是dumb_mode，且(stage_cur &amp; 7) == 7，也就是刚好是一个字节循环（按8位为一组算）的最后一次翻转</span><br><span class="line"></span><br><span class="line">  - 计算当前trace_bits的hash32为cksum</span><br><span class="line">  - 如果当前到达最后一次循环并且cksum == prev_cksum</span><br><span class="line">    - 若a_len小于MAX_AUTO_EXTRA</span><br><span class="line">      - a_collect[a_len] = out_buf[stage_cur &gt;&gt; 3]</span><br><span class="line">    - a_len++</span><br><span class="line">    - 若a_len &gt;= MIN_AUTO_EXTRA 且 a_len &lt;= MAX_AUTO_EXTRA</span><br><span class="line">      - 调用maybe_add_auto(a_collect, a_len)，将新发现的token加入a_extra[]</span><br><span class="line">    - a_len = 0</span><br><span class="line">    - prev_cksum = cksum</span><br><span class="line"></span><br><span class="line">- 若cksum不等于当前queue的exec_cksum</span><br><span class="line"></span><br><span class="line">  - 若a_len &lt; MAX_AUTO_EXTRA</span><br><span class="line">    - a_collect[a_len] = out_buf[stage_cur &gt;&gt; 3]</span><br><span class="line">  - a_len++</span><br><span class="line"></span><br><span class="line">- 更新new_hit_cnt = queued_paths + unique_crashes</span><br><span class="line"></span><br><span class="line">- stage_finds[STAGE_FLIP1]  += new_hit_cnt - orig_hit_cnt （也就是加上新发现的路径的crahses）</span><br><span class="line"></span><br><span class="line">- stage_cycles[STAGE_FLIP1] += stage_max （循环执行的次数）</span><br><span class="line"></span><br><span class="line">- 接下来是类似之前的操作，但现在是连续翻转两位</span><br><span class="line"></span><br><span class="line">- bitflip 2/1</span><br><span class="line"></span><br><span class="line">- ```c</span><br><span class="line">  for (stage_cur = 0; stage_cur &lt; stage_max; stage_cur++) &#123;</span><br><span class="line">   </span><br><span class="line">     stage_cur_byte = stage_cur &gt;&gt; 3;</span><br><span class="line">   </span><br><span class="line">     FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">     FLIP_BIT(out_buf, stage_cur + 1);</span><br><span class="line">   </span><br><span class="line">     if (common_fuzz_stuff(argv, out_buf, len)) goto abandon_entry;</span><br><span class="line">   </span><br><span class="line">     FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">     FLIP_BIT(out_buf, stage_cur + 1);</span><br><span class="line">   </span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+然后还有连续翻转四位的
+
+bitflip 4/1
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (stage_cur = <span class="number">0</span>; stage_cur &lt; stage_max; stage_cur++) &#123;</span><br><span class="line"></span><br><span class="line">    stage_cur_byte = stage_cur &gt;&gt; <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">1</span>);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">2</span>);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (common_fuzz_stuff(argv, out_buf, len)) <span class="keyword">goto</span> abandon_entry;</span><br><span class="line"></span><br><span class="line">    FLIP_BIT(out_buf, stage_cur);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">1</span>);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">2</span>);</span><br><span class="line">    FLIP_BIT(out_buf, stage_cur + <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 </code></pre>
 </li>
 <li><p>生成Effector map </p>
