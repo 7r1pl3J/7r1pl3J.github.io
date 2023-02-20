@@ -1101,39 +1101,73 @@ bitflip 4/1
 #define EFF_REM(_x)           ((_x) &amp; ((1 &lt;&lt; EFF_MAP_SCALE2) - 1))
 #define EFF_ALEN(_l)          (EFF_APOS(_l) + !!EFF_REM(_l))
 #define EFF_SPAN_ALEN(_p, _l) (EFF_APcOS((_p) + (_l) - 1) - EFF_APOS(_p) + 1)
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">- `eff_map   = ck_alloc(EFF_ALEN(len));`</span><br><span class="line"></span><br><span class="line">   `eff_map[0] = 1;`</span><br><span class="line"></span><br><span class="line">- 进行bitflip 8/8翻转，也就是对一个byte进行翻转，简单的异或0xFF 即可</span><br><span class="line"></span><br><span class="line">- 大部分操作与上面类似</span><br><span class="line"></span><br><span class="line">- 不同点：在对每个byte进行翻转时，如果其造成执行路径与原始路径不一致，就将该byte在effector map中标记为1，即“有效”的，否则标记为0，即“无效”的</span><br><span class="line"></span><br><span class="line">- 这样我们后续变异的时候，就会跳过那些不能带来变化的byte</span><br><span class="line"></span><br><span class="line">- 进行bitflip 16/8翻转，也就是对两个byte进行翻转</span><br><span class="line"></span><br><span class="line">  - 如果这连续两个字节之前effector map已经置0了，就跳过此位</span><br><span class="line"></span><br><span class="line">- 进行bitflip 32/8翻转，对连续四个byte进行翻转，步骤与上面相同，也有effector map检查</span><br><span class="line"></span><br><span class="line">- 如果no_arith</span><br><span class="line"></span><br><span class="line">  - 跳至skip_arith</span><br><span class="line"></span><br><span class="line">- **ARITHMETIC INC/DEC**  </span><br><span class="line"></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### **sync_fuzzers</span><br><span class="line"></span><br><span class="line">该函数主要读取sync文件夹下的queue，将有效的queue保存</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### calculate_score</span><br><span class="line"></span><br><span class="line">通过覆盖的路径数量以及路径深度，执行速度等判断queue的得分</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### common_fuzz_stuff</span><br><span class="line"></span><br><span class="line">就是按位翻转后执行的操作：写一个修该后的test case，执行程序，通过其结果判断该case是否为interesting，若该case被保存即返回1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- 若post_hander不为0</span><br><span class="line">  - out_buf=post_handeler(out_buf,&amp;len)，我们可以在里面对变异完的queue进行一定处理</span><br><span class="line">  - 如果out_buf/len为0 直接return 0</span><br><span class="line">- write_to_testcase(out_buf, len)</span><br><span class="line">- fault = run_target(argv, exec_tmout) 执行</span><br><span class="line">- falut返回FAULT_TMOUT的话</span><br><span class="line">  - 若subseq_tmouts++ &gt; TMOUT_LIMIT，cur_skipped_paths++，直接返回1</span><br><span class="line">- 否则subseq_tmouts = 0</span><br><span class="line">- 若skip_requested为1</span><br><span class="line">  - 重置skip_requested，cur_skipped_paths++，直接返回1</span><br><span class="line">- queued_discovered += save_if_interesting(argv, out_buf, len, fault)</span><br><span class="line">- show stats</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### save_if_interesting</span><br><span class="line"></span><br><span class="line">用于判断该case是否为interesting，如果返回是1的话，就是interesting，该case会被保存</span><br><span class="line"></span><br><span class="line">主要就是通过是否有 新的path/不同的path命中次数 出现来判断</span><br><span class="line"></span><br><span class="line">而对于不同falut情况的处理</span><br><span class="line"></span><br><span class="line">- FAULT_TMOUT</span><br><span class="line">  - 若发现新的超时路径，unique_tmouts++</span><br><span class="line">  - hang_tmout&gt;exec_tmout的话，则修改timeout为hang_tmout再run一次判断是否超时，仍然超时就记录，否则就同无新超时路径情况处理（直接返回）。</span><br><span class="line">- FAULT_CRASH</span><br><span class="line">  - 判断是否产生新的crash路径</span><br><span class="line">- FAULT_ERROR</span><br><span class="line">  - 抛出异常</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- 如果定义了</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-post_handler
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">,就通过</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-out_buf = post_handler(out_buf, &amp;len)
 </code></pre>
-<p>处理一下out_buf，如果out_buf或者len有一个为0，则直接返回0</p>
+</li>
+<li><p><code>eff_map   = ck_alloc(EFF_ALEN(len));</code></p>
+<p> <code>eff_map[0] = 1;</code></p>
+</li>
+<li><p>进行bitflip 8&#x2F;8翻转，也就是对一个byte进行翻转，简单的异或0xFF 即可</p>
+</li>
+<li><p>大部分操作与上面类似</p>
+</li>
+<li><p>不同点：在对每个byte进行翻转时，如果其造成执行路径与原始路径不一致，就将该byte在effector map中标记为1，即“有效”的，否则标记为0，即“无效”的</p>
+</li>
+<li><p>这样我们后续变异的时候，就会跳过那些不能带来变化的byte</p>
+</li>
+<li><p>进行bitflip 16&#x2F;8翻转，也就是对两个byte进行翻转</p>
 <ul>
-<li><strong>这里其实很有价值，尤其是如果需要对变异完的queue，做一层wrapper再写入的时候。</strong></li>
+<li>如果这连续两个字节之前effector map已经置0了，就跳过此位</li>
 </ul>
 </li>
-<li><p>write_to_testcase(out_buf, len)</p>
+<li><p>进行bitflip 32&#x2F;8翻转，对连续四个byte进行翻转，步骤与上面相同，也有effector map检查</p>
 </li>
-<li><p>fault &#x3D; run_target(argv, exec_tmout)</p>
-</li>
-<li><p>如果fault是FAULT_TMOUT</p>
+<li><p>如果no_arith</p>
 <ul>
-<li>如果<code>subseq_tmouts++ &gt; TMOUT_LIMIT</code>（默认250），就将cur_skipped_paths加一，直接返回1</li>
-<li>subseq_tmout是连续超时数</li>
+<li>跳至skip_arith</li>
 </ul>
 </li>
-<li><p>否则设置subseq_tmouts为0</p>
+<li><p><strong>ARITHMETIC INC&#x2F;DEC</strong></p>
 </li>
-<li><p>如果skip_requested为1</p>
+</ul>
+<h3 id="sync-fuzzers"><a href="#sync-fuzzers" class="headerlink" title="**sync_fuzzers"></a>**sync_fuzzers</h3><p>该函数主要读取sync文件夹下的queue，将有效的queue保存</p>
+<h3 id="calculate-score"><a href="#calculate-score" class="headerlink" title="calculate_score"></a>calculate_score</h3><p>通过覆盖的路径数量以及路径深度，执行速度等判断queue的得分</p>
+<h3 id="common-fuzz-stuff"><a href="#common-fuzz-stuff" class="headerlink" title="common_fuzz_stuff"></a>common_fuzz_stuff</h3><p>就是按位翻转后执行的操作：写一个修该后的test case，执行程序，通过其结果判断该case是否为interesting，若该case被保存即返回1</p>
 <ul>
-<li>设置skip_requested为0，然后将cur_skipped_paths加一，直接返回1</li>
+<li>若post_hander不为0<ul>
+<li>out_buf&#x3D;post_handeler(out_buf,&amp;len)，我们可以在里面对变异完的queue进行一定处理</li>
+<li>如果out_buf&#x2F;len为0 直接return 0</li>
 </ul>
 </li>
-<li><p>queued_discovered +&#x3D; save_if_interesting(argv, out_buf, len, fault)，即如果发现了新的路径才会加一。</p>
+<li>write_to_testcase(out_buf, len)</li>
+<li>fault &#x3D; run_target(argv, exec_tmout) 执行</li>
+<li>falut返回FAULT_TMOUT的话<ul>
+<li>若subseq_tmouts++ &gt; TMOUT_LIMIT，cur_skipped_paths++，直接返回1</li>
+</ul>
 </li>
-<li><p>如果stage_cur除以stats_update_freq余数是0，或者其加一等于stage_max，就更新展示界面<code>show_stats</code></p>
+<li>否则subseq_tmouts &#x3D; 0</li>
+<li>若skip_requested为1<ul>
+<li>重置skip_requested，cur_skipped_paths++，直接返回1</li>
+</ul>
 </li>
-<li><p>返回0</p>
+<li>queued_discovered +&#x3D; save_if_interesting(argv, out_buf, len, fault)</li>
+<li>show stats</li>
+</ul>
+<h3 id="save-if-interesting"><a href="#save-if-interesting" class="headerlink" title="save_if_interesting"></a>save_if_interesting</h3><p>用于判断该case是否为interesting，如果返回是1的话，就是interesting，该case会被保存</p>
+<p>主要就是通过是否有 新的path&#x2F;不同的path命中次数 出现来判断</p>
+<p>而对于不同falut情况的处理</p>
+<ul>
+<li>FAULT_TMOUT<ul>
+<li>若发现新的超时路径，unique_tmouts++</li>
+<li>hang_tmout&gt;exec_tmout的话，则修改timeout为hang_tmout再run一次判断是否超时，仍然超时就记录，否则就同无新超时路径情况处理（直接返回）。</li>
+</ul>
+</li>
+<li>FAULT_CRASH<ul>
+<li>判断是否产生新的crash路径</li>
+</ul>
+</li>
+<li>FAULT_ERROR<ul>
+<li>抛出异常</li>
+</ul>
 </li>
 </ul>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/wsg1100/p/14290340.html">https://www.cnblogs.com/wsg1100/p/14290340.html</a></p>
