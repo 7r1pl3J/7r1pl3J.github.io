@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="7r1p13J">
+
+
+
+
+
+<title>结构体偏移计算 | Hexo</title>
+
+
+
+    <link rel="icon" href="/github-11-48.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">7r1pl3J&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">7r1pl3J&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">结构体偏移计算</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">7r1p13J</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 9, 2022&nbsp;&nbsp;10:28:05</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/kernel/">kernel</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>最近遇到了不少结构体，在计算偏移的时候有些麻烦，故摸鱼写下此文。</p>
+<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>在X86或ARM上，基本数据类型并不是存放在任意内存地址上的。　每种类型除了char都有对齐要求(alignment requirement); <strong>char类型可以开始于任何地址，但２字节的short类型必须存放在偶数地址上，４字节的整型或浮点型必须放在能被４整除的位置上，而８字节的long或double型必须放在能被８整除的地址上。有符号或无符号没有差别</strong>。术语上，这叫自对齐（self-aligned），至于为什么要这么对齐，可以简单的理解为是为了提高cpu的访问速度。</p>
+<p>在没有#pragma pack这个宏的声明下，遵循下面三个原则：</p>
+<p>1、***结构体中元素按照定义顺序依次置于内存中，但并不是紧密排列。从结构体首地址开始依次将元素放入内存时，元素会被放置在其自身对齐大小的整数倍地址上。***（这里说的地址是元素在结构体中的偏移量，结构体首地址偏移量为0。）</p>
+<p>2、*<strong>如果结构体大小不是所有元素中最大对齐大小的整数倍，则结构体对齐到最大元素对齐大小的整数倍，填充空间放置到结构体末尾。*</strong></p>
+<p>3、<strong>基本数据类型的对齐大小为其自身的大小，结构体数据类型的对齐大小为其元素中最大对齐大小元素的对齐大小。</strong></p>
+<p>举例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct test</span><br><span class="line">&#123;</span><br><span class="line">  char a;  //1byte</span><br><span class="line">  short b;  //2bytes</span><br><span class="line">  char c;  //1byte</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>由于对齐的原因，该结构体大小不是1+1+2&#x3D;4字节，第二个short地址应该为2字节对齐，然而该结构体大小也不是5，而是6，因为还需遵守第2个规则，结构体的总大小，为其成员中所含最大类型的整数倍，故test结构体的大小为6字节。</p>
+<p>大致如下：</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221009134119169.png" alt="image-20221009134119169"></p>
+<p>在缺省情况下，C编译器为每一个变量或是数据单元按其自然对界条件分配空间。</p>
+<p>但也可以声明让编译器按其他方式优化对齐，如：</p>
+<p>· __attribute((aligned (n)))，让所作用的结构成员对齐在n字节自然边界上。如果结构中有成员的长度大于n，则按照最大成员的长度来对齐。<br>· <strong>attribute</strong> ((packed))，取消结构在编译过程中的优化对齐，按照实际占用字节数进行对齐。</p>
+<h2 id="计算偏移"><a href="#计算偏移" class="headerlink" title="计算偏移"></a>计算偏移</h2><p>内核中有大量的庞大结构体，按上面的方法自己去计算是非常麻烦的，在我查询资料的途中，找到了几种计算方法</p>
+<h3 id="方法一："><a href="#方法一：" class="headerlink" title="方法一："></a>方法一：</h3><p>使用#include &lt;stddef.h&gt; 中的 offsetof函数来实现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">offsetof(type, member-designator)</span><br><span class="line"></span><br><span class="line">参数</span><br><span class="line">type -- 这是一个 class 类型，其中，member-designator 是一个有效的成员指示器。</span><br><span class="line">member-designator -- 这是一个 class 类型的成员指示器。</span><br><span class="line"></span><br><span class="line">返回值</span><br><span class="line">该宏返回类型为 size_t 的值，表示 type 中成员的偏移量。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stddef.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"> </span><br><span class="line">struct address &#123;</span><br><span class="line">   char name[50];</span><br><span class="line">   char street[50];</span><br><span class="line">   int phone;</span><br><span class="line">&#125;;</span><br><span class="line">   </span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">   printf(&quot;address 结构中的 name 偏移 = %d 字节。\n&quot;,</span><br><span class="line">   offsetof(struct address, name));</span><br><span class="line">   </span><br><span class="line">   printf(&quot;address 结构中的 street 偏移 = %d 字节。\n&quot;,</span><br><span class="line">   offsetof(struct address, street));</span><br><span class="line">   </span><br><span class="line">   printf(&quot;address 结构中的 phone 偏移 = %d 字节。\n&quot;,</span><br><span class="line">   offsetof(struct address, phone));</span><br><span class="line"> </span><br><span class="line">   return 0;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">address 结构中的 name 偏移 = 0 字节。</span><br><span class="line">address 结构中的 street 偏移 = 50 字节。</span><br><span class="line">address 结构中的 phone 偏移 = 100 字节。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h3><p>把源码中结构体的定义截出来，然后自己编译运行计算一下</p>
+<p>比如说随便找个内核结构体</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">struct old_timespec32 &#123;</span><br><span class="line">	old_time32_t               tv_sec;               /*     0     4 */</span><br><span class="line">	s32                        tv_nsec;              /*     4     4 */</span><br><span class="line"></span><br><span class="line">	/* size: 8, cachelines: 1, members: 2 */</span><br><span class="line">	/* last cacheline: 8 bytes */</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">int main()&#123;</span><br><span class="line">	struct old_timespec32 test;</span><br><span class="line">	print(&quot;offset of tv_nsec：%lx&quot;,(long)((void*)&amp;test.tv.nsec-(void*)&amp;test));</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这样的</p>
+<h3 id="方法三"><a href="#方法三" class="headerlink" title="方法三"></a>方法三</h3><p>然而，很多内核结构体编译的时候都有各种条件，很多时候没法还原，以及各种结构体之间是嵌套的，要自己编译非常麻烦</p>
+<p>如task_struct 结构体位于&#x2F;linux-5.8&#x2F;include&#x2F;linux&#x2F;sched.h 中，但定义是带各种ifdef 条件的</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221009135853147.png" alt="image-20221009135853147"></p>
+<p>这种时候我们要调试计算结构体，一开始我是用gdb直接内存地址偏移相差来计算的，但这样非常非常麻烦。</p>
+<p>最后找到了pahole工具，只能说非常方便（</p>
+<p>pahole 工具位于<a target="_blank" rel="noopener" href="https://github.com/acmel/dwarves">dwarves</a>包中，可以直接apt安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install dwarves -y</span><br></pre></td></tr></table></figure>
+
+<p>官方使用手册：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://lwn.net/Articles/335942/</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221009140111984.png" alt="image-20221009140111984"></p>
+<p>–help可以查看帮助</p>
+<p>一般来说</p>
+<p>我们直接无脑使用-V参数即可，它会打印所有的hole情况</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pahole -V vmlinux &gt; outputfile</span><br></pre></td></tr></table></figure>
+
+
+
+<p>最终会看到</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221009140646408.png" alt="image-20221009140646408"></p>
+<p>非常详细</p>
+<p>结构体末尾处还有这样的统计：</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221009140433241.png" alt="image-20221009140433241"></p>
+<p>当然我们也可以使用-C参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pahole -C task_struct vmlinux &gt; output</span><br></pre></td></tr></table></figure>
+
+<p>这样就会只打印task_struct结构体的</p>
+<p>参考链接：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/sinat_31039061/article/details/104366376">https://blog.csdn.net/sinat_31039061/article/details/104366376</a> </p>
+<p><a target="_blank" rel="noopener" href="https://lwn.net/Articles/335942/">https://lwn.net/Articles/335942/</a></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1703257">https://cloud.tencent.com/developer/article/1703257</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zzxfbdfhbdfhbdb/article/details/120561973">https://blog.csdn.net/zzxfbdfhbdfhbdb/article/details/120561973</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>7r1p13J</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/kernel/"># kernel</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/11/01/userfaultfd/">Userfaultfd的学习与利用</a>
+            
+            
+            <a class="next" rel="next" href="/2022/08/01/ciscn2022/">ciscn2022初赛&华南复赛</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 7r1p13J | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

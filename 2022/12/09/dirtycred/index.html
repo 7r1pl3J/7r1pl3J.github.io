@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="7r1p13J">
+
+
+
+
+
+<title>DirtyCred学习 | Hexo</title>
+
+
+
+    <link rel="icon" href="/github-11-48.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">7r1pl3J&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">7r1pl3J&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">DirtyCred学习</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">7r1p13J</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">December 9, 2022&nbsp;&nbsp;10:28:05</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/kernel/">kernel</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id=""><a href="#" class="headerlink" title=""></a></h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><h3 id="dirtypipe"><a href="#dirtypipe" class="headerlink" title="dirtypipe"></a>dirtypipe</h3><p>dirtypipe（CVE-2022-0847）本质上是未初始化导致的逻辑漏洞，它可以实现任意写<strong>可读</strong>文件功能，提权不需要依赖内核函数地址等，且可以绕过各种内核保护和利用缓解措施。然而，该漏洞利用在很大基础上依赖此漏洞的能力，防御相对容易。该文章提出了一种新的利用手法，将其他linux 内核漏洞提升到dirtypipe级别。它不依赖于 Linux 的管道机制，也不依赖漏洞 CVE-2022-0847 的性质。相反，它利⽤堆内存损坏漏洞将低权限内核凭证对象（cred，file）替换为⾼权限内核凭证对象，使得非特权用户可以对高特权的文件或进程进行操作。</p>
+<h3 id="dirtycred优点："><a href="#dirtycred优点：" class="headerlink" title="dirtycred优点："></a>dirtycred优点：</h3><ol>
+<li>它是一种通用的利用手法，可以对任意基于堆内存的漏洞进行提权。</li>
+<li>可以显著减轻漏洞利用迁移的负担，也就是对任意适用的内核版本和架构，无需修改exp即可进行相同的漏洞利用。</li>
+<li>可以绕过许多强大的内核保护&#x2F;利用缓解机制（CFI，KASLR，SMEP，SMAP，KPTI等）</li>
+</ol>
+<p>这是一个与dirtypipe相比的对比图：</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221208171531761.png" alt="image-20221208171531761"></p>
+<h2 id="slab"><a href="#slab" class="headerlink" title="slab"></a>slab</h2><p>linux内核使用slab管理器对来实现对小内存的管理和分配，它主要维护了两种内存cache</p>
+<p>​    1.通用缓存，即<strong>Generic Caches</strong>，普通的内存块缓存，大小为2的幂次方递增。</p>
+<p>​	2.专用缓存，即<strong>Dedicated Caches</strong>，该缓存主要用于维护一些内核常用的对象，如cred，file等，由于这些常用对象在内核中被频繁使用，因此这些对象提供专用缓存可以减少分配它们所花费的时间，从而改善系统。</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221208172522103.png" alt="image-20221208172522103"></p>
+<h2 id="利用思路"><a href="#利用思路" class="headerlink" title="利用思路"></a>利用思路</h2><p>文章以CVE-2021-4154为例，展示了大体的利用思路</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221208172748838.png" alt="image-20221208172748838"></p>
+<p>主要分为三步：</p>
+<ol>
+<li>利用漏洞等释放一个正在使用且没有特权的内核凭证对象（cred&#x2F;file）</li>
+<li>在被释放的对象内存处，申请一个新的有特权的内核凭证对象</li>
+<li>以特权用户的权限进行操作</li>
+</ol>
+<h2 id="挑战"><a href="#挑战" class="headerlink" title="挑战"></a>挑战</h2><p>利用主要需要解决三个问题</p>
+<p>1.如何去使用invalid-free来释放一个低权限的对象</p>
+<p>2.作为低权限用户，我们如何分配高权限的内核凭证对象，且最终分配到相应的内存位置</p>
+<p>3.如何实现稳定的file exploition</p>
+<h3 id="1-转化漏洞"><a href="#1-转化漏洞" class="headerlink" title="1.转化漏洞"></a>1.转化漏洞</h3><h4 id="OOB-amp-UAF-write"><a href="#OOB-amp-UAF-write" class="headerlink" title="OOB &amp; UAF write"></a>OOB &amp; UAF write</h4><ul>
+<li>找到一个victim对象，该对象与我们需要攻击的对象共用同一缓存，且包含一个指向内存凭证对象的指针</li>
+<li>利用oob或者uaf漏洞，将victim对象的凭证指针最后两字节覆盖为0</li>
+<li>这样指针可能就指向了内存页开头的另一个凭证对象（内核凭证结构用特定的cache缓存）</li>
+<li>这样就实现了有两个指针指向同一个凭证对象，这样我们就能实现UAF</li>
+<li>接下来采用CVE-2021-4154的手法进行提权即可</li>
+</ul>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/Figure2-OOB-UAF-pivoting.png" alt="Figure2-OOB-UAF-pivoting"></p>
+<h4 id="Double-free"><a href="#Double-free" class="headerlink" title="Double free"></a>Double free</h4><p>一般通用缓存与专用缓存是隔离的，这些缓存中的对象没有重叠，然而linux内核有内存回收机制，当销毁内存缓存时，它会回收相应的未使用的内存页，然后分配给需要的别的缓存，此特性支持跨缓存内存操作，为dirtycred提供了针对double free漏洞的利用手段。</p>
+<ul>
+<li>在有漏洞的cache中分配许多对象，在这些分配的对象中，有一个是易受攻击的对象（被两个悬垂指针ptr1，ptr2指向）</li>
+<li>通过ptr1释放victim，然后重新分配对象，获得新的两个指针ptr1‘，ptr2’指向victim</li>
+<li>通过ptr2释放victim，得到两个指针两个指针ptr1‘，ptr2’指向被free的victim内存区域</li>
+<li>将该通用cache中所有的对象，页全部释放归还给slab</li>
+<li>堆喷大量内核凭证对象</li>
+<li>被归还的页被slab分配给专用缓存（缓存内核凭证对象），但指针不一定指向内核凭证对象起始位置（由于object大小不一定相等，并不一定是对齐的）</li>
+<li>通过ptr2‘释放该凭证对象，再分配一个新的低权限的凭证对象，剩下ptr1’指向新的低权限的凭证对象</li>
+<li>通过ptr1再次释放该凭证对象，然后申请新的高权限凭证对象</li>
+<li>这样我们申请到的object的凭证对象就被替换了，完成提权</li>
+</ul>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/Figure3-DF-pivoting.png" alt="Figure3-DF-pivoting"></p>
+<blockquote>
+<p>这里比较让人不明白的是，既然不是对齐的，那为什么可以直接调用free来释放内核凭证对象呢？</p>
+<p>这里引用@bsauce以及@kiprey 师傅的回答：通过查阅 slab 分配器的 kfree 逻辑，发现它的释放逻辑与被释放地址高度相关。首先会尝试根据被释放地址获取其对应的 slab_cache 结构，然后再根据结构中所存放的信息来释放对应的 object size。换句话说，如果 kfree 释放的地址在 generic cache中，那就会走 generic cache 的释放逻辑；如果是在 dedicated cache 中，那就会走 dedicated cache 的释放逻辑。这么做或许是为了提高可用性，使得释放两个不同 cache 的内存块可以使用同一个 kfree 接口</p>
+<p><del>尽管之前翻阅过slab的源码，但我的猪脑一下子就宕机了😥，差点忘了释放的object是直接链入的</del></p>
+</blockquote>
+<h3 id="2-成功分配高权限的内核凭证对象"><a href="#2-成功分配高权限的内核凭证对象" class="headerlink" title="2.成功分配高权限的内核凭证对象"></a>2.成功分配高权限的内核凭证对象</h3><p>为了确保我们能成功分配，增加race的成功率，我们需想办法延长时间窗口。</p>
+<h4 id="Userfaultfd-amp-Fuse-延长时间窗口"><a href="#Userfaultfd-amp-Fuse-延长时间窗口" class="headerlink" title="Userfaultfd &amp; Fuse 延长时间窗口"></a>Userfaultfd &amp; Fuse 延长时间窗口</h4><p>关于userfaultfd这里我不多赘述了，经常用到，它允许用户自定义页错误时的处理操作，不过从v5.11开始，用户态的userfaultfd变为默认禁用的了。</p>
+<p>Fuse可以参考 <a target="_blank" rel="noopener" href="https://www.willsroot.io/2022/01/cve-2022-0185.html">will’s root</a>的文章以及一篇<a target="_blank" rel="noopener" href="https://www.maastaar.net/fuse/linux/filesystem/c/2016/05/21/writing-a-simple-filesystem-using-fuse/">入门简介</a>，这是一个接口，允许用户实现自己用户空间的文件系统，用户可注册handler函数来响应文件操作的请求。</p>
+<blockquote>
+<p>借由<a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/11031">@blue</a>师傅的图和例子:</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221208214522396.png" alt="image-20221208214522396"></p>
+<p>如题所示,通过hello程序把fuse文件系统挂载在&#x2F;tmp&#x2F;fuse目录下.此时如果在该目录中有相关操作时，请求会经过VFS到fuse的内核模块（上图中的步骤1），fuse内核模块根据请求类型，调用用户态应用注册的函数（上图中步骤2），然后将处理结果通过VFS返回给系统调用（步骤3）</p>
+</blockquote>
+<p>只要有copy_from_user等从用户空间向内核空间的拷贝操作，以上两种方式都可以自定义阻塞（或者sleep之类的）来实现暂停，使得条件竞争的成功率大大增加</p>
+<p>在v4.13之前，dirtycred可以通过系统调用<strong>writev</strong>进行文件的写操作， writev的实现⾸先检查⽂件对象，确保当 前⽂件处于打开状态并具有写权限。⼀旦检查通过，它就会从⽤⼾空间导⼊ iovec ，并将⽤⼾数据写⼊相应的⽂件。在这个实现中， iovec的导⼊是在权限 检查和数据写⼊之间。 DirtyCred 可以简单地利⽤前⾯提到的 userfaultfd 特性在完成权限检查后⽴即暂停内核执⾏，从⽽赢得⾜够的时间来交换⽂件对象。</p>
+<p>论文中有相应的代码图</p>
+<p>v4.13之前的代码</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221208214945672.png" alt="image-20221208214945672"></p>
+<p>v4.13之后的patch</p>
+<p>iovec的导入被移到了权限检查之前，这样的话尽管仍然可以通过userfaultfd暂停在iovec，但它不再能延长权限检查和实际文件写入之间的时间了。</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221208215107688.png" alt="image-20221208215107688"></p>
+<h4 id="利用文件系统的锁延长时间窗口"><a href="#利用文件系统的锁延长时间窗口" class="headerlink" title="利用文件系统的锁延长时间窗口"></a>利用文件系统的锁延长时间窗口</h4><p>为了确保同步，文件系统不允许两个进程同时写入一个文件，通过锁机制实现。</p>
+<p>ext4文件系统执行写入操作的简化代码：</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221209132434460.png" alt="image-20221209132434460"></p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221209132407552.png" alt="image-20221209132407552"></p>
+<p>可以看到第六行开始尝试请求索引节点锁，如果别人持有锁就要一直等待锁被释放。尽管它确实实现了写操作的同步，但也给dirtycred留下了延长时间窗口执行对象交换的时间。</p>
+<p>具体的：</p>
+<p>DirtyCred可以生成两个进程AB，这两个进程同时向一个文件写入数据，假如进程A持有锁，并写入大量数据，此时进程B不得不等待较长时间，直至锁被释放。然而在调用generic_perform_write()函数之前，进程B已经完成了文件权限的检查，锁等待的时间完全足以我们来完成文件对象交换。根据论文的数据，将4GB写入硬盘时，过程大概需要几十秒的时间，在这个时间内，就可以完成出发漏洞和执行内存操作，而不会在利用过程中引发任何不稳定的问题。</p>
+<h4 id="分配高权限内核凭证对象"><a href="#分配高权限内核凭证对象" class="headerlink" title="分配高权限内核凭证对象"></a>分配高权限内核凭证对象</h4><ul>
+<li><p>用户空间分配：</p>
+<ul>
+<li>低权限用户可以执行具有suid权限的二进制程序（ctf题中的busybox往往没有，但现实场景一般都有，如su&#x2F;ping&#x2F;sudo&#x2F;mount&#x2F;pkexec），或者频繁创建特权级守护进程（sshd等），这些进程都会分配高权限cred对象。<del>感觉还挺麻烦的</del></li>
+<li>如果选择用file攻击的话，文件对象分配相对容易很多，我们直接打开只读的 <code>/etc/passwd</code> 就行</li>
+</ul>
+</li>
+<li><p>内核空间分配：</p>
+<ul>
+<li>内核启动新的内核线程时，会复制当前正在运行的进程，而绝大部分内核线程都有一个特权的cred对象，也就是我们可以通过创建线程的方法，分配高特权的cred对象，具体的有两种：<ul>
+<li>与内核代码交互，触发内核在内部产生一个新的特全线程，如通过工作队列创建工作线程</li>
+<li>利用一种允许内核创建用户模式进程的机制，最直接的应用就是将内核模块加载进内核，在加载时，内核会调用usermode-helper API，以高权限模式执行用户空间的modprobe，从而在内核创建一个高权限cred对象（modprobe部分功能为搜索标准安装模块目录从而找到目标驱动，在搜索过程中，内核不应该阻塞，所以会创建新的内核线程来执行）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-可以利用的对象"><a href="#3-可以利用的对象" class="headerlink" title="3.可以利用的对象"></a>3.可以利用的对象</h3><p>论文中，作者利用了一种自动化跟踪可利用对象的方法，找出了v5.16.15下包含内核凭证对象的对象</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221209135055655.png" alt="image-20221209135055655"></p>
+<p>符号★表⽰与<code>file</code>凭证关联的对象，⽽符号†表⽰与 <code>cred</code>对象关联的对象。 “Memory Cache”列指定存储内核对象的缓存。 structure列表⽰可利⽤对象的 类型。 Offset列描述了凭证对象的引⽤在可利⽤对象中的位置。</p>
+<p>其中一些对象包含多个内核凭证对象（如<code>ovl_dir_file</code> <code>linux_binprm</code>）</p>
+<h2 id="评估"><a href="#评估" class="headerlink" title="评估"></a>评估</h2><p>实验探索了dirtycred针对现实漏洞的可利用性，实验样例几乎涵盖了内核堆上所有类型的漏洞</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221209135445149.png" alt="image-20221209135445149"></p>
+<p>可以看到，double-free的样例全部都是成功的，说明其转化能力非常强；而失败样例总是来自 OOB&amp;UAF，对于OOB的样例，失败案例展示了虚拟内存区域的内存损坏，要使用dirtycred，我们需要找到带有凭证信息的内核对象，而这些对象通常在kmalloc内存区，而不是虚拟内存。</p>
+<h2 id="防御"><a href="#防御" class="headerlink" title="防御"></a>防御</h2><ul>
+<li>dirtycred不违反任何控制流完整性，CFI保护无效</li>
+<li>dirtycred不依赖单个开发组件，有很多可以利用的对象，因此无法消除对象来进行防御</li>
+<li>dirtycred替换内核凭证而不是篡改，这使得内核凭证完整性保护也失效</li>
+<li>dirtycred通过在彼此之间交换同一内核凭证对象，不受内核对象隔离机制的影响（如AUTOSLAB，xMP，因为它们根据对象类型而不是它们的特权在自己的内存区域分离相应内核对象）</li>
+</ul>
+<p>解决方案：</p>
+<p>隔离高权限和低权限的内核凭证对象，高权限对象放在虚拟内存中，调用vmalloc进行分配；低权限对象放在线性映射区中，使用kmalloc分配，这样高低权限对象区域就不会重叠了。</p>
+<p>实验：</p>
+<p>手动修改了内核中分配cred对象和file对象的方式，具体的：如果分配给特权⽤⼾，我们使⽤虚拟内存分配它们。具 体来说，在分配cred对象时，我们根据对象的UID来检查权限。如果UID与 GLOBAL_ROOT_UID 匹配，这意味着分配是针对特权 cred 对象的，我们使 ⽤vmalloc作为分配器为该对象分配虚拟内存。对于⽂件对象，我们检查⽂件 的模式。如果⽂件以写权限打开，我们将相应地使⽤vmalloc分配⽂件对象。</p>
+<p>结果：</p>
+<p>仅引入了可忽略的轻量开销，大概到4%。</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/image-20221209141924509.png" alt="image-20221209141924509"></p>
+<h2 id="讨论与未来工作"><a href="#讨论与未来工作" class="headerlink" title="讨论与未来工作"></a>讨论与未来工作</h2><h3 id="容器逃逸："><a href="#容器逃逸：" class="headerlink" title="容器逃逸："></a>容器逃逸：</h3><p>容器中没有file提供命名空间的权限， <a target="_blank" rel="noopener" href="https://www.datadoghq.com/blog/engineering/dirty-pipe-container-escape-poc/">Using the Dirty Pipe Vulnerability to Break Out from Containers</a> 不过最近这篇文章提出了一种攻击者被动等待runC进程，从而通过覆盖进程在主机上执行root命令的方法。若使用cred对象进行逃逸的话，就不需要被动等待了。这里我还没接触过，后面再看看。</p>
+<h3 id="安卓提权："><a href="#安卓提权：" class="headerlink" title="安卓提权："></a>安卓提权：</h3><p>尽管Android基于linux内核，但它有更严格的访问控制和防护机制，更难以被利用。dirtycred有两种方法提权Android，一种是直接交换进程凭证，另一种是利用文件操作功能覆盖共享系统库，从而允许在沙盒中提权，然后再用恶意代码覆盖内核模块，实现任意读写，最终禁用SELinux，本文的作者们在撰写文章时就向谷歌提交了Android的提权0day。</p>
+<h3 id="跨平台-x2F-架构利用："><a href="#跨平台-x2F-架构利用：" class="headerlink" title="跨平台&#x2F;架构利用："></a>跨平台&#x2F;架构利用：</h3><p>dirtycred不依赖内核函数地址，不包含任何特定版本或底层架构的数据，故跨平台&#x2F;架构 通用。</p>
+<h3 id="其他漏洞转化："><a href="#其他漏洞转化：" class="headerlink" title="其他漏洞转化："></a>其他漏洞转化：</h3><p>在上面提到，虚拟内存上的漏洞更难以被利用，因为上面的可利用对象很少，但这并不意味着就没法利用了。对于 CVE-2021-34866，有一篇 <a target="_blank" rel="noopener" href="https://github.com/HexRabbit/CVE-writeup/tree/master/CVE-2021-34866">文章</a> 可以将 vmalloc 越界写转化为任意地址读写，因此也能转化为double free能力，DirtyCred 很有可能完成利用。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://zplin.me/papers/DirtyCred.pdf">https://zplin.me/papers/DirtyCred.pdf</a> （论文）</p>
+<p><a target="_blank" rel="noopener" href="https://zplin.me/papers/DirtyCred-BH22-Zhenpeng.pdf">https://zplin.me/papers/DirtyCred-BH22-Zhenpeng.pdf</a>  （blackhat）</p>
+<p><a target="_blank" rel="noopener" href="https://www.maastaar.net/fuse/linux/filesystem/c/2016/05/21/writing-a-simple-filesystem-using-fuse/">https://www.maastaar.net/fuse/linux/filesystem/c/2016/05/21/writing-a-simple-filesystem-using-fuse/</a></p>
+<p><a target="_blank" rel="noopener" href="https://bsauce.github.io/2022/10/12/DirtyCred/#5-%E6%8C%91%E6%88%982-%E5%A2%9E%E5%A4%A7%E6%97%B6%E9%97%B4%E7%AA%97">https://bsauce.github.io/2022/10/12/DirtyCred/#5-%E6%8C%91%E6%88%982-%E5%A2%9E%E5%A4%A7%E6%97%B6%E9%97%B4%E7%AA%97</a></p>
+<p><a target="_blank" rel="noopener" href="https://kiprey.github.io/2022/10/dirty-cred/#%E4%B8%80%E3%80%81%E7%AE%80%E4%BB%8B&amp;gid=1&amp;pid=1">https://kiprey.github.io/2022/10/dirty-cred/#%E4%B8%80%E3%80%81%E7%AE%80%E4%BB%8B&amp;gid=1&amp;pid=1</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/11031">https://xz.aliyun.com/t/11031</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.willsroot.io/2022/01/cve-2022-0185.html">https://www.willsroot.io/2022/01/cve-2022-0185.html</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>7r1p13J</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/kernel/"># kernel</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/12/15/NULLptr/">Nullptr</a>
+            
+            
+            <a class="next" rel="next" href="/2022/11/28/AFL%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">AFL-fuzz源码阅读</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 7r1p13J | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
