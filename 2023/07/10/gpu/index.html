@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="7r1p13J">
+
+
+
+
+
+<title>Hexo</title>
+
+
+
+    <link rel="icon" href="/github-11-48.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">7r1pl3J&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">7r1pl3J&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                    <a class="menu-item" href="/link">Links</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title"></h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">7r1p13J</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 10, 2023&nbsp;&nbsp;1:38:07</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/gpu_management_model.png" alt="GPU管理模型"></p>
+<p><strong>MIMO</strong></p>
+<ul>
+<li>CPU通过MMIO与GPU进行通信。</li>
+<li>支持 DMA 硬件引擎传输大量数据，但应通过 MMIO 写入命令。</li>
+</ul>
+<p><strong>GPU context</strong></p>
+<p>代表GPU当前状态，每个context有自己的page table，多个context可以同时共存（可以视为类似进程的概念？）</p>
+<p><strong>Page Table</strong> </p>
+<ul>
+<li>gpu页表，和CPU的page table功能一样，用于VA到PA的映射，访问GPU的地址空间</li>
+<li>驻留在 GPU 内存中，其物理地址位于 GPU 通道描述符中。</li>
+<li>所有通过通道提交的命令和程序都在相应的GPU虚拟地址空间中执行。</li>
+<li>GPU页表不仅将GPU虚拟地址翻译成GPU设备物理地址，而且将其翻译成主机物理地址。这使得GPU页表能够将<strong>GPU内存和主机主内存统一到统一的GPU虚拟地址空间中</strong>。</li>
+</ul>
+<p><strong>GPU Channel</strong>。</p>
+<ul>
+<li>任何操作（例如启动内核）都是由 CPU 发出的命令驱动的。</li>
+<li><strong>命令流被提交到称为 GPU Channel的硬件单元。</strong></li>
+<li>每个 GPU 上下文可以有一个或多个 GPU 通道。每个GPU上下文包含GPU通道描述符（每个描述符被创建为GPU内存中的内存对象）。</li>
+<li>每个GPU通道描述符存储通道的设置，其中包括<em><strong>页表</strong></em>。</li>
+<li><strong>每个 GPU 通道都有一个专用的命令缓冲区，该缓冲区分配在 CPU 通过 MMIO 可见的 GPU 内存中。</strong></li>
+</ul>
+<p><strong>PCIe 条</strong>。</p>
+<ul>
+<li>PCIe 的基址寄存器（BAR）作为 MMIO 的窗口，在 GPU 启动时进行配置。</li>
+<li>GPU 控制寄存器和 GPU 内存孔径映射到 BAR 上。</li>
+<li>设备驱动程序使用此映射的 MMIO 窗口来配置 GPU 并访问 GPU 内存。</li>
+</ul>
+<p>CPU和GPU通信主要有几下几种方式：</p>
+<ul>
+<li>通过PCIe BAR空间映射出来的寄存器</li>
+<li>通过PCIe BAR空间把GPU的内存映射到CPU的地址空间中</li>
+<li>通过GPU的页表把CPU的系统内存映射到GPU的地址空间中</li>
+<li>通过MSI中断</li>
+</ul>
+<h3 id="gpu申请内存-x2F-释放"><a href="#gpu申请内存-x2F-释放" class="headerlink" title="gpu申请内存&#x2F;释放"></a>gpu申请内存&#x2F;释放</h3><p>当我们用ioctl 指定mem_alloc时，最终会从linux 系统的内存管理模块分配出内存，分配的内存返回给gpu驱动后，可以写入gpu执行所需的数据（job，顶点，纹理之类的），这些数据的写入是用户通过ioctl完成的，当数据写入完成后，就可以trigger kernel driver来执行GPU硬件工作，这个时候GPU硬件需要读取前面准备好的数据，这时需要借助GPU MMU来完成地址的转换工作，否则GPU没有办法完成数据的正确读取。释放的话就是alloc_pages 对应的 free_pages</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/alloc_memory.svg" alt="img"></p>
+<h3 id="job创建、提交与执行"><a href="#job创建、提交与执行" class="headerlink" title="job创建、提交与执行"></a>job创建、提交与执行</h3><p>&#x2F;&#x2F;此处没写好</p>
+<p>当用户向内存填充完数据之后，用户通过ioctl 将该内存 “提交” 给gpu，视作一个job，具体的其实是个建立映射的过程，即让gpu 页表可以映射到该内存。</p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/use_memory.svg" alt="img"></p>
+<p><img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/job_submit.svg" alt="img"></p>
+<p>Mali GPU Job可以理解成GPU硬件能理解的IR(中间语言)，gpu driver将上层user的api（ioctl）转化为job的描述，然后将job的内存地址告诉gpu硬件，gpu硬件的job executor 就开始解析这些job，从而驱动gpu硬件完成相应工作。<img src="https://blogimg-1314041910.cos.ap-guangzhou.myqcloud.com/job.png" alt="img"></p>
+<h2 id="数据结构-x2F-接口"><a href="#数据结构-x2F-接口" class="headerlink" title="数据结构&#x2F;接口"></a>数据结构&#x2F;接口</h2><p>mali 驱动为用户提供的部分接口如下:</p>
+<table>
+<thead>
+<tr>
+<th align="left">序号</th>
+<th align="left">命令</th>
+<th align="center">功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1</td>
+<td align="left">KBASE_IOCTL_MEM_ALLOC</td>
+<td align="center">分配内存区域，内存区域中的页会映射到GPU中，可选择同时映射到CPU</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">KBASE_IOCTL_MEM_QUERY</td>
+<td align="center">查询内存区域属性</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left">KBASE_IOCTL_MEM_FREE</td>
+<td align="center">释放内存区域</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left">KBASE_IOCTL_MEM_SYNC</td>
+<td align="center">同步数据，使得CPU和GPU可以及时看到对方操作结果</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="left">KBASE_IOCTL_MEM_COMMIT</td>
+<td align="center">改变内存区域中页的数量</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="left">KBASE_IOCTL_MEM_ALIAS</td>
+<td align="center">为某个内存区域创建别名，即多个GPU虚拟地址指向同一个区域</td>
+</tr>
+<tr>
+<td align="left">7</td>
+<td align="left">KBASE_IOCTL_MEM_IMPORT</td>
+<td align="center">将CPU使用的内存页映射到GPU地址空间中</td>
+</tr>
+<tr>
+<td align="left">8</td>
+<td align="left">KBASE_IOCTL_MEM_FLAGS_CHANGE</td>
+<td align="center">改变内存区域属性</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>gpu driver 用 region来描述一段内存区域，一段内存区域会有用于映射该区域时gpu&#x2F;cpu用于内存映射的内存分配对象 即 cpu_alloc,gpu_alloc</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">kbase_va_region</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">rb_node</span> <span class="title">rblink</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">link</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">rb_root</span> *<span class="title">rbtree</span>;</span>	<span class="comment">/* Backlink to rb tree */</span></span><br><span class="line"></span><br><span class="line">	u64 start_pfn;		<span class="comment">/* The PFN in GPU space */</span></span><br><span class="line">	<span class="type">size_t</span> nr_pages;</span><br><span class="line">	<span class="comment">/* Initial commit, for aligning the start address and correctly growing</span></span><br><span class="line"><span class="comment">	 * KBASE_REG_TILER_ALIGN_TOP regions */</span></span><br><span class="line">	<span class="type">size_t</span> initial_commit;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> flags;</span><br><span class="line"></span><br><span class="line">	<span class="type">size_t</span> extent; <span class="comment">/* nr of pages alloc&#x27;d on PF */</span></span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">kbase_mem_phy_alloc</span> *<span class="title">cpu_alloc</span>;</span> <span class="comment">/* the one alloc object we mmap to the CPU when mapping this region */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">kbase_mem_phy_alloc</span> *<span class="title">gpu_alloc</span>;</span> <span class="comment">/* the one alloc object we mmap to the GPU when mapping this region */</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* List head used to store the region in the JIT allocation pool */</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">jit_node</span>;</span></span><br><span class="line">	<span class="comment">/* The last JIT usage ID for this region */</span></span><br><span class="line">	u16 jit_usage_id;</span><br><span class="line">	<span class="comment">/* The JIT bin this allocation came from */</span></span><br><span class="line">	u8 jit_bin_id;</span><br><span class="line"></span><br><span class="line">	<span class="type">int</span>    va_refcnt; <span class="comment">/* number of users of this va */</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看到通过start_pfn，nr_pages 即可得出region的范围</p>
+<p>而更具体的物理页描述由struct kbase_mem_phy_alloc 描述</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//如果kbase_mem_phy_alloc没有与另一个区域或客户端（cpu）共享，则应仅在不持有内核映射的情况下更改nents或*pages。</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">kbase_mem_phy_alloc</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">kref</span> <span class="title">kref</span>;</span>                          <span class="comment">// 引用计数，记录该分配对象的使用者数</span></span><br><span class="line">	<span class="type">atomic_t</span> gpu_mappings;                      <span class="comment">// 映射到GPU的次数计数，表示不同GPU VA区域对物理页面的引用次数</span></span><br><span class="line">	<span class="type">atomic_t</span> kernel_mappings;                   <span class="comment">// 在CPU中映射的次数计数，防止在仍然持有映射时更改标志或收缩页面</span></span><br><span class="line">	<span class="type">size_t</span> nents;                               <span class="comment">// 元素数量，范围为0到N</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">tagged_addr</span> *<span class="title">pages</span>;</span>                  <span class="comment">// 元素数组，只有0到nents之间的元素是有效的</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">mappings</span>;</span>                  <span class="comment">// CPU内存映射的链表</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">list_head</span> <span class="title">evict_node</span>;</span>                <span class="comment">// 驱逐列表中用于存储此分配的节点</span></span><br><span class="line">	<span class="type">size_t</span> evicted;                             <span class="comment">// 页面被驱逐时的物理支持大小</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">kbase_va_region</span> *<span class="title">reg</span>;</span>                <span class="comment">// 创建此分配的区域结构的后向引用，如果已释放，则为NULL</span></span><br><span class="line">	<span class="class"><span class="keyword">enum</span> <span class="title">kbase_memory_type</span> <span class="title">type</span>;</span>                <span class="comment">// 缓冲区的类型</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">kbase_vmap_struct</span> *<span class="title">permanent_map</span>;</span>    <span class="comment">// 分配的内核端映射</span></span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> properties;                   <span class="comment">// 属性的位掩码，例如KBASE_MEM_PHY_ALLOC_LARGE</span></span><br><span class="line">	<span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(CONFIG_DMA_SHARED_BUFFER)</span></span><br><span class="line">		<span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">dma_buf</span> *<span class="title">dma_buf</span>;</span></span><br><span class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">dma_buf_attachment</span> *<span class="title">dma_attachment</span>;</span></span><br><span class="line">			<span class="type">unsigned</span> <span class="type">int</span> current_mapping_usage_count;</span><br><span class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">sg_table</span> *<span class="title">sgt</span>;</span></span><br><span class="line">		&#125; umm;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">/* defined(CONFIG_DMA_SHARED_BUFFER) */</span></span></span><br><span class="line">		<span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">			u64 stride;</span><br><span class="line">			<span class="type">size_t</span> nents;</span><br><span class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">kbase_aliased</span> *<span class="title">aliased</span>;</span></span><br><span class="line">		&#125; alias;</span><br><span class="line">		<span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">kbase_context</span> *<span class="title">kctx</span>;</span></span><br><span class="line">			<span class="type">size_t</span> nr_struct_pages;</span><br><span class="line">		&#125; native;</span><br><span class="line">		<span class="class"><span class="keyword">struct</span> <span class="title">kbase_alloc_import_user_buf</span> &#123;</span></span><br><span class="line">			<span class="type">unsigned</span> <span class="type">long</span> address;</span><br><span class="line">			<span class="type">unsigned</span> <span class="type">long</span> size;</span><br><span class="line">			<span class="type">unsigned</span> <span class="type">long</span> nr_pages;</span><br><span class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">page</span> **<span class="title">pages</span>;</span></span><br><span class="line">			<span class="comment">/* 高位(1&lt;&lt;31)的current_mapping_usage_count</span></span><br><span class="line"><span class="comment">			 * 指定该导入在导入时已被固定</span></span><br><span class="line"><span class="comment">			 * 请参见PINNED_ON_IMPORT</span></span><br><span class="line"><span class="comment">			 */</span></span><br><span class="line">			u32 current_mapping_usage_count;</span><br><span class="line">			<span class="class"><span class="keyword">struct</span> <span class="title">mm_struct</span> *<span class="title">mm</span>;</span></span><br><span class="line">			<span class="type">dma_addr_t</span> *dma_addrs;</span><br><span class="line">		&#125; user_buf;</span><br><span class="line">	&#125; imported;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="映射流程"><a href="#映射流程" class="headerlink" title="映射流程"></a>映射流程</h2><p>KBASE_IOCTL_MEM_ALLOC 以及 KBASE_IOCTL_MEM_IMPORT 都可以映射内存页到gpu中，这里我们先以 KBASE_IOCTL_MEM_IMPORT为例</p>
+<p>传参&#x2F;返回值：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">union</span> <span class="title">kbase_ioctl_mem_alloc</span> &#123;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">		__u64 va_pages;<span class="comment">//待分配内存区域最多容纳的物理页数量，驱动会留出对应大小的虚拟内存空间</span></span><br><span class="line">		__u64 commit_pages;<span class="comment">//当前需为该内存区域分配的物理页数量，可以通过KBASE_IOCTL_MEM_COMMIT调整</span></span><br><span class="line">		__u64 extent;</span><br><span class="line">		__u64 flags;<span class="comment">//内存区域属性 ，是否可映射/读写权限等</span></span><br><span class="line">	&#125; in;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">		__u64 flags;</span><br><span class="line">		__u64 gpu_va;<span class="comment">//分配内存区域在gpu中的虚拟地址</span></span><br><span class="line">	&#125; out;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>其调用链大致如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">drivers/gpu/arm/b_r32p0/mali_kbase_core_linux.c</span><br><span class="line"></span><br><span class="line"><span class="title function_">kbase_api_mem_alloc</span><span class="params">()</span></span><br><span class="line">|</span><br><span class="line">| BASE_MEM_SAME_VA</span><br><span class="line">|</span><br><span class="line">|-&gt; <span class="title function_">kbase_mem_alloc</span><span class="params">()</span></span><br><span class="line">    |</span><br><span class="line">    |-&gt; <span class="title function_">kbase_check_alloc_flags</span><span class="params">()</span></span><br><span class="line">    |</span><br><span class="line">    |-&gt; <span class="title function_">kbase_alloc_free_region</span><span class="params">()</span></span><br><span class="line">    |</span><br><span class="line">    |-&gt; <span class="title function_">kbase_reg_prepare_native</span><span class="params">()</span></span><br><span class="line">    |</span><br><span class="line">    |-&gt; <span class="title function_">kbase_alloc_phy_pages</span><span class="params">()</span></span><br><span class="line">    |</span><br><span class="line">    |-&gt; kctx-&gt;pending_regions[cookie_nr] = reg</span><br></pre></td></tr></table></figure>
+
+<p>在kbase_api_mem_alloc()函数中，若是64位进程的话，则指定 flags |&#x3D; BASE_MEM_SAME_VA ，含义是CPU和GPU使用相同的虚拟地址（数值上）。</p>
+<p>kbase_mem_alloc()首先调用<code>kbase_check_alloc_flags()</code>来检查应用传入的flags是否合法 ,主要的规则是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1 内存区域必须映射到GPU中，映射属性可以是只读、仅可写、可读写</span><br><span class="line">2 CPU和GPU至少有一方是可以读内存区域的，否则分配物理页没有意义</span><br><span class="line">3 同样，至少有一方是可以写内存区域的，否则分配物理页没有意义</span><br></pre></td></tr></table></figure>
+
+<p>然后调用kbase_alloc_free_region（）来创建一个region</p>
+<p>主要是通过kzalloc分配region对象，初始化相关元素</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">new_reg-&gt;va_refcnt = <span class="number">1</span>;</span><br><span class="line">new_reg-&gt;cpu_alloc = <span class="literal">NULL</span>; <span class="comment">/* no alloc bound yet */</span></span><br><span class="line">new_reg-&gt;gpu_alloc = <span class="literal">NULL</span>; <span class="comment">/* no alloc bound yet */</span></span><br><span class="line">new_reg-&gt;rbtree = rbtree;</span><br><span class="line">new_reg-&gt;flags = zone | KBASE_REG_FREE;</span><br><span class="line">new_reg-&gt;flags |= KBASE_REG_GROWABLE;</span><br><span class="line">new_reg-&gt;start_pfn = start_pfn;</span><br><span class="line">new_reg-&gt;nr_pages = nr_pages;<span class="comment">//来自我们传入的参数，in.commit_pages</span></span><br></pre></td></tr></table></figure>
+
+<p>kbase_reg_prepare_native()函数则主要负责初始化<code>reg-&gt;cpu_alloc</code>和<code>reg-&gt;gpu_alloc</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">reg-&gt;cpu_alloc = kbase_alloc_create(kctx, reg-&gt;nr_pages,</span><br><span class="line">			KBASE_MEM_TYPE_NATIVE);</span><br><span class="line"><span class="comment">//kbase_alloc_create仅仅调用了kmalloc完成结构体的内存分配，以及结构体内pages数组的分配</span></span><br><span class="line"></span><br><span class="line">reg-&gt;cpu_alloc-&gt;imported.native.kctx = kctx;</span><br><span class="line">	<span class="keyword">if</span> (kbase_ctx_flag(kctx, KCTX_INFINITE_CACHE)</span><br><span class="line">	    &amp;&amp; (reg-&gt;flags &amp; KBASE_REG_CPU_CACHED)) &#123;</span><br><span class="line">		reg-&gt;gpu_alloc = kbase_alloc_create(kctx, reg-&gt;nr_pages,</span><br><span class="line">				KBASE_MEM_TYPE_NATIVE);</span><br><span class="line">		<span class="keyword">if</span> (IS_ERR_OR_NULL(reg-&gt;gpu_alloc)) &#123;</span><br><span class="line">			kbase_mem_phy_alloc_put(reg-&gt;cpu_alloc);</span><br><span class="line">			<span class="keyword">return</span> -ENOMEM;</span><br><span class="line">		&#125;</span><br><span class="line">		reg-&gt;gpu_alloc-&gt;imported.native.kctx = kctx;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;<span class="comment">// 我们不指定KBASE_REG_CPU_CACHED ，reg-&gt;cpu_alloc和reg-&gt;gpu_alloc会指向同一个对象</span></span><br><span class="line">		reg-&gt;gpu_alloc = kbase_mem_phy_alloc_get(reg-&gt;cpu_alloc);</span><br><span class="line">	&#125;</span><br><span class="line">			</span><br></pre></td></tr></table></figure>
+
+<p>然后调用<code>kbase_alloc_phy_pages()</code>为<code>reg-&gt;cpu_alloc</code>分配物理页,该函数会调用-&gt;kbase_alloc_phy_pages_helper()-&gt;kbase_mem_pool_alloc_pages()-&gt;…-&gt;alloc_page()，向buddy system请求物理页。</p>
+<p>之后将reg挂载到<code>kctx-&gt;pending_regions</code>数组中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* mmap needed to setup VA? */</span></span><br><span class="line"><span class="keyword">if</span> (*flags &amp; BASE_MEM_SAME_VA) &#123;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> prot = PROT_NONE;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> va_size = va_pages &lt;&lt; PAGE_SHIFT;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> va_map = va_size;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> cookie, cookie_nr;</span><br><span class="line">	<span class="type">unsigned</span> <span class="type">long</span> cpu_addr;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* Bind to a cookie */</span></span><br><span class="line">	<span class="keyword">if</span> (!kctx-&gt;cookies) &#123;</span><br><span class="line">		dev_err(dev, <span class="string">&quot;No cookies available for allocation!&quot;</span>);</span><br><span class="line">		kbase_gpu_vm_unlock(kctx);</span><br><span class="line">		<span class="keyword">goto</span> no_cookie;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/* return a cookie */</span></span><br><span class="line">	cookie_nr = __ffs(kctx-&gt;cookies);</span><br><span class="line">	kctx-&gt;cookies &amp;= ~(<span class="number">1UL</span> &lt;&lt; cookie_nr);<span class="comment">//在数组中找个空位位置</span></span><br><span class="line">	BUG_ON(kctx-&gt;pending_regions[cookie_nr]);</span><br><span class="line">	kctx-&gt;pending_regions[cookie_nr] = reg;</span><br><span class="line">       cookie = cookie_nr + PFN_DOWN(BASE_MEM_COOKIE_BASE);</span><br><span class="line">	cookie &lt;&lt;= PAGE_SHIFT;</span><br><span class="line">       <span class="keyword">if</span> (kctx-&gt;api_version &lt; KBASE_API_VERSION(<span class="number">10</span>, <span class="number">1</span>) ||</span><br><span class="line">	    kctx-&gt;api_version &gt; KBASE_API_VERSION(<span class="number">10</span>, <span class="number">4</span>)) &#123;</span><br><span class="line">		*gpu_va = (u64) cookie;<span class="comment">//返回cookie</span></span><br><span class="line">		<span class="keyword">return</span> reg;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看出来，此处并没有建立gpu_va到物理页的映射，gpu_va值是一个cookie，这个值将会在真正建立映射时被使用。</p>
+<p>如何建立映射？gpu驱动自定义了kbase_mmap函数作为mmap函数，该函数主要流程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">kbase_mmap(<span class="keyword">struct</span> file *file, <span class="keyword">struct</span> vm_area_struct *vma)</span><br><span class="line">|  <span class="comment">//struct vm_area_struct 为linux中描述虚拟内存区域的结构体</span></span><br><span class="line">| BASE_MEM_SAME_VA</span><br><span class="line">|</span><br><span class="line">|-&gt; kbase_region_tracker_find_region_enclosing_address()</span><br><span class="line">|<span class="comment">//这里做一些大小的判断，如是否会oversize，以及剩余页的计算&amp;更新</span></span><br><span class="line">|-&gt; kbase_cpu_mmap()</span><br><span class="line">    |</span><br><span class="line">    |-&gt; kbase_get_cpu_phy_pages()<span class="comment">//通过region得到物理页</span></span><br><span class="line">    |</span><br><span class="line">    |-&gt; vm_insert_pfn()</span><br><span class="line">    |</span><br><span class="line">    |-&gt; kbase_mem_phy_alloc_get()</span><br><span class="line">    |</span><br><span class="line">    |-&gt; kctx-&gt;pending_regions[cookie_nr] = reg</span><br></pre></td></tr></table></figure>
+
+<p>调用   kbase_region_tracker_find_region_enclosing_address</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reg = kbase_region_tracker_find_region_enclosing_address(kctx,</span><br><span class="line"> (u64)vma-&gt;vm_pgoff &lt;&lt; PAGE_SHIFT); 找到gpu_va（也就是那个cookie所对应的region）</span><br></pre></td></tr></table></figure>
+
+<p>建立映射</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!kaddr) &#123;</span><br><span class="line">		<span class="type">unsigned</span> <span class="type">long</span> addr = vma-&gt;vm_start + aligned_offset;</span><br><span class="line"></span><br><span class="line">		vma-&gt;vm_flags |= VM_PFNMAP;</span><br><span class="line">		<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nr_pages; i++) &#123;</span><br><span class="line">			<span class="type">phys_addr_t</span> phys;</span><br><span class="line"></span><br><span class="line">			phys = <span class="type">as_phys_addr_t</span>(page_array[i + start_off]);</span><br><span class="line">			err = vm_insert_pfn(vma, addr, PFN_DOWN(phys));<span class="comment">//建立映射</span></span><br><span class="line">			<span class="keyword">if</span> (WARN_ON(err))</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">			addr += PAGE_SIZE;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">map</span>-&gt;region = kbase_va_region_alloc_get(kctx, reg);</span><br><span class="line">	<span class="built_in">map</span>-&gt;free_on_close = free_on_close;</span><br><span class="line">	<span class="built_in">map</span>-&gt;kctx = kctx;</span><br><span class="line">	<span class="built_in">map</span>-&gt;alloc = kbase_mem_phy_alloc_get(reg-&gt;cpu_alloc);</span><br><span class="line">	<span class="built_in">map</span>-&gt;count = <span class="number">1</span>; <span class="comment">/* start with one ref */</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (reg-&gt;flags &amp; KBASE_REG_CPU_CACHED)</span><br><span class="line">		<span class="built_in">map</span>-&gt;alloc-&gt;properties |= KBASE_MEM_PHY_ALLOC_ACCESSED_CACHED;</span><br><span class="line"></span><br><span class="line">	list_add(&amp;<span class="built_in">map</span>-&gt;mappings_list, &amp;<span class="built_in">map</span>-&gt;alloc-&gt;mappings);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * VM_DONTCOPY - don&#x27;t make this mapping available in fork&#x27;ed processes</span></span><br><span class="line"><span class="comment">	 * VM_DONTEXPAND - disable mremap on this region</span></span><br><span class="line"><span class="comment">	 * VM_IO - disables paging</span></span><br><span class="line"><span class="comment">	 * VM_DONTDUMP - Don&#x27;t include in core dumps (3.7 only)</span></span><br><span class="line"><span class="comment">	 * VM_MIXEDMAP - Support mixing struct page*s and raw pfns.</span></span><br><span class="line"><span class="comment">	 *               This is needed to support using the dedicated and</span></span><br><span class="line"><span class="comment">	 *               the OS based memory backends together.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * This will need updating to propagate coherency flags</span></span><br><span class="line"><span class="comment">	 * See MIDBASE-1057</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">vma的flag位设置，可以看出子进程是不共享该gpu内存的</span><br><span class="line"><span class="meta">#<span class="keyword">if</span> (LINUX_VERSION_CODE &gt;= KERNEL_VERSION(3, 7, 0))</span></span><br><span class="line">	vma-&gt;vm_flags |= VM_DONTCOPY | VM_DONTDUMP | VM_DONTEXPAND | VM_IO;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	vma-&gt;vm_flags |= VM_DONTCOPY | VM_DONTEXPAND | VM_RESERVED | VM_IO;</span><br></pre></td></tr></table></figure>
+
+<p>与直接分配物理页不同，KBASE_IOCTL_MEM_IMPORT可以导入cpu的地址到gpu</p>
+<p>漏洞点：当没有KBASE_REG_SHARE_BOTH标志，通过提交一个列出该区域作为外部资源的原子作业，临时填充.pages数组，将页面映射到Mali的主机用户空间映射中（该映射为VM_PFNMAP），然后让作业完成，这会导致Mali在不清除主机用户空间映射中相应PTE的情况下释放.pages数组中页面的引用。</p>
+<p>我不确定正确的修复方法是禁止从没有KBASE_REG_SHARE_BOTH标志的KBASE_MEM_TYPE_IMPORTED_USER_BUF区域中导入页面，还是确保在其后备内存消失时正确清除主机虚拟映射，或者两者都需要？我还没有详细研究其他区域类型是否存在类似问题。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>7r1p13J</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2023/02/10/%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90/">《软件分析》课程笔记</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 7r1p13J | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
